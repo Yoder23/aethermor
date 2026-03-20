@@ -1,0 +1,666 @@
+\documentclass[11pt,twocolumn]{article}
+
+% ── Packages ─────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{authblk}
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\bfseries\color{blue!70!black},
+  commentstyle=\itshape\color{gray},
+  breaklines=true,
+  frame=single,
+  framesep=2pt,
+  columns=fullflexible,
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!70!black,
+  citecolor=blue!70!black,
+  urlcolor=blue!70!black,
+}
+
+% ── Title ────────────────────────────────────────────────────────────────
+\title{Aethermor: An Open-Source Inverse Thermal Design Toolkit \\
+       for Thermodynamic Computing Research}
+
+\author{Aethermor Contributors}
+\date{March 2026}
+
+\begin{document}
+\maketitle
+
+% ── Abstract ─────────────────────────────────────────────────────────────
+\begin{abstract}
+As transistor scaling approaches fundamental thermodynamic limits,
+hardware architects increasingly need tools that quantify how close a
+design sits to the Landauer limit and what thermal constraints govern
+achievable compute density. We present \textbf{Aethermor}, an
+open-source Python toolkit that solves \emph{inverse} thermal design
+problems: given a power budget, cooling architecture, and substrate
+material, it finds the maximum gate density, minimum required cooling,
+optimal power distribution across heterogeneous functional blocks, and
+paradigm crossover points --- questions that currently require weeks of
+manual sweeps in commercial finite-element tools. Aethermor combines a
+3D Fourier thermal solver (0.00\% energy conservation error), ITRS/IRDS-calibrated CMOS
+energy models, adiabatic and reversible computing paradigms, nine
+substrate materials with CRC Handbook properties, multi-layer cooling
+stack models, and heterogeneous chip floorplan simulation. A built-in
+validation suite of 133 cross-checks against CODATA~2018, analytical
+solutions, and published roadmap data ensures physical correctness. We
+demonstrate that diamond substrates sustain $17\times$ higher gate
+density than silicon at equal cooling, that adiabatic logic provides a
+$2{,}006\times$ energy advantage over CMOS at 1~GHz on a 7~nm node,
+and that thermal headroom redistribution on a heterogeneous SoC yields
+up to $2\times$ throughput improvement. Aethermor is released under the
+Apache~2.0 license with an interactive browser-based explorer, 212
+automated tests, and six ready-to-run research examples.
+\end{abstract}
+
+% ── 1. Introduction ─────────────────────────────────────────────────────
+\section{Introduction}
+\label{sec:intro}
+
+The semiconductor industry faces a fundamental physical barrier:
+Dennard scaling has ended, and each new technology node brings
+diminishing energy-per-switch improvements while power density
+continues to rise~\cite{dennard1974,esmaeilzadeh2011}. At advanced
+nodes ($\leq 7$~nm), the energy per CMOS gate switch is approximately
+$2.4 \times 10^{-16}$~J --- still roughly $85{,}000\times$ above the
+Landauer limit of $k_B T \ln 2 \approx 2.87 \times 10^{-21}$~J at
+room temperature~\cite{landauer1961}. This gap defines the
+thermodynamic design space that hardware architects must navigate.
+
+Existing thermal simulation tools fall into two categories.
+\emph{Forward solvers} (HotSpot~\cite{skadron2004},
+COMSOL~Multiphysics) compute temperature given a known power map.
+\emph{Commercial FEM tools} can in principle solve inverse problems,
+but require manual scripting, cost \$25{,}000+ per year, and lack
+built-in models for Landauer-aware energy accounting, multi-paradigm
+comparisons, and technology roadmap projection. No existing open-source
+tool answers questions such as:
+\begin{itemize}[nosep]
+  \item What is the maximum gate density this substrate can sustain?
+  \item What is the minimum cooling coefficient needed for this density?
+  \item How should I distribute compute across functional blocks to
+        maximise throughput under a thermal limit?
+  \item At what frequency does adiabatic logic become more efficient
+        than CMOS on this material?
+\end{itemize}
+
+Aethermor fills this gap. It is a Python toolkit that combines
+SI-unit physics models with inverse design algorithms, enabling
+hardware researchers to explore the full thermodynamic design space
+interactively or programmatically. This paper describes the
+architecture, physics models, validation methodology, and
+representative results.
+
+
+% ── 2. Architecture ─────────────────────────────────────────────────────
+\section{System Architecture}
+\label{sec:arch}
+
+Aethermor is organized into three layers, each building on the one
+below it.
+
+\subsection{Physics Layer (\texttt{physics/})}
+
+\paragraph{Fundamental Constants.}
+All calculations derive from CODATA~2018 exact values: Boltzmann
+$k_B = 1.380\,649 \times 10^{-23}$~J/K, Planck
+$h = 6.626\,070\,15 \times 10^{-34}$~J$\cdot$s. The Landauer limit is
+computed as $E_{\min}(T) = k_B \, T \, \ln 2$.
+
+\paragraph{Material Database.}
+Nine chip substrates are included (Table~\ref{tab:materials}), each
+with published thermal conductivity, specific heat, density,
+electrical resistivity, bandgap, and maximum operating temperature.
+All values are sourced from the CRC Handbook of Chemistry and
+Physics~\cite{crc97} and Morko\c{c}~\cite{morkoc2006,morkoc2008}
+for wide-bandgap materials.
+
+\begin{table}[t]
+\centering
+\caption{Substrate materials in Aethermor.}
+\label{tab:materials}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Material & $k$ (W/m$\cdot$K) & $T_{\max}$ (K) & $E_g$ (eV) \\
+\midrule
+Silicon          & 148   & 723  & 1.12 \\
+Diamond          & 2{,}200 & 973  & 5.47 \\
+SiC (4H)         & 490   & 873  & 3.26 \\
+GaN              & 130   & 873  & 3.40 \\
+GaAs             & 55    & 623  & 1.42 \\
+SiO$_2$          & 1.4   & 1{,}673 & 9.0 \\
+Copper           & 401   & 673  & ---  \\
+InP              & 68    & 673  & 1.35 \\
+Graphene         & 5{,}000 & 973  & 0.0  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Gate Energy Models.}
+Four computing paradigms are modelled:
+\begin{enumerate}[nosep]
+  \item \textbf{CMOS}: $E = \tfrac{1}{2} C_L V_{dd}^2 + E_{\mathrm{leak}}(T)$,
+    with $V_{dd}$ and $C_L$ calibrated to ITRS~2013~\cite{itrs2013} and
+    IRDS~2022~\cite{irds2022} roadmaps across 10 nodes (130--1.4~nm).
+    Leakage follows an Arrhenius model: $I_{\mathrm{leak}}(T) = I_0
+    \exp\!\bigl(\tfrac{T - T_0}{T_{\mathrm{coeff}}}\bigr)$.
+  \item \textbf{Adiabatic}: $E = R C_L^2 V_{dd}^2 f$, proportional to
+    frequency --- energy approaches zero as $f \to 0$.
+  \item \textbf{Reversible}: $E = n_{\mathrm{erase}} \cdot k_B T \ln 2 +
+    E_{\mathrm{overhead}}$, where $n_{\mathrm{erase}}$ is the number
+    of irreversible bit erasures per gate operation.
+  \item \textbf{Landauer floor}: $E = k_B T \ln 2$, the
+    information-theoretic minimum.
+\end{enumerate}
+
+\paragraph{Fourier Thermal Solver.}
+A 3D explicit finite-difference solver for the heat equation:
+\begin{equation}
+  \rho \, c_p \frac{\partial T}{\partial t}
+    = k \, \nabla^2 T + \dot{q}
+  \label{eq:fourier}
+\end{equation}
+with CFL-stable timestep $\Delta t < \tfrac{\Delta x^2}{6\alpha}$
+($\alpha = k / \rho c_p$). The solver supports convective, fixed-temperature,
+and adiabatic boundary conditions. Energy conservation is verified at every
+run: $|E_{\mathrm{in}} - E_{\mathrm{out}} - \Delta U| / E_{\mathrm{in}} < 5\%$,
+with observed error of 0.00\% in all validation runs.
+
+\paragraph{Cooling Stack.}
+A \texttt{CoolingStack} module models the die-to-ambient thermal path
+as a series of thermal resistances:
+\begin{equation}
+  R_{\mathrm{total}} = \sum_i \frac{t_i}{k_i \cdot A} + \frac{1}{h_{\mathrm{amb}} \cdot A}
+  \label{eq:rstack}
+\end{equation}
+Twelve pre-built materials (thermal paste, liquid metal, copper IHS,
+aluminium heatsink, diamond spreader, etc.) and six factory
+configurations (bare-die, desktop-air, server-air, liquid, direct-liquid,
+diamond-spreader-liquid) are provided.
+
+\paragraph{Chip Floorplan.}
+A \texttt{ChipFloorplan} class defines heterogeneous architectures
+with distinct functional blocks (CPU, GPU, cache, I/O), each with
+independent gate density, activity factor, technology node, and
+computing paradigm. Factory methods generate representative SoC and
+hybrid CMOS/adiabatic layouts.
+
+\subsection{Analysis Layer (\texttt{analysis/})}
+
+The analysis layer provides eight inverse thermal design tools
+(Section~\ref{sec:inverse}), technology roadmap projection, Landauer
+gap analysis, design space sweeps with Pareto extraction, thermal
+regime classification, and hotspot detection.
+
+\subsection{Interface Layer}
+
+Users interact with Aethermor through three channels: (1)~a
+browser-based interactive explorer (\texttt{app.py}) with five
+parameterised tabs updated in real time; (2)~a Python scripting API;
+(3)~six ready-to-run example scripts demonstrating research workflows.
+
+
+% ── 3. Inverse Thermal Design ───────────────────────────────────────────
+\section{Inverse Thermal Design}
+\label{sec:inverse}
+
+The central contribution of Aethermor is solving the inverse thermal
+design problem: \emph{given constraints, find the best design}. Eight
+tools are provided, each addressing a distinct research question.
+
+\subsection{Maximum Achievable Gate Density}
+
+Given a material and cooling coefficient $h$, a binary search over the
+3D Fourier solver finds the maximum gate density $D_{\max}$ such that
+$T_{\max} \leq T_{\mathrm{limit}}$:
+\begin{equation}
+  D_{\max}: \quad T_{\max}\bigl(D_{\max}, k, h\bigr) = T_{\mathrm{limit}}
+  \label{eq:dmax}
+\end{equation}
+
+\subsection{Minimum Required Cooling}
+
+Given a material and target density $D$, the combined conduction +
+convection 1D steady-state model:
+\begin{equation}
+  T_{\max} = T_{\mathrm{amb}} + Q \left( \frac{1}{h A} + \frac{\Delta x}{2 k A} \right)
+  \label{eq:tmax1d}
+\end{equation}
+is inverted analytically for $h_{\min}$:
+\begin{equation}
+  h_{\min} = \frac{Q}{A \bigl( \Delta T - \Delta T_{\mathrm{cond}} \bigr)}
+  \label{eq:hmin}
+\end{equation}
+where $\Delta T_{\mathrm{cond}} = Q \Delta x / (2kA)$ is the
+irreducible conduction floor. If $\Delta T_{\mathrm{cond}} \geq
+\Delta T$, no amount of convective cooling suffices --- the design
+requires a higher-conductivity substrate.
+
+\subsection{Material Ranking}
+
+Runs \texttt{find\_max\_density} across all materials and sorts by
+$D_{\max}$. At $h = 1{,}000$~W/(m$^2\cdot$K) on a 7~nm node,
+diamond sustains $7.0 \times 10^8$ gates/element versus silicon's
+$4.1 \times 10^7$ --- a $17\times$ advantage (Table~\ref{tab:ranking}).
+
+\begin{table}[t]
+\centering
+\caption{Material ranking at 7~nm, 1~GHz, $h = 1{,}000$~W/(m$^2\cdot$K).}
+\label{tab:ranking}
+\small
+\begin{tabular}{@{}lrl@{}}
+\toprule
+Material & $D_{\max}$ (gates/elem) & Ratio vs.\ Si \\
+\midrule
+Diamond   & $7.04 \times 10^{8}$ & $17.2\times$ \\
+SiC (4H)  & $1.36 \times 10^{8}$ & $3.3\times$ \\
+GaN       & $8.02 \times 10^{7}$ & $2.0\times$ \\
+Silicon   & $4.10 \times 10^{7}$ & $1.0\times$ \\
+GaAs      & $2.49 \times 10^{7}$ & $0.6\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Cooling Sweep}
+
+Sweeps $h$ from natural air (10~W/m$^2\cdot$K) to microchannel
+cooling (50{,}000~W/m$^2\cdot$K), revealing the diminishing-returns
+regime where the conduction floor dominates. This makes visible a
+critical phenomenon: beyond a material-dependent threshold,
+improving the cooling infrastructure yields negligible temperature
+reduction because the die's own thermal conductivity is the bottleneck.
+
+\subsection{Paradigm Comparison}
+
+Compares CMOS, adiabatic, and reversible paradigms head-to-head at
+the same configuration. At 7~nm and 1~GHz, adiabatic switching
+consumes $1.22 \times 10^{-19}$~J/gate versus CMOS's $2.45 \times
+10^{-16}$~J/gate --- a $2{,}006\times$ energy reduction. The crossover
+frequency where CMOS becomes competitive is $f_c = 2.0$~THz,
+well above practical operating frequencies.
+
+\subsection{Thermal Headroom Map}
+
+Analyses per-block thermal budget utilisation on a heterogeneous SoC.
+For each functional block, it computes the steady-state temperature,
+thermal headroom ($T_{\mathrm{limit}} - T_{\max}$), whether the block
+is the thermal bottleneck, and how much additional density it could
+accommodate. A representative modern SoC (CPU cluster, GPU array, SRAM
+cache, I/O controller) typically reveals that cache and I/O blocks
+utilise less than 5\% of their thermal budget while the CPU cluster is
+at the limit.
+
+\subsection{Power Redistribution Optimizer}
+
+Given a total power budget $P_{\mathrm{budget}}$ and thermal limit
+$T_{\mathrm{limit}}$, distributes gate density across functional
+blocks to maximise total throughput:
+\begin{equation}
+  \max \sum_i D_i \cdot N_i \cdot a_i \cdot f \qquad
+  \text{s.t.} \quad T_i \leq T_{\mathrm{limit}}, \;
+  \sum_i P_i \leq P_{\mathrm{budget}}
+  \label{eq:optim}
+\end{equation}
+The solver identifies whether the design is \emph{thermally limited}
+(cannot use all power budget) or \emph{power limited} (thermal headroom
+available). On a representative SoC, this yields up to $1.9\times$
+throughput improvement over the unoptimised layout.
+
+\subsection{Full Design Exploration}
+
+A single-call entry point that runs all of the above analyses and
+produces a comprehensive design space report with automatically
+generated insights.
+
+
+% ── 4. Technology Roadmap ────────────────────────────────────────────────
+\section{Technology Roadmap Projection}
+\label{sec:roadmap}
+
+The \texttt{TechnologyRoadmap} module projects four metrics across 10
+technology nodes (130~nm to 1.4~nm):
+
+\begin{enumerate}[nosep]
+  \item \textbf{Energy per gate switch} for each paradigm, showing how
+    CMOS dynamic energy scales as $\sim V_{dd}^2 \cdot C_L$ while
+    adiabatic energy scales as $\sim f$.
+  \item \textbf{Landauer gap} (ratio of actual energy to $k_B T \ln 2$),
+    showing convergence toward the thermodynamic limit at advanced
+    nodes.
+  \item \textbf{Paradigm crossover frequency} --- the frequency below
+    which adiabatic logic consumes less energy than CMOS at each node.
+  \item \textbf{Thermal wall} --- the maximum gate density sustainable
+    on each substrate at each node, accounting for both energy model
+    scaling and material thermal limits.
+\end{enumerate}
+
+Key finding: the Landauer gap for CMOS monotonically decreases from
+$\sim 10^7\times$ at 130~nm to $\sim 10^4\times$ at 1.4~nm, but
+remains orders of magnitude above the limit --- confirming that room
+for improvement exists even at the most advanced nodes.
+
+
+% ── 5. Validation ───────────────────────────────────────────────────────
+\section{Validation}
+\label{sec:validation}
+
+Aethermor includes a self-contained validation suite (133 checks,
+executable with a single command) that verifies every physics model
+against published reference data. We organize validation into five
+categories.
+
+\subsection{Constants and Material Properties}
+
+Fundamental constants are compared to CODATA~2018 exact
+values~\cite{codata2018} with $< 0.01\%$ tolerance. Material properties
+(thermal conductivity, density, specific heat, bandgap) are compared to
+CRC Handbook~\cite{crc97} reference values with $< 0.1\%$ tolerance.
+Derived quantities (thermal diffusivity $\alpha = k / \rho c_p$,
+volumetric heat capacity) are verified for self-consistency.
+
+\subsection{Energy Model Calibration}
+
+CMOS supply voltage ($V_{dd}$) at five reference nodes is compared to
+ITRS~2013~\cite{itrs2013} and IRDS~2022~\cite{irds2022} published
+values, with all errors below 3\%. Key physics constraints are verified:
+CMOS energy exceeds the Landauer limit (second law compliance), leakage
+energy increases with temperature (Arrhenius), and adiabatic energy is
+below CMOS energy at low frequency.
+
+\subsection{Thermal Solver Verification}
+
+The 3D Fourier solver is verified against the analytical solution for a
+uniformly heated slab with convective cooling~\cite{carslaw1959}. The
+3D solution is bounded between ambient temperature and the
+(conservative) 1D analytical estimate. Energy conservation
+($|E_{\mathrm{in}} - E_{\mathrm{out}} - \Delta U| / E_{\mathrm{in}}$)
+is verified to be below 5\%, with observed error of 0.00\% in all runs.
+
+\subsection{Inverse Design Consistency}
+
+Round-trip consistency is verified for all inverse design tools:
+\texttt{find\_max\_density} gives $T \approx T_{\mathrm{limit}}$ at
+$D_{\max}$; \texttt{find\_min\_cooling} gives $T \approx
+T_{\mathrm{limit}}$ at $h_{\min}$; the power redistribution optimizer
+satisfies its budget and thermal constraints; the headroom map obeys
+$T + \text{headroom} = T_{\mathrm{limit}}$ for every block.
+
+\subsection{Reproducibility}
+
+All functions that use the 3D binary-search solver are verified to
+return identical results across independent runs with the same inputs.
+The entire test suite (212~tests) and validation suite (133~checks)
+execute deterministically with seeded random number generators.
+
+\begin{table}[t]
+\centering
+\caption{Validation summary (133 checks total).}
+\label{tab:validation}
+\small
+\begin{tabular}{@{}llrl@{}}
+\toprule
+Category & Reference & Checks & Status \\
+\midrule
+Fundamental constants     & CODATA 2018         & 6  & Pass \\
+Landauer limit            & Landauer (1961)     & 5  & Pass \\
+Material properties       & CRC Handbook        & 18 & Pass \\
+CMOS energy model         & ITRS/IRDS           & 13 & Pass \\
+Fourier solver            & Carslaw \& Jaeger   & 5  & Pass \\
+Analytical 1D model       & Manual R-model      & 7  & Pass \\
+Max density reciprocity   & 3D $\leftrightarrow$ analytical & 5 & Pass \\
+Min cooling inverse       & Constraint round-trip & 4 & Pass \\
+Optimizer constraints     & Budget/thermal/binding & 9 & Pass \\
+Headroom map physics      & $T + h = T_{\mathrm{limit}}$ & 11 & Pass \\
+Cooling stack resistance  & Incropera \& DeWitt & 4  & Pass \\
+Tech roadmap monotonicity & 10 nodes, gap $> 1$ & 28 & Pass \\
+Dimensional analysis      & Unit consistency    & 4  & Pass \\
+Full exploration          & Response schema     & 11 & Pass \\
+Reproducibility           & Deterministic       & 3  & Pass \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ── 6. Representative Results ────────────────────────────────────────────
+\section{Representative Results}
+\label{sec:results}
+
+We present three results that illustrate Aethermor's capabilities and
+the physical insights they enable.
+
+\subsection{Material Selection: Substrate Determines Density Ceiling}
+
+At 7~nm, 1~GHz, with forced-air cooling ($h = 1{,}000$~W/m$^2\cdot$K),
+diamond sustains $7.0 \times 10^8$~gates/element --- $17\times$
+more than silicon ($4.1 \times 10^7$) and $28\times$ more than GaAs
+($2.5 \times 10^7$). This quantifies a well-known qualitative
+principle: substrate thermal conductivity sets the density ceiling. The
+advantage persists across all cooling levels because the conduction
+floor (determined by $k$) is the binding constraint at high $h$.
+
+\subsection{Paradigm Crossover: Adiabatic Advantage at Practical Frequencies}
+
+At 7~nm and room temperature, the CMOS $\leftrightarrow$ adiabatic
+crossover occurs at $f_c = 2.0$~THz. Below this frequency --- which
+includes the entire practical range for digital logic --- adiabatic
+switching is more energy-efficient. The advantage at 1~GHz is
+$2{,}006\times$. This holds across all technology nodes, with $f_c$
+varying from $\sim$800~GHz at 130~nm to $\sim$3~THz at 1.4~nm.
+
+\subsection{Heterogeneous SoC: Thermal Budget Redistribution}
+
+On a representative modern SoC (CPU cluster at 5~nm, GPU array at
+7~nm, SRAM cache at 7~nm, I/O controller at 14~nm), the headroom map
+reveals that the I/O and cache blocks use less than 5\% of their
+thermal budget. The power redistribution optimizer identifies that
+reallocating compute density from underutilised blocks toward the
+CPU cluster yields up to $1.9\times$ total throughput improvement ---
+without changing the cooling architecture or exceeding any block's
+thermal limit.
+
+
+% ── 7. Comparison with Existing Tools ────────────────────────────────────
+\section{Comparison with Existing Tools}
+\label{sec:comparison}
+
+Table~\ref{tab:comparison} compares Aethermor with existing thermal
+analysis tools. The key differentiator is the inverse design
+capability: Aethermor is the only open-source tool that can find
+optimal configurations rather than merely evaluating given ones.
+
+\begin{table}[t]
+\centering
+\caption{Feature comparison with existing tools.}
+\label{tab:comparison}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Feature & Aethermor & HotSpot & COMSOL \\
+\midrule
+Forward thermal sim      & 3D Fourier & Compact & FEM \\
+Inverse design           & 8 tools    & ---     & Script \\
+Landauer gap tracking    & Yes        & ---     & --- \\
+Multi-paradigm           & 4          & ---     & --- \\
+Multi-material           & 9          & Si      & Yes \\
+Cooling stack            & Multi-layer & Partial & Yes \\
+Tech roadmap             & 10 nodes   & ---     & --- \\
+SoC headroom map         & Per-block  & ---     & --- \\
+Power redistribution     & Yes        & ---     & --- \\
+Interactive UI           & Browser    & ---     & Desktop \\
+Open source              & Apache 2.0 & BSD     & --- \\
+Cost                     & Free       & Free    & \$25k+/yr \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ── 8. Limitations and Future Work ──────────────────────────────────────
+\section{Limitations and Future Work}
+\label{sec:limitations}
+
+We document limitations with the same rigour as capabilities.
+
+\paragraph{Isotropic thermal model.}
+All materials are treated as isotropic. Graphene's extreme in-plane
+versus cross-plane anisotropy ($5{,}000$ vs.\ $\sim$6~W/m$\cdot$K)
+is approximated with a single effective value. Extending
+\texttt{FourierThermalTransport} to tensor conductivity is a priority
+for future work.
+
+\paragraph{No interconnect power.}
+Energy models account for gate switching but not wire dissipation,
+which is a significant fraction of total power at advanced nodes.
+
+\paragraph{Simplified leakage.}
+CMOS leakage uses a constant reference current ($I_0 = 1$~nA/gate)
+across all nodes, ignoring short-channel effects (DIBL, gate tunnelling)
+that increase leakage at smaller nodes. At room temperature, leakage is
+a small fraction of dynamic energy, so this has minimal impact on
+paradigm comparisons.
+
+\paragraph{No hardware validation.}
+All results are from physics-based models calibrated to published data
+(CODATA, CRC, ITRS/IRDS), not measured hardware. Validation against
+infrared thermal imaging of test chips is a planned next step.
+
+\paragraph{Steady-state focus.}
+The Fourier solver supports transient evolution but the inverse design
+tools target steady-state. Modelling dynamic workloads, power gating
+transients, and DVFS is future work.
+
+\paragraph{1D cooling stack.}
+The \texttt{CoolingStack} does not model 2D/3D spreading resistance
+or temperature-dependent thermal conductivity. For package-level
+analysis, these effects can be significant and will be addressed in a
+future release.
+
+
+% ── 9. Availability and Reproducibility ─────────────────────────────────
+\section{Availability and Reproducibility}
+\label{sec:availability}
+
+Aethermor is released under the Apache~2.0 license at:
+
+\begin{center}
+\url{https://github.com/YOUR_ORG/aethermor}
+\end{center}
+
+\noindent To reproduce all results in this paper:
+
+\begin{lstlisting}
+git clone https://github.com/YOUR_ORG/aethermor
+cd aethermor
+pip install -e ".[all]"
+python -m validation.validate_all   # 133 checks
+python -m pytest tests/ -v          # 212 tests
+python app.py                       # Interactive UI
+\end{lstlisting}
+
+\noindent All random number generators are seeded for deterministic
+output. The validation suite encodes the exact numerical checks
+presented in this paper and can be run on any machine with
+Python~$\geq$~3.10 and NumPy.
+
+
+% ── 10. Conclusion ──────────────────────────────────────────────────────
+\section{Conclusion}
+\label{sec:conclusion}
+
+Aethermor provides the first open-source toolkit for inverse thermal
+design in thermodynamic computing research. By combining calibrated
+energy models, validated thermal solvers, and systematic inverse
+design algorithms, it enables hardware architects to explore material
+selections, cooling trade-offs, paradigm crossovers, and
+heterogeneous SoC optimisations in seconds rather than weeks. The
+built-in validation suite of 133 cross-checks against published data
+ensures that every result is grounded in verified physics. As
+transistor scaling pushes designs closer to the Landauer limit, tools
+like Aethermor become essential for navigating the narrowing design
+space between what physics allows and what engineering can achieve.
+
+
+% ── References ──────────────────────────────────────────────────────────
+\begin{thebibliography}{20}
+
+\bibitem{landauer1961}
+R.~Landauer,
+``Irreversibility and heat generation in the computing process,''
+\emph{IBM J.\ Res.\ Dev.}, vol.~5, no.~3, pp.~183--191, 1961.
+
+\bibitem{dennard1974}
+R.~H. Dennard, F.~H. Gaensslen, H.~N. Yu, V.~L. Rideout, E.~Bassous,
+and A.~R. LeBlanc,
+``Design of ion-implanted MOSFET's with very small physical dimensions,''
+\emph{IEEE J.\ Solid-State Circuits}, vol.~9, no.~5, pp.~256--268, 1974.
+
+\bibitem{esmaeilzadeh2011}
+H.~Esmaeilzadeh, E.~Blem, R.~St.~Amant, K.~Sankaralingam, and
+D.~Burger,
+``Dark silicon and the end of multicore scaling,''
+in \emph{Proc.\ ISCA}, 2011, pp.~365--376.
+
+\bibitem{skadron2004}
+K.~Skadron, M.~R. Stan, K.~Sankaranarayanan, W.~Huang, S.~Velusamy,
+and D.~Tarjan,
+``Temperature-aware microarchitecture: Modeling and implementation,''
+\emph{ACM Trans.\ Archit.\ Code Optim.}, vol.~1, no.~1, pp.~94--125,
+2004.
+
+\bibitem{itrs2013}
+International Technology Roadmap for Semiconductors,
+\emph{ITRS 2013 Edition}, Semiconductor Industry Association, 2013.
+
+\bibitem{irds2022}
+IEEE International Roadmap for Devices and Systems,
+\emph{IRDS 2022 Edition}, IEEE, 2022.
+
+\bibitem{codata2018}
+E.~Tiesinga, P.~J. Mohr, D.~B. Newell, and B.~N. Taylor,
+``CODATA recommended values of the fundamental physical constants: 2018,''
+\emph{Rev.\ Mod.\ Phys.}, vol.~93, no.~2, 025010, 2021.
+
+\bibitem{crc97}
+W.~M. Haynes, Ed.,
+\emph{CRC Handbook of Chemistry and Physics}, 97th ed.,
+CRC Press, 2016.
+
+\bibitem{carslaw1959}
+H.~S. Carslaw and J.~C. Jaeger,
+\emph{Conduction of Heat in Solids}, 2nd ed.,
+Oxford University Press, 1959.
+
+\bibitem{morkoc2006}
+H.~Morko\c{c},
+``SiC and GaN based devices --- review and challenges,''
+in \emph{Proc.\ SPIE}, vol.~6127, 2006.
+
+\bibitem{morkoc2008}
+H.~Morko\c{c},
+\emph{Handbook of Nitride Semiconductors and Devices},
+Wiley, 2008.
+
+\bibitem{incropera2011}
+F.~P. Incropera, D.~P. DeWitt, T.~L. Bergman, and A.~S. Lavine,
+\emph{Fundamentals of Heat and Mass Transfer}, 7th ed.,
+Wiley, 2011.
+
+\end{thebibliography}
+
+\end{document}
