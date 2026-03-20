@@ -1,0 +1,6 @@
+* text=auto eol=lf
+
+# Keep common binary formats out of line-ending transforms
+*.png binary
+*.pkl binary
+*.pdf binary

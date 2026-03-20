@@ -1,0 +1,12 @@
+numpy
+pandas
+scipy
+matplotlib
+dash
+plotly
+requests
+deap
+psutil
+pytest
+coverage
+flake8

@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use Aethermor in research, please cite this software."
+title: "Aethermor: Physically-Grounded Simulation Tools for Thermodynamic Computing Research"
+type: software
+authors:
+  - family-names: "Aethermor Contributors"
+license: "Apache-2.0"
+version: "0.1.0"
+date-released: 2026-03-18
+abstract: >
+  Aethermor provides physically-grounded simulation tools for exploring the
+  thermal, energetic, and material-science trade-offs in thermodynamic computing.
+  It includes real-physics models (Fourier thermal transport, CMOS/adiabatic/
+  reversible gate energy, 9 substrate materials), research analysis tools
+  (Landauer gap analysis, design space sweeps, regime classification), and a
+  3D lattice simulation framework with paired ablation statistics and automated
+  publication gates.
+keywords:
+  - thermodynamic computing
+  - simulation
+  - distributed systems
+  - reproducibility
+  - ablation studies
+  - control strategies
+references:
+  - type: generic
+    title: "AETHERMOR_FULL_PROJECT_PAPER.md"

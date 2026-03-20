@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aethermor"
+version = "0.1.0"
+description = "Physically-grounded simulation tools for thermodynamic computing research."
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "coverage",
+    "flake8",
+]
+dashboard = [
+    "dash",
+    "plotly",
+]
+all = [
+    "dash",
+    "plotly",
+    "requests",
+    "deap",
+    "psutil",
+    "pytest",
+    "coverage",
+    "flake8",
+]
+
+# pytest config lives in pytest.ini (takes precedence over pyproject.toml)
+
+[tool.setuptools.packages.find]
+include = ["aethermor*", "physics*", "analysis*", "validation*"]
+exclude = ["tests*", "archive*", "experiments*", "scripts*"]

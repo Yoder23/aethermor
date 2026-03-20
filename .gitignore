@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.benchmarks/
+.pytest_tmp/
+pytest_tmp/
+
+# Environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local artifacts and generated reports
+artifacts/
+artifacts_*/
+publication_submission_bundle/
+public_release_candidate/
+pub_gate_report_*/
+
+# Generated benchmark/log outputs
+log_analysis_*.csv
+log_calibration_*.csv
+params_test_*.json
+calibrated_params.json
+*.pkl
+
+# Generated images and ad-hoc exports
+*.png
+
+# Ad-hoc test/probe files
+codex_write_*.txt
+
+# Pareto CSV exports
+aethermor_pareto_params*.csv
+
+# Archive (internal-only, not for public distribution)
+archive/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Build/distribution
+dist/
+build/
+*.egg-info/
