@@ -1,70 +1,86 @@
 # Aethermor
 
-**Inverse thermal design tools for thermodynamic computing research.**
+**Thermal design tools for thermodynamic computing — explore hardware
+trade-offs interactively or programmatically.**
 
-Aethermor is the first open-source toolkit that answers inverse thermal design
-questions: *"What gate density can this substrate sustain?"*, *"What cooling
-do I need?"*, *"Which material wins at this node?"*, *"Where is the thermal
-bottleneck in my SoC?"* — questions that currently require weeks of manual
-sweeps in commercial FEM tools or custom scripts.
+Aethermor helps hardware engineers answer questions like:
+- *"What gate density can my substrate sustain before thermal runaway?"*
+- *"How much cooling do I actually need?"*
+- *"Where is the thermal bottleneck in my SoC?"*
+- *"When does adiabatic logic beat CMOS?"*
 
-Every model uses published physics in SI units — Joules, Kelvin, Watts, metres —
-cross-validated against CODATA 2018, the CRC Handbook, and ITRS/IRDS roadmaps.
-
-## Verify the Physics Yourself
-
-```bash
-python -m validation.validate_all     # 133 checks, ~13 seconds
-```
-
-Every physics model is cross-checked against published reference data, analytical
-solutions, conservation laws, and internal self-consistency. See
-[VALIDATION.md](VALIDATION.md) for methodology and reference citations.
+All models use real physics in SI units, cross-validated against CODATA 2018,
+the CRC Handbook, and ITRS/IRDS roadmaps.
 
 ---
 
-## What You Can Do
+## 1. Install
 
-### Solve Inverse Design Problems
+```bash
+git clone https://github.com/YOUR_ORG/aethermor.git
+cd aethermor
+pip install -e ".[dashboard]"      # installs core + interactive UI
+```
+
+> **Core only** (no UI): `pip install -e .`
+> **Everything** (dev + UI): `pip install -e ".[all]"`
+
+## 2. Launch the Explorer UI
+
+```bash
+python app.py
+```
+
+Open **http://127.0.0.1:8050** in your browser. You get five interactive tabs:
+
+| Tab | What You Can Do |
+|-----|-----------------|
+| **Material Ranking** | Pick a tech node, frequency, and cooling — see which substrate lets you pack the most compute |
+| **Cooling Analysis** | Set a material and gate density — see temperature vs. cooling with the conduction floor |
+| **Paradigm Comparison** | Drag the frequency slider to watch the CMOS ↔ adiabatic crossover shift in real time |
+| **Technology Roadmap** | Energy per gate and Landauer gap from 130 nm down to 1.4 nm |
+| **SoC Thermal Map** | Thermal headroom per block on a heterogeneous CPU+GPU+cache+IO chip — find the bottleneck |
+
+Every parameter is a slider or dropdown. Every chart updates live.
+
+---
+
+## 3. Use the Python API
+
+If you prefer scripting, every capability in the UI is also available as a
+Python function.
+
+### Which material gives me the most compute density?
 
 ```python
 from analysis.thermal_optimizer import ThermalOptimizer
 
 opt = ThermalOptimizer(tech_node_nm=7, frequency_Hz=1e9)
 
-# What's the max density each material can sustain?
 ranking = opt.material_ranking(h_conv=1000.0)
 for r in ranking:
     print(f"{r['material_name']:<25s}  {r['max_density']:.2e} gates/elem")
+```
 
-# What cooling do I need for 1e5 gates/element on silicon?
+### How much cooling do I need?
+
+```python
 req = opt.find_min_cooling("silicon", gate_density=1e5)
 print(f"Min h_conv: {req['min_h_conv']:.0f} W/(m²·K)  →  {req['cooling_category']}")
+```
 
-# Where are the thermal bottlenecks in a heterogeneous SoC?
+### Where is my SoC's thermal bottleneck?
+
+```python
 from physics.chip_floorplan import ChipFloorplan
+
 soc = ChipFloorplan.modern_soc()
 headroom = opt.thermal_headroom_map(soc, h_conv=1000.0)
 for block in headroom:
     print(f"{block['name']:<20s}  T={block['T_max_K']:.0f} K  headroom={block['density_headroom_factor']:.1f}×")
-
-# Optimally redistribute power across functional blocks
-result = opt.optimize_power_distribution(soc, power_budget_W=50.0)
-print(f"Improvement: {result['improvement_ratio']:.1f}×  ({result['binding_constraint']})")
 ```
 
-### Compare Computing Paradigms
-
-```python
-from physical_simulation import PhysicalSimulation
-
-sim = PhysicalSimulation(tech_node_nm=7, frequency_Hz=1e9)
-results = sim.compare_paradigms()
-for paradigm, s in results.items():
-    print(f"{paradigm:<20}  {s['energy_per_gate_switch_J']:.2e} J/gate  gap={s['landauer_gap']:.0f}×")
-```
-
-### Map Where Adiabatic Logic Wins
+### When does adiabatic logic beat CMOS?
 
 ```python
 from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
@@ -75,127 +91,116 @@ f_cross = adiabatic.crossover_frequency(cmos)
 print(f"Adiabatic beats CMOS below {f_cross:.2e} Hz")
 ```
 
-### Project the Technology Roadmap
+### How does scaling change things from 130 nm to 1.4 nm?
 
 ```python
 from analysis.tech_roadmap import TechnologyRoadmap
 
-roadmap = TechnologyRoadmap()   # 130 nm → 1.4 nm
-print(roadmap.full_report())    # Energy, Landauer gap, paradigm crossover, thermal wall
+roadmap = TechnologyRoadmap()
+print(roadmap.full_report())
 ```
 
-### Build a Realistic Cooling Stack
+### Build a realistic cooling stack
 
 ```python
-from physics.cooling import CoolingStack, THERMAL_LAYERS
+from physics.cooling import CoolingStack
 
-stack = CoolingStack.server_liquid()          # pre-built server config
-h_eff = stack.effective_h(die_area_m2=100e-6) # effective h for the thermal solver
+stack = CoolingStack.server_liquid()
+h_eff = stack.effective_h(die_area_m2=100e-6)
 print(f"Effective h = {h_eff:.0f} W/(m²·K)")
 print(f"Max power   = {stack.max_power_W(100e-6):.1f} W")
 ```
 
 ---
 
-## Quick Start
+## 4. Run the Examples
+
+Six ready-to-run scripts that each answer a specific research question:
 
 ```bash
-pip install -e .                    # core: numpy, pandas, scipy, matplotlib
-pip install -e ".[dev]"             # + pytest, coverage, flake8
+python examples/optimal_density.py       # Thermal wall per substrate
+python examples/adiabatic_crossover.py   # Paradigm crossover points
+python examples/material_comparison.py   # Substrate comparison
+python examples/heterogeneous_soc.py     # SoC hotspot analysis
+python examples/technology_roadmap.py    # 130 nm → 1.4 nm projections
+python examples/thermal_optimizer.py     # Inverse design: headroom + power redistribution
 ```
 
-### Run Tests
+## 5. Run the Tests
 
 ```bash
-python -m pytest tests/ -v          # 212 tests, ~2 minutes
-```
-
-### Run Research Examples
-
-```bash
-python examples/optimal_density.py       # Find thermal wall per substrate
-python examples/adiabatic_crossover.py   # Map paradigm crossover points
-python examples/material_comparison.py   # Compare substrate materials
-python examples/heterogeneous_soc.py     # Simulate a heterogeneous SoC
-python examples/technology_roadmap.py    # Project paradigm viability across nodes
-python examples/thermal_optimizer.py     # Inverse design: headroom map, power redistribution
+python -m pytest tests/ -v              # 212 tests, ~2 minutes
+python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
 ```
 
 ---
 
-## Physics Foundation
+## What's Inside
 
-### `physics/` — SI-Unit Models
+### `physics/` — SI-Unit Thermodynamic Models
 
-| Module | What It Provides |
-|--------|-----------------|
-| `constants.py` | Boltzmann k_B, Planck h, Landauer limit — all CODATA 2018 |
-| `materials.py` | 9 substrates (Si, SiO₂, GaAs, diamond, graphene, Cu, InP, SiC, GaN) — CRC Handbook values |
+| Module | What It Does |
+|--------|-------------|
+| `constants.py` | Boltzmann k_B, Planck h, Landauer limit (CODATA 2018) |
+| `materials.py` | 9 substrates: Si, SiO₂, GaAs, diamond, graphene, Cu, InP, SiC, GaN |
 | `energy_models.py` | 4 paradigms: CMOS (ITRS-calibrated), adiabatic, reversible, Landauer floor |
-| `thermal.py` | 3D Fourier heat diffusion, CFL-stable, 0.00% energy conservation error |
-| `cooling.py` | Multi-layer cooling stack (TIM → IHS → heatsink → ambient), 12 pre-built layers, 6 factory configs |
-| `chip_floorplan.py` | Heterogeneous SoC model — CPU/GPU/cache/IO blocks with per-block paradigms |
+| `thermal.py` | 3D Fourier heat diffusion with CFL-stable timestep, 0.00% energy conservation error |
+| `cooling.py` | Multi-layer cooling stacks (TIM → IHS → heatsink → ambient), 6 presets |
+| `chip_floorplan.py` | Heterogeneous SoC: CPU/GPU/cache/IO blocks with per-block paradigms |
 
 ### `analysis/` — Inverse Design & Research Tools
 
-| Module | Capability |
-|--------|-----------|
-| `thermal_optimizer.py` | **8 inverse design tools**: max density, min cooling, material ranking, paradigm comparison, cooling sweep, thermal headroom map, power redistribution optimizer, full design exploration |
-| `tech_roadmap.py` | Node projections (130 nm → 1.4 nm): energy scaling, Landauer gap closure, paradigm crossover, thermal wall |
-| `design_space.py` | Multi-dimensional sweeps with Pareto extraction |
-| `regime_map.py` | 5-regime classification (deep_classical → near_limit) |
-| `landauer_gap.py` | Distance-from-Landauer-limit analysis |
+| Module | What It Does |
+|--------|-------------|
+| `thermal_optimizer.py` | 8 inverse design tools: max density, min cooling, material ranking, headroom map, power redistribution |
+| `tech_roadmap.py` | Node projections (130 nm → 1.4 nm): energy, Landauer gap, paradigm crossover |
+| `design_space.py` | Multi-dimensional parameter sweeps with Pareto extraction |
+| `regime_map.py` | 5-regime classification: deep_classical → near_limit |
+| `landauer_gap.py` | Distance-from-Landauer analysis |
 | `thermal_map.py` | Hotspot detection, cooling efficiency maps |
+
+### Project Layout
+
+```
+app.py                # Interactive Explorer UI — run this
+physics/              # SI-unit thermodynamic models
+analysis/             # Inverse design & research tools
+validation/           # 133 physics cross-checks
+examples/             # 6 ready-to-run research scripts
+tests/                # 212 unit, integration, regression tests
+```
 
 ---
 
-## Project Structure
-
-```
-physics/              # SI-unit thermodynamic models
-analysis/             # Inverse design & research analysis tools
-validation/           # 133 physics cross-checks (python -m validation.validate_all)
-examples/             # 6 ready-to-run research scripts
-tests/                # 212 unit, integration, regression tests
-
-physical_simulation.py  # High-level simulation interface
-thermodynamic_core.py   # Landauer bookkeeping engine
-benchmark_*.py          # Mechanism benchmarks (legacy lattice simulation)
-experiments/            # Ablation and robustness experiments
-archive/                # Legacy code and documentation
-```
-
 ## Trust & Validation
 
-| Layer | What | Count |
-|-------|------|-------|
-| Unit tests | pytest suite | 212 pass, 0 fail |
-| Physics validation | Cross-checks vs CODATA, CRC, ITRS/IRDS, analytical solutions | 133 pass, 0 fail |
-| Energy conservation | Fourier solver energy balance | 0.00% error |
-| Reproducibility | Seeded, deterministic, manifested | Verified |
-| Examples | All 6 research scripts | All clean |
+| Check | Result |
+|-------|--------|
+| Unit tests | 212 pass, 0 fail |
+| Physics validation | 133 cross-checks vs CODATA, CRC, ITRS/IRDS | 
+| Energy conservation | 0.00% error in Fourier solver |
+| Reproducibility | Seeded, deterministic |
+| Examples | 6/6 run clean |
 
-See [VALIDATION.md](VALIDATION.md) for the full methodology and reference sources.
+See [VALIDATION.md](VALIDATION.md) for methodology and reference sources.
 
 ## Scope and Limitations
 
-Aethermor operates at the **thermal and energy level** — not at the transistor or
-circuit level. It uses published material properties and standard physics (Fourier's
-law, CMOS voltage scaling, Landauer's principle) but has not been validated against
-fabricated hardware.
+Aethermor operates at the **thermal and energy level** — not transistor or
+circuit level. Models use published material properties and standard physics
+(Fourier's law, CMOS scaling, Landauer's principle) but have not been validated
+against fabricated hardware.
 
-See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion of scope,
-model simplifications, and the path to hardware validation.
+See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 
 ## Documentation
 
-| Document | Purpose |
-|----------|---------|
+| Document | What It Covers |
+|----------|---------------|
 | [VALIDATION.md](VALIDATION.md) | Physics validation methodology & references |
-| [LIMITATIONS.md](LIMITATIONS.md) | Scope, known limitations, future work |
+| [LIMITATIONS.md](LIMITATIONS.md) | Scope, simplifications, path to hardware validation |
 | [HONEST_REVIEW.md](HONEST_REVIEW.md) | Self-audit with grades and competitive comparison |
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
-| [RELEASE_NOTES_v0.1.0.md](RELEASE_NOTES_v0.1.0.md) | v0.1.0 release details |
 
 ## Contributing
 
