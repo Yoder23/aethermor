@@ -50,6 +50,7 @@ from physics.energy_models import (
     AdiabaticGateEnergy,
     ReversibleGateEnergy,
     LandauerLimitEnergy,
+    paradigm_registry,
 )
 from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
 
@@ -73,7 +74,8 @@ class FunctionalBlock:
         Technology node for this block (nm). Mixed-node chiplets are
         modeled by assigning different nodes to different blocks.
     paradigm : str
-        Energy model: "cmos", "adiabatic", "reversible", or "idle".
+        Energy model: "cmos", "adiabatic", "reversible", "idle",
+        or any custom paradigm registered via paradigm_registry.
     """
     name: str
     x_range: Tuple[int, int]
@@ -146,17 +148,16 @@ class ChipFloorplan:
         return self
 
     def _energy_model(self, paradigm: str, tech_node_nm: float):
-        """Create the appropriate energy model for a paradigm."""
-        if paradigm == "cmos":
-            return CMOSGateEnergy(tech_node_nm=tech_node_nm)
-        elif paradigm == "adiabatic":
-            return AdiabaticGateEnergy(tech_node_nm=tech_node_nm)
-        elif paradigm == "reversible":
-            return ReversibleGateEnergy()
-        elif paradigm == "idle":
-            return None  # no switching energy
-        else:
-            raise ValueError(f"Unknown paradigm: {paradigm}")
+        """Create the appropriate energy model for a paradigm.
+
+        Uses the paradigm registry, so custom paradigms registered via
+        ``paradigm_registry.register(name, ModelClass)`` work automatically.
+        """
+        try:
+            return paradigm_registry.create(paradigm, tech_node_nm=tech_node_nm)
+        except TypeError:
+            # Model class may not accept tech_node_nm — try without
+            return paradigm_registry.create(paradigm)
 
     def heat_map(self, frequency_Hz: float = 1e9,
                  T: float = 300.0) -> np.ndarray:
@@ -202,11 +203,15 @@ class ChipFloorplan:
         return act
 
     def paradigm_map(self) -> np.ndarray:
-        """Per-element paradigm ID map (0=idle, 1=cmos, 2=adiabatic, 3=reversible)."""
+        """Per-element paradigm ID map.
+
+        Built-in IDs: 0=idle, 1=cmos, 2=adiabatic, 3=reversible.
+        Custom paradigms get IDs starting from 4, assigned by the
+        paradigm registry in the order they were registered.
+        """
         pmap = np.zeros(self.grid_shape, dtype=np.int32)
-        paradigm_ids = {"idle": 0, "cmos": 1, "adiabatic": 2, "reversible": 3}
         for block in self.blocks:
-            pmap[block.slices] = paradigm_ids.get(block.paradigm, 0)
+            pmap[block.slices] = paradigm_registry.paradigm_id(block.paradigm)
         return pmap
 
     def landauer_gap_map(self, frequency_Hz: float = 1e9,

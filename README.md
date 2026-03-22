@@ -8,6 +8,7 @@ Aethermor helps hardware engineers answer questions like:
 - *"How much cooling do I actually need?"*
 - *"Where is the thermal bottleneck in my SoC?"*
 - *"When does adiabatic logic beat CMOS?"*
+- *"How would my custom material / paradigm perform against the built-ins?"*
 
 All models use real physics in SI units, cross-validated against CODATA 2018,
 the CRC Handbook, and ITRS/IRDS roadmaps.
@@ -40,6 +41,7 @@ Open **http://127.0.0.1:8050** in your browser. You get five interactive tabs:
 | **Paradigm Comparison** | Drag the frequency slider to watch the CMOS ↔ adiabatic crossover shift in real time |
 | **Technology Roadmap** | Energy per gate and Landauer gap from 130 nm down to 1.4 nm |
 | **SoC Thermal Map** | Thermal headroom per block on a heterogeneous CPU+GPU+cache+IO chip — find the bottleneck |
+| **Custom Material** | Define your own substrate by entering its thermal properties — it instantly appears in every other tab |
 
 Every parameter is a slider or dropdown. Every chart updates live.
 
@@ -111,6 +113,64 @@ print(f"Effective h = {h_eff:.0f} W/(m²·K)")
 print(f"Max power   = {stack.max_power_W(100e-6):.1f} W")
 ```
 
+### Bring your own material
+
+Aethermor is **fully extensible**. Register custom materials, computing paradigms,
+and cooling layers — they instantly work everywhere: optimizer, UI, chip floorplan.
+
+```python
+from physics.materials import registry, Material
+
+# Register a custom substrate
+registry.register("hex_bn", Material(
+    name="Hexagonal Boron Nitride (h-BN)",
+    thermal_conductivity=600.0,  # W/(m·K)
+    specific_heat=800.0,         # J/(kg·K)
+    density=2100.0,              # kg/m³
+    electrical_resistivity=1e15, # Ω·m
+    max_operating_temp=1273.15,  # K
+    bandgap_eV=6.0,
+    notes="2D insulator with excellent thermal interface properties."
+))
+
+# Now use it everywhere — optimizer, UI, chip floorplan:
+ranking = opt.material_ranking(h_conv=1000, materials=["silicon", "hex_bn"])
+```
+
+### Bring your own computing paradigm
+
+```python
+from dataclasses import dataclass
+from physics.energy_models import paradigm_registry
+from physics.constants import landauer_limit
+
+@dataclass
+class SpintronicGateEnergy:
+    tech_node_nm: float = 7.0
+    spin_current_A: float = 50e-6
+    switching_time_s: float = 2e-9
+    resistance_ohm: float = 5e3
+
+    def energy_per_switch(self, frequency=1e9, T=300.0):
+        return self.spin_current_A**2 * self.resistance_ohm * self.switching_time_s
+
+    def landauer_gap(self, T=300.0, frequency=1e9):
+        return self.energy_per_switch(frequency, T) / landauer_limit(T)
+
+paradigm_registry.register("spintronic", SpintronicGateEnergy)
+# Now use paradigm="spintronic" in any FunctionalBlock
+```
+
+### Save and share configurations
+
+```python
+registry.save_json("my_materials.json")   # Share with collaborators
+registry.load_json("colleague_mats.json") # Load theirs
+```
+
+See [`examples/custom_material.py`](examples/custom_material.py) for a full
+walkthrough of all extensibility features.
+
 ---
 
 ## 4. Run the Examples
@@ -124,12 +184,13 @@ python examples/material_comparison.py   # Substrate comparison
 python examples/heterogeneous_soc.py     # SoC hotspot analysis
 python examples/technology_roadmap.py    # 130 nm → 1.4 nm projections
 python examples/thermal_optimizer.py     # Inverse design: headroom + power redistribution
+python examples/custom_material.py       # Register your own material, paradigm, and cooling layer
 ```
 
 ## 5. Run the Tests
 
 ```bash
-python -m pytest tests/ -v              # 212 tests, ~2 minutes
+python -m pytest tests/ -v              # 255 tests, ~2 minutes
 python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
 ```
 
@@ -142,10 +203,10 @@ python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
 | Module | What It Does |
 |--------|-------------|
 | `constants.py` | Boltzmann k_B, Planck h, Landauer limit (CODATA 2018) |
-| `materials.py` | 9 substrates: Si, SiO₂, GaAs, diamond, graphene, Cu, InP, SiC, GaN |
-| `energy_models.py` | 4 paradigms: CMOS (ITRS-calibrated), adiabatic, reversible, Landauer floor |
+| `materials.py` | 9 substrates + custom material registry with validation, JSON import/export |
+| `energy_models.py` | 4 paradigms + custom paradigm registry with EnergyModel protocol |
 | `thermal.py` | 3D Fourier heat diffusion with CFL-stable timestep, 0.00% energy conservation error |
-| `cooling.py` | Multi-layer cooling stacks (TIM → IHS → heatsink → ambient), 6 presets |
+| `cooling.py` | Multi-layer cooling stacks + custom layer registry with JSON serialization |
 | `chip_floorplan.py` | Heterogeneous SoC: CPU/GPU/cache/IO blocks with per-block paradigms |
 
 ### `analysis/` — Inverse Design & Research Tools
@@ -163,11 +224,11 @@ python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
 
 ```
 app.py                # Interactive Explorer UI — run this
-physics/              # SI-unit thermodynamic models
+physics/              # SI-unit thermodynamic models (extensible registries)
 analysis/             # Inverse design & research tools
 validation/           # 133 physics cross-checks
-examples/             # 6 ready-to-run research scripts
-tests/                # 212 unit, integration, regression tests
+examples/             # 7 ready-to-run research scripts
+tests/                # 255 unit, integration, regression tests
 ```
 
 ---
@@ -176,7 +237,7 @@ tests/                # 212 unit, integration, regression tests
 
 | Check | Result |
 |-------|--------|
-| Unit tests | 212 pass, 0 fail |
+| Unit tests | 255 pass, 0 fail |
 | Physics validation | 133 cross-checks vs CODATA, CRC, ITRS/IRDS | 
 | Energy conservation | 0.00% error in Fourier solver |
 | Reproducibility | Seeded, deterministic |
@@ -204,8 +265,13 @@ See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 
 ## Contributing
 
-Contributions that extend the physics — new materials, new energy models,
-anisotropic transport, interconnect power — are especially welcome.
+Contributions welcome — especially new materials, computing paradigms,
+thermal models, or analysis tools. The registry architecture makes it
+easy to add new components without touching core code:
+
+- **New material?** → `registry.register("my_mat", Material(...))` 
+- **New paradigm?** → `paradigm_registry.register("my_idea", MyModelClass)`
+- **New cooling layer?** → `cooling_registry.register("my_tim", ThermalLayer(...))`
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md),
 and [SECURITY.md](SECURITY.md).

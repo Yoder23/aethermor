@@ -32,9 +32,9 @@ except ImportError:
 
 import numpy as np
 from physics.constants import k_B, landauer_limit
-from physics.materials import MATERIAL_DB, get_material
-from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy, ReversibleGateEnergy
-from physics.cooling import CoolingStack, THERMAL_LAYERS
+from physics.materials import MATERIAL_DB, get_material, registry as material_registry, Material, validate_material
+from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy, ReversibleGateEnergy, paradigm_registry
+from physics.cooling import CoolingStack, THERMAL_LAYERS, cooling_registry
 from physics.chip_floorplan import ChipFloorplan
 from analysis.thermal_optimizer import ThermalOptimizer
 from analysis.tech_roadmap import TechnologyRoadmap
@@ -42,8 +42,17 @@ from analysis.tech_roadmap import TechnologyRoadmap
 
 # ── Helpers ──────────────────────────────────────────────────────────────
 
-ALL_MATERIALS = sorted(MATERIAL_DB.keys())
-MATERIAL_LABELS = {k: MATERIAL_DB[k].name for k in ALL_MATERIALS}
+def _all_materials():
+    """Dynamic material list (built-in + custom)."""
+    return sorted(material_registry.list_all().keys())
+
+def _material_labels():
+    all_mats = material_registry.list_all()
+    return {k: all_mats[k].name for k in sorted(all_mats.keys())}
+
+def _material_options():
+    labels = _material_labels()
+    return [{"label": labels[k], "value": k} for k in sorted(labels.keys())]
 
 COOLING_PRESETS = {
     "natural_air": ("Bare die, natural air", 10),
@@ -93,6 +102,7 @@ TABS = dcc.Tabs(id="tabs", value="tab-material", children=[
     dcc.Tab(label="Paradigm Comparison", value="tab-paradigm"),
     dcc.Tab(label="Technology Roadmap", value="tab-roadmap"),
     dcc.Tab(label="SoC Thermal Map", value="tab-soc"),
+    dcc.Tab(label="\u2795 Custom Material", value="tab-custom"),
 ], style={"margin": "0 24px"})
 
 app.layout = html.Div([
@@ -136,7 +146,7 @@ def material_tab():
                 html.Label("Materials"),
                 dcc.Dropdown(
                     id="mat-materials",
-                    options=[{"label": MATERIAL_LABELS[k], "value": k} for k in ALL_MATERIALS],
+                    options=_material_options(),
                     value=["silicon", "diamond", "silicon_carbide", "gallium_arsenide", "gallium_nitride"],
                     multi=True,
                 ),
@@ -157,9 +167,8 @@ def cooling_tab():
         html.Div([
             html.Div([
                 html.Label("Material"),
-                dcc.Dropdown(id="cool-mat", options=[
-                    {"label": MATERIAL_LABELS[k], "value": k} for k in ALL_MATERIALS
-                ], value="silicon", clearable=False),
+                dcc.Dropdown(id="cool-mat", options=_material_options(),
+                             value="silicon", clearable=False),
             ], style={"width": "220px", "display": "inline-block", "marginRight": "16px"}),
             html.Div([
                 html.Label("Technology Node (nm)"),
@@ -262,10 +271,8 @@ def soc_tab():
                        "verticalAlign": "top"}),
             html.Div([
                 html.Label("Substrate"),
-                dcc.Dropdown(id="soc-mat", options=[
-                    {"label": MATERIAL_LABELS[k], "value": k}
-                    for k in ["silicon", "diamond", "silicon_carbide", "gallium_nitride"]
-                ], value="silicon", clearable=False),
+                dcc.Dropdown(id="soc-mat", options=_material_options(),
+                             value="silicon", clearable=False),
             ], style={"width": "220px", "display": "inline-block"}),
         ], style={"marginBottom": "20px"}),
         dcc.Loading(html.Div([
@@ -274,6 +281,139 @@ def soc_tab():
         ])),
     ])
 
+def custom_material_tab():
+    """Tab for defining and registering custom materials at runtime."""
+    # Show existing custom materials
+    custom_mats = material_registry.list_custom()
+    existing_rows = []
+    for key, mat in custom_mats.items():
+        existing_rows.append({
+            "Key": key,
+            "Name": mat.name,
+            "k (W/m·K)": f"{mat.thermal_conductivity:.1f}",
+            "c_p (J/kg·K)": f"{mat.specific_heat:.0f}",
+            "ρ (kg/m³)": f"{mat.density:.0f}",
+            "E_gap (eV)": f"{mat.bandgap_eV:.2f}",
+        })
+
+    _input_style = {"width": "100%", "padding": "6px", "borderRadius": "4px",
+                     "border": "1px solid #ccc"}
+    _label_style = {"fontWeight": "bold", "marginTop": "8px", "display": "block",
+                     "fontSize": "13px"}
+
+    return html.Div([
+        html.H3("Define a Custom Material"),
+        html.P(
+            "Enter the thermal and electrical properties of any substrate "
+            "you want to test. Once registered, your material will appear "
+            "in every tab's material dropdown — ranked alongside the built-ins.",
+            style={"color": "#555", "marginBottom": "16px"},
+        ),
+        html.Div([
+            # Left column: inputs
+            html.Div([
+                html.Label("Registry Key (lowercase, no spaces)", style=_label_style),
+                dcc.Input(id="cust-key", type="text", placeholder="e.g. boron_nitride",
+                          style=_input_style),
+
+                html.Label("Display Name", style=_label_style),
+                dcc.Input(id="cust-name", type="text",
+                          placeholder="e.g. Hexagonal Boron Nitride (h-BN)",
+                          style=_input_style),
+
+                html.Label("Thermal Conductivity k (W/(m·K))", style=_label_style),
+                dcc.Input(id="cust-k", type="number", placeholder="600.0",
+                          style=_input_style),
+
+                html.Label("Specific Heat c_p (J/(kg·K))", style=_label_style),
+                dcc.Input(id="cust-cp", type="number", placeholder="800.0",
+                          style=_input_style),
+
+                html.Label("Density ρ (kg/m³)", style=_label_style),
+                dcc.Input(id="cust-rho", type="number", placeholder="2100.0",
+                          style=_input_style),
+
+                html.Label("Electrical Resistivity (Ω·m)", style=_label_style),
+                dcc.Input(id="cust-rho-e", type="number", placeholder="1e15",
+                          style=_input_style),
+
+                html.Label("Max Operating Temperature (K)", style=_label_style),
+                dcc.Input(id="cust-tmax", type="number", placeholder="1273.15",
+                          style=_input_style),
+
+                html.Label("Bandgap (eV) — 0 for metals", style=_label_style),
+                dcc.Input(id="cust-gap", type="number", placeholder="6.0",
+                          value=0.0, style=_input_style),
+
+                html.Label("Notes (optional)", style=_label_style),
+                dcc.Input(id="cust-notes", type="text",
+                          placeholder="Source, context, or caveats",
+                          style=_input_style),
+
+                html.Br(),
+                html.Button("Register Material", id="cust-register",
+                            n_clicks=0,
+                            style={"marginTop": "12px", "padding": "10px 24px",
+                                   "backgroundColor": "#2196F3", "color": "white",
+                                   "border": "none", "borderRadius": "4px",
+                                   "cursor": "pointer", "fontSize": "14px",
+                                   "fontWeight": "bold"}),
+
+                html.Div(id="cust-status", style={"marginTop": "12px"}),
+            ], style={"width": "420px", "display": "inline-block",
+                       "verticalAlign": "top", "marginRight": "40px"}),
+
+            # Right column: registered custom materials + reference
+            html.Div([
+                html.H4("Your Custom Materials", style={"marginTop": "0"}),
+                html.Div(id="cust-table",
+                         children=_render_custom_table(existing_rows)),
+                html.Hr(),
+                html.H4("Built-in Reference Values"),
+                html.P("Use these as a sanity check for your custom material:",
+                       style={"color": "#666", "fontSize": "13px"}),
+                _render_builtin_reference(),
+            ], style={"width": "600px", "display": "inline-block",
+                       "verticalAlign": "top"}),
+        ]),
+    ])
+
+
+def _render_custom_table(rows):
+    """Render the custom materials table, or a placeholder if empty."""
+    if not rows:
+        return html.P("No custom materials registered yet.",
+                       style={"color": "#999", "fontStyle": "italic"})
+    return dash_table.DataTable(
+        columns=[{"name": c, "id": c} for c in rows[0].keys()],
+        data=rows,
+        style_cell={"textAlign": "left", "padding": "6px 10px",
+                     "fontSize": "13px"},
+        style_header={"backgroundColor": "#e3f2fd", "fontWeight": "bold"},
+    )
+
+
+def _render_builtin_reference():
+    """Reference table of built-in material properties."""
+    all_mats = material_registry.list_builtins()
+    rows = []
+    for key in sorted(all_mats.keys()):
+        m = all_mats[key]
+        rows.append({
+            "Key": key,
+            "k (W/m·K)": f"{m.thermal_conductivity:.0f}",
+            "c_p": f"{m.specific_heat:.0f}",
+            "ρ": f"{m.density:.0f}",
+            "E_gap": f"{m.bandgap_eV:.2f}",
+            "T_max (K)": f"{m.max_operating_temp:.0f}",
+        })
+    return dash_table.DataTable(
+        columns=[{"name": c, "id": c} for c in rows[0].keys()],
+        data=rows,
+        style_cell={"textAlign": "left", "padding": "4px 8px",
+                     "fontSize": "12px"},
+        style_header={"backgroundColor": "#f5f5f5", "fontWeight": "bold"},
+    )
 
 # ── Tab Router ───────────────────────────────────────────────────────────
 
@@ -289,6 +429,8 @@ def render_tab(tab):
         return roadmap_tab()
     elif tab == "tab-soc":
         return soc_tab()
+    elif tab == "tab-custom":
+        return custom_material_tab()
     return html.P("Select a tab.")
 
 
@@ -613,6 +755,78 @@ def update_soc(cooling_key, freq_ghz, mat_key):
     )
 
     return fig, table
+
+
+# ---- Custom Material Registration ----
+
+@callback(
+    Output("cust-status", "children"),
+    Output("cust-table", "children"),
+    Input("cust-register", "n_clicks"),
+    State("cust-key", "value"),
+    State("cust-name", "value"),
+    State("cust-k", "value"),
+    State("cust-cp", "value"),
+    State("cust-rho", "value"),
+    State("cust-rho-e", "value"),
+    State("cust-tmax", "value"),
+    State("cust-gap", "value"),
+    State("cust-notes", "value"),
+    prevent_initial_call=True,
+)
+def register_custom_material(n_clicks, key, name, k, cp, rho, rho_e,
+                              tmax, gap, notes):
+    """Register a user-defined material at runtime."""
+    if not key or not name:
+        return (html.P("Please fill in at least the key and name.",
+                        style={"color": "red"}), dash.no_update)
+
+    # Check all numeric fields
+    missing = []
+    for label, val in [("k", k), ("c_p", cp), ("ρ", rho),
+                        ("ρ_e", rho_e), ("T_max", tmax)]:
+        if val is None:
+            missing.append(label)
+    if missing:
+        return (html.P(f"Missing required numeric fields: {', '.join(missing)}",
+                        style={"color": "red"}), dash.no_update)
+
+    try:
+        mat = Material(
+            name=name,
+            thermal_conductivity=float(k),
+            specific_heat=float(cp),
+            density=float(rho),
+            electrical_resistivity=float(rho_e),
+            max_operating_temp=float(tmax),
+            bandgap_eV=float(gap or 0.0),
+            notes=notes or "",
+        )
+        material_registry.register(key, mat)
+
+        # Rebuild custom table
+        custom_mats = material_registry.list_custom()
+        rows = []
+        for ck, cm in custom_mats.items():
+            rows.append({
+                "Key": ck,
+                "Name": cm.name,
+                "k (W/m·K)": f"{cm.thermal_conductivity:.1f}",
+                "c_p (J/kg·K)": f"{cm.specific_heat:.0f}",
+                "ρ (kg/m³)": f"{cm.density:.0f}",
+                "E_gap (eV)": f"{cm.bandgap_eV:.2f}",
+            })
+
+        status = html.P(
+            f"✅ Registered '{key}' — now available in all tabs!  "
+            f"(α = {mat.thermal_diffusivity:.2e} m²/s)",
+            style={"color": "#2e7d32", "fontWeight": "bold"},
+        )
+        return status, _render_custom_table(rows)
+
+    except (ValueError, KeyError) as e:
+        return (html.P(f"❌ {e}", style={"color": "red", "fontWeight": "bold"}),
+                dash.no_update)
 
 
 # ── Run ──────────────────────────────────────────────────────────────────

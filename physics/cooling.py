@@ -22,12 +22,37 @@ Reference data (ITRS / IRDS roadmap):
     - Desktop heatsink + fan:   R_ja ≈ 0.3-1 K/W  →  ~100-250 W
     - Server liquid cold plate: R_ja ≈ 0.05-0.15   →  ~500-1500 W
     - Direct die liquid metal:  R_ja ≈ 0.02-0.05   →  >2000 W
+
+Extensibility
+-------------
+Register custom thermal layers::
+
+    from physics.cooling import cooling_registry, ThermalLayer
+
+    cooling_registry.register("aerogel_insulator", ThermalLayer(
+        "Aerogel thermal barrier", 1.0e-3, 0.015,
+        "Ultra-low-k insulator for directed heat flow."
+    ))
+
+    # Or from a dict:
+    cooling_registry.register("phase_change", {
+        "name": "Phase-change material (PCM)",
+        "thickness_m": 0.5e-3,
+        "thermal_conductivity": 5.0,
+        "notes": "Paraffin-based PCM for transient thermal buffering."
+    })
+
+    # Save and share with collaborators:
+    cooling_registry.save_json("my_cooling_layers.json")
 """
 
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Union
+from pathlib import Path
+import json
 import math
+import warnings
 
 
 # ── Pre-built thermal interface material library ──────────────────────
@@ -265,3 +290,219 @@ class CoolingStack:
         stack.add_layer(THERMAL_LAYERS["diamond_heat_spreader"])
         stack.add_layer(THERMAL_LAYERS["copper_heatsink"])
         return stack
+
+
+# ── Serialization ────────────────────────────────────────────────────────
+
+def layer_from_dict(d: dict) -> ThermalLayer:
+    """
+    Create a ThermalLayer from a dictionary.
+
+    Required keys: name, thickness_m, thermal_conductivity
+    Optional keys: notes (default "")
+    """
+    required = ["name", "thickness_m", "thermal_conductivity"]
+    missing = [k for k in required if k not in d]
+    if missing:
+        raise ValueError(f"Missing required layer fields: {missing}")
+    return ThermalLayer(
+        name=d["name"],
+        thickness_m=d["thickness_m"],
+        thermal_conductivity=d["thermal_conductivity"],
+        notes=d.get("notes", ""),
+    )
+
+
+def layer_to_dict(layer: ThermalLayer) -> dict:
+    """Serialize a ThermalLayer to a plain dictionary."""
+    return {
+        "name": layer.name,
+        "thickness_m": layer.thickness_m,
+        "thermal_conductivity": layer.thermal_conductivity,
+        "notes": layer.notes,
+    }
+
+
+# ── Cooling Layer Registry ──────────────────────────────────────────────
+
+# Validation ranges for thermal layers
+_LAYER_RANGES = {
+    "thickness_m":          (1e-9,  1.0,    "m"),     # monolayer → 1 m
+    "thermal_conductivity": (0.001, 10000,  "W/(m·K)"),
+}
+
+
+def validate_layer(layer: ThermalLayer) -> List[str]:
+    """
+    Validate a ThermalLayer's properties.
+
+    Returns list of "ERROR: ..." or "WARNING: ..." strings.
+    """
+    issues: List[str] = []
+
+    if not layer.name or not layer.name.strip():
+        issues.append("ERROR: name must be a non-empty string")
+
+    for attr, (lo, hi, unit) in _LAYER_RANGES.items():
+        val = getattr(layer, attr)
+        if val <= 0:
+            issues.append(f"ERROR: {attr}={val} {unit} — must be positive")
+        elif val < lo:
+            issues.append(
+                f"WARNING: {attr}={val} {unit} is below typical range "
+                f"[{lo}–{hi}]. Ensure this is intentional."
+            )
+        elif val > hi:
+            issues.append(
+                f"WARNING: {attr}={val} {unit} is above typical range "
+                f"[{lo}–{hi}]. Ensure this is intentional."
+            )
+
+    return issues
+
+
+class CoolingRegistry:
+    """
+    Registry for thermal interface layers.
+
+    Manages both the built-in layer library (11 curated layers) and
+    user-registered custom layers.  Supports validation, JSON
+    import/export, and clean separation.
+
+    Usage
+    -----
+    ::
+
+        from physics.cooling import cooling_registry, ThermalLayer
+
+        cooling_registry.register("my_tim", ThermalLayer(
+            "Custom TIM", 30e-6, 12.0,
+            "High-perf thermal interface material."
+        ))
+
+        # Build a stack with mix of built-in and custom layers
+        stack = CoolingStack(h_ambient=5000)
+        stack.add_layer(cooling_registry.get("my_tim"))
+        stack.add_layer(cooling_registry.get("copper_heatsink"))
+    """
+
+    def __init__(self):
+        self._builtins: Dict[str, ThermalLayer] = {}
+        self._custom: Dict[str, ThermalLayer] = {}
+
+    def _load_builtins(self, layers: Dict[str, ThermalLayer]):
+        """Load built-in layers.  Called once at module init."""
+        self._builtins = dict(layers)
+
+    @staticmethod
+    def _normalize_key(key: str) -> str:
+        return key.lower().replace(" ", "_").replace("-", "_")
+
+    def register(self, key: str, layer, *,
+                 force: bool = False) -> ThermalLayer:
+        """
+        Register a custom thermal layer.
+
+        Parameters
+        ----------
+        key : str
+            Lookup key (e.g. "my_tim").
+        layer : ThermalLayer or dict
+            A ThermalLayer instance or dict of constructor kwargs.
+        force : bool
+            If True, allow overwriting a built-in layer.
+
+        Returns
+        -------
+        ThermalLayer
+            The registered layer.
+        """
+        key = self._normalize_key(key)
+
+        if isinstance(layer, dict):
+            layer = layer_from_dict(layer)
+
+        issues = validate_layer(layer)
+        errors = [i for i in issues if i.startswith("ERROR")]
+        warns  = [i for i in issues if i.startswith("WARNING")]
+
+        if errors:
+            raise ValueError(
+                f"Cannot register layer '{key}':\n" + "\n".join(errors)
+            )
+        for w in warns:
+            warnings.warn(w, stacklevel=2)
+
+        if key in self._builtins and not force:
+            raise KeyError(
+                f"'{key}' is a built-in layer.  Use force=True to override."
+            )
+
+        self._custom[key] = layer
+        return layer
+
+    def unregister(self, key: str) -> None:
+        """Remove a custom layer.  Built-ins cannot be removed."""
+        key = self._normalize_key(key)
+        if key in self._custom:
+            del self._custom[key]
+        elif key in self._builtins:
+            raise KeyError(f"Cannot remove built-in layer '{key}'.")
+        else:
+            raise KeyError(f"Unknown layer '{key}'.")
+
+    def get(self, key: str) -> ThermalLayer:
+        """Look up a layer by key (case-insensitive)."""
+        key = self._normalize_key(key)
+        if key in self._custom:
+            return self._custom[key]
+        if key in self._builtins:
+            return self._builtins[key]
+        all_keys = sorted(set(list(self._builtins) + list(self._custom)))
+        raise KeyError(f"Unknown layer '{key}'. Available: {all_keys}")
+
+    def list_all(self) -> Dict[str, ThermalLayer]:
+        """Return all layers (built-in + custom)."""
+        result = dict(self._builtins)
+        result.update(self._custom)
+        return result
+
+    def list_custom(self) -> Dict[str, ThermalLayer]:
+        """Return only user-registered layers."""
+        return dict(self._custom)
+
+    def reset(self) -> None:
+        """Remove all custom layers."""
+        self._custom.clear()
+
+    def save_json(self, path, *, custom_only: bool = True) -> int:
+        """Save layers to a JSON file.  Returns count saved."""
+        layers = self._custom if custom_only else self.list_all()
+        data = {k: layer_to_dict(v) for k, v in layers.items()}
+        Path(path).write_text(json.dumps(data, indent=2), encoding="utf-8")
+        return len(data)
+
+    def load_json(self, path, *, force: bool = False) -> int:
+        """Load layers from a JSON file.  Returns count loaded."""
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        count = 0
+        for key, props in data.items():
+            self.register(key, props, force=force)
+            count += 1
+        return count
+
+    def __contains__(self, key: str) -> bool:
+        key = self._normalize_key(key)
+        return key in self._custom or key in self._builtins
+
+    def __len__(self) -> int:
+        return len(set(list(self._builtins) + list(self._custom)))
+
+
+# ── Module-level registry singleton ──────────────────────────────────────
+
+cooling_registry = CoolingRegistry()
+cooling_registry._load_builtins(THERMAL_LAYERS)
+
+# Convenience aliases
+register_cooling_layer = cooling_registry.register

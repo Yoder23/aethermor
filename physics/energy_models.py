@@ -5,11 +5,39 @@ Each model computes energy-per-gate-switch as a function of technology node,
 supply voltage, temperature, and switching frequency. These are the models
 hardware researchers use to estimate power budgets.
 
-Models included:
+Built-in models:
   - CMOSGateEnergy: Conventional CMOS dynamic + leakage power
   - AdiabaticGateEnergy: Adiabatic/charge-recovery logic
   - ReversibleGateEnergy: Idealized reversible computing (Fredkin/Toffoli)
   - LandauerLimitEnergy: Theoretical floor (k_B T ln 2 per erasure)
+
+Extensibility
+-------------
+Register a custom computing paradigm::
+
+    from physics.energy_models import paradigm_registry, EnergyModel
+
+    @dataclass
+    class SpintronicGateEnergy:
+        '''Custom spintronic computing energy model.'''
+        tech_node_nm: float = 7.0
+        spin_current_A: float = 1e-6
+        switching_time_s: float = 1e-9
+        resistance_ohm: float = 1e4
+
+        def energy_per_switch(self, frequency: float = 1e9,
+                              T: float = 300.0) -> float:
+            return self.spin_current_A**2 * self.resistance_ohm * self.switching_time_s
+
+        def landauer_gap(self, T: float = 300.0,
+                         frequency: float = 1e9) -> float:
+            from physics.constants import landauer_limit
+            return self.energy_per_switch(frequency, T) / landauer_limit(T)
+
+    paradigm_registry.register("spintronic", SpintronicGateEnergy)
+
+    # Now "spintronic" works in FunctionalBlock(paradigm="spintronic", ...)
+    # and everywhere else in the framework.
 
 Usage example — find the technology node where adiabatic logic beats CMOS:
 
@@ -22,7 +50,45 @@ Usage example — find the technology node where adiabatic logic beats CMOS:
 
 import math
 from dataclasses import dataclass
+from typing import Dict, List, Optional, Callable, Any, Type, runtime_checkable
+try:
+    from typing import Protocol
+except ImportError:
+    from typing_extensions import Protocol
+
 from physics.constants import k_B, landauer_limit
+
+
+# ── Energy Model Protocol ────────────────────────────────────────────────
+
+@runtime_checkable
+class EnergyModel(Protocol):
+    """
+    Protocol that all computing paradigm energy models must satisfy.
+
+    Any class with these two methods can be used as an energy model
+    throughout Aethermor — in ChipFloorplan, ThermalOptimizer, the
+    interactive UI, and all analysis tools.
+
+    Required Methods
+    ----------------
+    energy_per_switch(frequency, T) -> float
+        Energy in Joules per gate switching event.
+    landauer_gap(T, frequency) -> float
+        Ratio of actual energy to the Landauer limit (k_B T ln 2).
+        Values >> 1 mean room for efficiency improvement.
+
+    The protocol is runtime-checkable::
+
+        >>> isinstance(CMOSGateEnergy(), EnergyModel)
+        True
+        >>> isinstance(my_custom_model, EnergyModel)
+        True  # if it has the right methods
+    """
+    def energy_per_switch(self, frequency: float = 1e9,
+                          T: float = 300.0) -> float: ...
+    def landauer_gap(self, T: float = 300.0,
+                     frequency: float = 1e9) -> float: ...
 
 
 @dataclass
@@ -292,3 +358,162 @@ class LandauerLimitEnergy:
     def landauer_gap(self, T: float = 300.0, frequency: float = 1e9) -> float:
         """Always 1.0 by definition."""
         return 1.0
+
+
+# ── Paradigm Registry ───────────────────────────────────────────────────
+
+class ParadigmRegistry:
+    """
+    Registry for computing paradigm energy models.
+
+    Maps paradigm name strings (e.g. "cmos", "adiabatic", "spintronic")
+    to model classes that satisfy the EnergyModel protocol.
+
+    Built-in paradigms are pre-registered at module load.  Engineers can
+    register custom paradigms at runtime and they immediately become
+    available in ChipFloorplan, ThermalOptimizer, and the interactive UI.
+
+    Usage
+    -----
+    ::
+
+        from physics.energy_models import paradigm_registry
+
+        # Register a custom paradigm
+        paradigm_registry.register("spintronic", SpintronicGateEnergy)
+
+        # Create an instance with kwargs
+        model = paradigm_registry.create("spintronic", tech_node_nm=7)
+
+        # Use it in a chip floorplan
+        block = FunctionalBlock(..., paradigm="spintronic")
+    """
+
+    def __init__(self):
+        self._factories: Dict[str, type] = {}
+        self._next_id: int = 5  # 0=idle, 1=cmos, 2=adiabatic, 3=reversible, 4=landauer
+        self._ids: Dict[str, int] = {
+            "idle": 0, "cmos": 1, "adiabatic": 2, "reversible": 3,
+            "landauer": 4,
+        }
+
+    def register(self, name: str, model_class: type, *,
+                 force: bool = False) -> None:
+        """
+        Register a computing paradigm.
+
+        Parameters
+        ----------
+        name : str
+            Paradigm name (lowercase).  e.g. "spintronic", "quantum"
+        model_class : type
+            A class whose instances satisfy the EnergyModel protocol.
+            Must have ``energy_per_switch(frequency, T)`` and
+            ``landauer_gap(T, frequency)`` methods.
+        force : bool
+            If True, allow overwriting a built-in paradigm.
+
+        Raises
+        ------
+        TypeError
+            If *model_class* does not satisfy the EnergyModel protocol.
+        KeyError
+            If *name* is a built-in paradigm and *force* is False.
+        """
+        name = name.lower()
+
+        # Protocol check: instantiate with defaults and verify interface
+        try:
+            test_instance = model_class()
+        except TypeError:
+            # Class needs constructor args — check the class itself
+            if not (hasattr(model_class, 'energy_per_switch')
+                    and hasattr(model_class, 'landauer_gap')):
+                raise TypeError(
+                    f"{model_class.__name__} does not satisfy the EnergyModel "
+                    f"protocol.  It must have energy_per_switch(frequency, T) "
+                    f"and landauer_gap(T, frequency) methods."
+                )
+        else:
+            if not isinstance(test_instance, EnergyModel):
+                raise TypeError(
+                    f"{model_class.__name__} does not satisfy the EnergyModel "
+                    f"protocol.  It must have energy_per_switch(frequency, T) "
+                    f"and landauer_gap(T, frequency) methods."
+                )
+
+        if name in self._factories and not force:
+            if name in ("cmos", "adiabatic", "reversible", "landauer"):
+                raise KeyError(
+                    f"'{name}' is a built-in paradigm.  Use force=True to "
+                    f"override, or choose a different name."
+                )
+
+        self._factories[name] = model_class
+
+        # Assign a unique integer ID for paradigm maps
+        if name not in self._ids:
+            self._ids[name] = self._next_id
+            self._next_id += 1
+
+    def create(self, name: str, **kwargs) -> Any:
+        """
+        Create an energy model instance for the named paradigm.
+
+        Parameters
+        ----------
+        name : str
+            Paradigm name.
+        **kwargs
+            Passed to the model class constructor (e.g. tech_node_nm=7).
+
+        Returns
+        -------
+        EnergyModel
+            An instance of the registered model class.
+        """
+        name = name.lower()
+        if name == "idle":
+            return None
+        if name not in self._factories:
+            raise KeyError(
+                f"Unknown paradigm '{name}'.  "
+                f"Available: {sorted(self._factories.keys())}.  "
+                f"Register custom paradigms with "
+                f"paradigm_registry.register(name, ModelClass)."
+            )
+        return self._factories[name](**kwargs)
+
+    def paradigm_id(self, name: str) -> int:
+        """
+        Integer ID for paradigm-map visualization.
+
+        Built-in IDs: idle=0, cmos=1, adiabatic=2, reversible=3.
+        Custom paradigms get IDs starting from 4.
+        """
+        name = name.lower()
+        if name not in self._ids:
+            raise KeyError(f"Unknown paradigm '{name}'.")
+        return self._ids[name]
+
+    def list_paradigms(self) -> List[str]:
+        """Return all registered paradigm names."""
+        return sorted(self._factories.keys())
+
+    def __contains__(self, name: str) -> bool:
+        return name.lower() in self._factories or name.lower() == "idle"
+
+    def __len__(self) -> int:
+        return len(self._factories) + 1  # +1 for "idle"
+
+
+# ── Module-level paradigm registry singleton ─────────────────────────────
+
+paradigm_registry = ParadigmRegistry()
+paradigm_registry.register("cmos", CMOSGateEnergy)
+paradigm_registry.register("adiabatic", AdiabaticGateEnergy)
+paradigm_registry.register("reversible", ReversibleGateEnergy)
+paradigm_registry.register("landauer", LandauerLimitEnergy)
+
+# Convenience aliases
+register_paradigm = paradigm_registry.register
