@@ -55,7 +55,7 @@ The `analysis/` package provides tools designed for hardware research questions:
 ### Physics — Cooling and Architecture Models
 
 - **Cooling stack model** (`physics/cooling.py`): Assemble a realistic thermal
-  path from die to ambient — TIM → IHS → heatsink → convection. Twelve
+  path from die to ambient — TIM → IHS → heatsink → convection. Eleven
   pre-built layers and six factory configurations (bare-die, desktop-air,
   server, liquid, direct-liquid, diamond-spreader). Computes effective h,
   max power, layer-by-layer temperatures.
@@ -79,6 +79,7 @@ concrete research workflows:
 | `heterogeneous_soc.py` | How do hotspots, cooling stacks, and CMOS/adiabatic mixing interact on a realistic SoC? |
 | `technology_roadmap.py` | How does the Landauer gap close as technology scales from 130 nm to 1.4 nm, and when does each paradigm win? |
 | `thermal_optimizer.py` | Given a thermal limit, which material allows the highest density, and what cooling is required? |
+| `custom_material.py` | How do I register and test my own materials, paradigms, and cooling layers? |
 
 ---
 

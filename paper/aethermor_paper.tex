@@ -65,8 +65,8 @@ density than silicon at equal cooling, that adiabatic logic provides a
 $2{,}006\times$ energy advantage over CMOS at 1~GHz on a 7~nm node,
 and that thermal headroom redistribution on a heterogeneous SoC yields
 up to $2\times$ throughput improvement. Aethermor is released under the
-Apache~2.0 license with an interactive browser-based explorer, 212
-automated tests, and six ready-to-run research examples.
+Apache~2.0 license with an interactive browser-based explorer, 254
+automated tests, and seven ready-to-run research examples.
 \end{abstract}
 
 % ── 1. Introduction ─────────────────────────────────────────────────────
@@ -190,7 +190,7 @@ as a series of thermal resistances:
   R_{\mathrm{total}} = \sum_i \frac{t_i}{k_i \cdot A} + \frac{1}{h_{\mathrm{amb}} \cdot A}
   \label{eq:rstack}
 \end{equation}
-Twelve pre-built materials (thermal paste, liquid metal, copper IHS,
+Eleven pre-built layers (thermal paste, liquid metal, copper IHS,
 aluminium heatsink, diamond spreader, etc.) and six factory
 configurations (bare-die, desktop-air, server-air, liquid, direct-liquid,
 diamond-spreader-liquid) are provided.
@@ -212,9 +212,9 @@ regime classification, and hotspot detection.
 \subsection{Interface Layer}
 
 Users interact with Aethermor through three channels: (1)~a
-browser-based interactive explorer (\texttt{app.py}) with five
+browser-based interactive explorer (\texttt{app.py}) with six
 parameterised tabs updated in real time; (2)~a Python scripting API;
-(3)~six ready-to-run example scripts demonstrating research workflows.
+(3)~seven ready-to-run example scripts demonstrating research workflows.
 
 
 % ── 3. Inverse Thermal Design ───────────────────────────────────────────
@@ -406,7 +406,7 @@ $T + \text{headroom} = T_{\mathrm{limit}}$ for every block.
 
 All functions that use the 3D binary-search solver are verified to
 return identical results across independent runs with the same inputs.
-The entire test suite (212~tests) and validation suite (133~checks)
+The entire test suite (254~tests) and validation suite (133~checks)
 execute deterministically with seeded random number generators.
 
 \begin{table}[t]
@@ -559,17 +559,17 @@ future release.
 Aethermor is released under the Apache~2.0 license at:
 
 \begin{center}
-\url{https://github.com/YOUR_ORG/aethermor}
+\url{https://github.com/Yodes94/aethermor}
 \end{center}
 
 \noindent To reproduce all results in this paper:
 
 \begin{lstlisting}
-git clone https://github.com/YOUR_ORG/aethermor
+git clone https://github.com/Yodes94/aethermor
 cd aethermor
 pip install -e ".[all]"
 python -m validation.validate_all   # 133 checks
-python -m pytest tests/ -v          # 212 tests
+python -m pytest tests/ -v          # 254 tests
 python app.py                       # Interactive UI
 \end{lstlisting}
 

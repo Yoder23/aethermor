@@ -27,7 +27,7 @@ silicon at equal cooling, that adiabatic logic provides a 2,006× energy
 advantage over CMOS at 1 GHz on a 7 nm node, and that thermal headroom
 redistribution on a heterogeneous SoC yields up to 2× throughput improvement.
 Aethermor is released under the Apache 2.0 license with an interactive
-browser-based explorer, 212 automated tests, and six ready-to-run research
+browser-based explorer, 254 automated tests, and seven ready-to-run research
 examples.
 
 ---
@@ -126,7 +126,7 @@ thermal resistances:
 
 > R_total = Σ(t_i / (k_i · A)) + 1/(h_amb · A)
 
-Twelve pre-built materials and six factory configurations are provided
+Eleven pre-built materials and six factory configurations are provided
 (bare-die, desktop-air, server-air, liquid, direct-liquid,
 diamond-spreader-liquid).
 
@@ -145,8 +145,8 @@ hotspot detection.
 ### 2.3 Interface Layer
 
 Users interact with Aethermor through three channels: (1) a browser-based
-interactive explorer (`app.py`) with five parameterised tabs updated in real
-time; (2) a Python scripting API; (3) six ready-to-run example scripts.
+interactive explorer (`app.py`) with six parameterised tabs updated in real
+time; (2) a Python scripting API; (3) seven ready-to-run example scripts.
 
 ---
 
@@ -293,7 +293,7 @@ satisfies its constraints; the headroom map obeys T + headroom = T_limit.
 ### 5.5 Reproducibility
 
 All functions return identical results across independent runs with the same
-inputs. The full test suite (212 tests) and validation suite (133 checks)
+inputs. The full test suite (254 tests) and validation suite (133 checks)
 execute deterministically.
 
 | Category | Reference | Checks | Status |
@@ -399,16 +399,16 @@ resistance or temperature-dependent properties.
 
 Aethermor is released under the Apache 2.0 license at:
 
-> https://github.com/YOUR_ORG/aethermor
+> https://github.com/Yodes94/aethermor
 
 To reproduce all results in this paper:
 
 ```bash
-git clone https://github.com/YOUR_ORG/aethermor
+git clone https://github.com/Yodes94/aethermor
 cd aethermor
 pip install -e ".[all]"
 python -m validation.validate_all   # 133 checks
-python -m pytest tests/ -v          # 212 tests
+python -m pytest tests/ -v          # 254 tests
 python app.py                       # Interactive UI
 ```
 

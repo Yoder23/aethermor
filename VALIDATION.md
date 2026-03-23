@@ -67,8 +67,8 @@ Computing Process." IBM J. Res. Dev. 5(3), 183–191 (1961).
 | Silicon | 148 | 2329–2330 | 700 | 1.12 | CRC 97th ed. |
 | Diamond | 2200 | 3510 | 520 | 5.47 | CRC 97th ed. |
 | GaAs | 55 | 5320 | 330 | 1.42 | CRC 97th ed. |
-| SiC (6H) | 490 | 3210 | 690 | 3.26 | Morkoç (2006) |
-| GaN | 130 | 6100 | 490 | 3.40 | Morkoç (2008) |
+| SiC (4H) | 490 | 3210 | 690 | 3.26 | Morkoç (2006) |
+| GaN | 130 | 6150 | 490 | 3.40 | Morkoç (2008) |
 | Copper | 401 | 8960 | 385 | — | CRC 97th ed. |
 
 **What is checked:**

@@ -5,16 +5,32 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aethermor"
 version = "0.1.0"
-description = "Physically-grounded simulation tools for thermodynamic computing research."
+description = "Thermal design tools for thermodynamic computing — explore material, cooling, energy, and architecture trade-offs."
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering",
+]
 dependencies = [
     "numpy",
     "pandas",
     "scipy",
     "matplotlib",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Yodes94/aethermor"
+Repository = "https://github.com/Yodes94/aethermor"
+"Bug Tracker" = "https://github.com/Yodes94/aethermor/issues"
 
 [project.optional-dependencies]
 dev = [

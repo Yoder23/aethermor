@@ -1,27 +1,33 @@
 cff-version: 1.2.0
 message: "If you use Aethermor in research, please cite this software."
-title: "Aethermor: Physically-Grounded Simulation Tools for Thermodynamic Computing Research"
+title: "Aethermor: Thermal Design Tools for Thermodynamic Computing Research"
 type: software
 authors:
   - family-names: "Aethermor Contributors"
 license: "Apache-2.0"
 version: "0.1.0"
-date-released: 2026-03-18
+date-released: 2026-03-23
+repository-code: "https://github.com/Yodes94/aethermor"
 abstract: >
-  Aethermor provides physically-grounded simulation tools for exploring the
-  thermal, energetic, and material-science trade-offs in thermodynamic computing.
-  It includes real-physics models (Fourier thermal transport, CMOS/adiabatic/
-  reversible gate energy, 9 substrate materials), research analysis tools
-  (Landauer gap analysis, design space sweeps, regime classification), and a
-  3D lattice simulation framework with paired ablation statistics and automated
-  publication gates.
+  Aethermor provides thermal design tools for exploring material, cooling,
+  energy, and architecture trade-offs in thermodynamic computing. It includes
+  SI-unit physics models (Fourier 3D thermal transport, CMOS/adiabatic/
+  reversible gate energy, 9 substrate materials with extensible registry),
+  inverse design tools (max density, min cooling, headroom mapping, power
+  redistribution), technology roadmap projection (130 nm to 1.4 nm), and an
+  interactive explorer UI. All models are cross-validated against CODATA 2018,
+  the CRC Handbook, and ITRS/IRDS roadmaps (133 physics checks, 254 tests).
 keywords:
   - thermodynamic computing
-  - simulation
-  - distributed systems
+  - thermal design
+  - inverse thermal design
+  - Landauer limit
+  - gate energy models
+  - substrate materials
+  - Fourier heat diffusion
+  - chip thermal management
   - reproducibility
-  - ablation studies
-  - control strategies
 references:
   - type: generic
-    title: "AETHERMOR_FULL_PROJECT_PAPER.md"
+    title: "Aethermor: Thermal Design Tools for Thermodynamic Computing"
+    notes: "See paper/aethermor_paper.tex"

@@ -18,7 +18,7 @@ the CRC Handbook, and ITRS/IRDS roadmaps.
 ## 1. Install
 
 ```bash
-git clone https://github.com/YOUR_ORG/aethermor.git
+git clone https://github.com/Yodes94/aethermor.git
 cd aethermor
 pip install -e ".[dashboard]"      # installs core + interactive UI
 ```
@@ -107,7 +107,7 @@ print(roadmap.full_report())
 ```python
 from physics.cooling import CoolingStack
 
-stack = CoolingStack.server_liquid()
+stack = CoolingStack.liquid_cooled()
 h_eff = stack.effective_h(die_area_m2=100e-6)
 print(f"Effective h = {h_eff:.0f} W/(m²·K)")
 print(f"Max power   = {stack.max_power_W(100e-6):.1f} W")
@@ -175,7 +175,7 @@ walkthrough of all extensibility features.
 
 ## 4. Run the Examples
 
-Six ready-to-run scripts that each answer a specific research question:
+Seven ready-to-run scripts that each answer a specific research question:
 
 ```bash
 python examples/optimal_density.py       # Thermal wall per substrate
@@ -190,7 +190,7 @@ python examples/custom_material.py       # Register your own material, paradigm,
 ## 5. Run the Tests
 
 ```bash
-python -m pytest tests/ -v              # 255 tests, ~2 minutes
+python -m pytest tests/ -v              # 254 tests, ~2 minutes
 python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
 ```
 
@@ -228,7 +228,7 @@ physics/              # SI-unit thermodynamic models (extensible registries)
 analysis/             # Inverse design & research tools
 validation/           # 133 physics cross-checks
 examples/             # 7 ready-to-run research scripts
-tests/                # 255 unit, integration, regression tests
+tests/                # 254 unit, integration, regression tests
 ```
 
 ---
@@ -237,11 +237,11 @@ tests/                # 255 unit, integration, regression tests
 
 | Check | Result |
 |-------|--------|
-| Unit tests | 255 pass, 0 fail |
+| Unit tests | 254 pass, 0 fail |
 | Physics validation | 133 cross-checks vs CODATA, CRC, ITRS/IRDS | 
 | Energy conservation | 0.00% error in Fourier solver |
 | Reproducibility | Seeded, deterministic |
-| Examples | 6/6 run clean |
+| Examples | 7/7 run clean |
 
 See [VALIDATION.md](VALIDATION.md) for methodology and reference sources.
 
