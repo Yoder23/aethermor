@@ -56,5 +56,5 @@ all = [
 # pytest config lives in pytest.ini (takes precedence over pyproject.toml)
 
 [tool.setuptools.packages.find]
-include = ["aethermor*", "physics*", "analysis*", "validation*"]
+include = ["aethermor*", "physics*", "analysis*", "validation*", "simulation*"]
 exclude = ["tests*", "archive*", "experiments*", "scripts*"]

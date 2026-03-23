@@ -11,7 +11,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 ART_ROOT = f"artifacts_bench_{os.getpid()}"
 
 
-def _run(script: str, env_updates=None):
+def _run(module: str, env_updates=None):
     env = os.environ.copy()
     env.setdefault("BENCH_STEPS", "60")
     env.setdefault("BENCH_GRID", "32")
@@ -20,14 +20,14 @@ def _run(script: str, env_updates=None):
         env.update(env_updates)
 
     p = subprocess.run(
-        [sys.executable, script],
+        [sys.executable, "-m", module],
         cwd=ROOT,
         env=env,
         capture_output=True,
         text=True,
     )
     assert p.returncode == 0, (
-        f"Benchmark failed: {script}\n"
+        f"Benchmark failed: {module}\n"
         f"STDOUT:\n{(p.stdout or '').strip()}\n"
         f"STDERR:\n{(p.stderr or '').strip()}"
     )
@@ -42,33 +42,33 @@ def _load(relpath: str):
 
 @lru_cache(maxsize=1)
 def _thermo():
-    _run("benchmark_thermodynamic_core.py")
+    _run("simulation.benchmark_thermodynamic_core")
     return _load(os.path.join(ART_ROOT, "thermo_core", "kpis.json"))
 
 
 @lru_cache(maxsize=1)
 def _material_pair():
-    _run("benchmark_material_twin.py", {"TWIN_ENABLE": "1"})
+    _run("simulation.benchmark_material_twin", {"TWIN_ENABLE": "1"})
     on = _load(os.path.join(ART_ROOT, "material_twin", "kpis.json"))
-    _run("benchmark_material_twin.py", {"TWIN_ENABLE": "0"})
+    _run("simulation.benchmark_material_twin", {"TWIN_ENABLE": "0"})
     off = _load(os.path.join(ART_ROOT, "material_twin", "kpis.json"))
     return on, off
 
 
 @lru_cache(maxsize=1)
 def _morph_pair():
-    _run("benchmark_morphogenesis.py", {"MORPHO_ENABLE": "1"})
+    _run("simulation.benchmark_morphogenesis", {"MORPHO_ENABLE": "1"})
     on = _load(os.path.join(ART_ROOT, "morphogenesis", "kpis.json"))
-    _run("benchmark_morphogenesis.py", {"MORPHO_ENABLE": "0"})
+    _run("simulation.benchmark_morphogenesis", {"MORPHO_ENABLE": "0"})
     off = _load(os.path.join(ART_ROOT, "morphogenesis", "kpis.json"))
     return on, off
 
 
 @lru_cache(maxsize=1)
 def _cluster_pair():
-    _run("benchmark_metabolic_cluster.py", {"CLUSTER_ENABLE": "1"})
+    _run("simulation.benchmark_metabolic_cluster", {"CLUSTER_ENABLE": "1"})
     on = _load(os.path.join(ART_ROOT, "metabolic_cluster", "kpis.json"))
-    _run("benchmark_metabolic_cluster.py", {"CLUSTER_ENABLE": "0"})
+    _run("simulation.benchmark_metabolic_cluster", {"CLUSTER_ENABLE": "0"})
     off = _load(os.path.join(ART_ROOT, "metabolic_cluster", "kpis.json"))
     return on, off
 

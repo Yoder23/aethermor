@@ -12,7 +12,7 @@ if (-not $env:PUB_SWEEP_N) { $env:PUB_SWEEP_N = "20" }
 if (-not $env:PUB_SWEEP_STEPS) { $env:PUB_SWEEP_STEPS = "80" }
 if (-not $env:PUB_SWEEP_BASE_SEED) { $env:PUB_SWEEP_BASE_SEED = "13000" }
 
-python run_all_benchmarks.py
+python -m simulation.run_all_benchmarks
 python experiments/exp_ablations.py
-python publication_gate.py
+python -m simulation.publication_gate
 python experiments/exp_publication_robustness.py

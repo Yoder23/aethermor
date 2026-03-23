@@ -12,7 +12,7 @@ Run once after updating AethermorSimV2:
 
 import os
 import json
-from aethermor_full_simulation_v2 import AethermorSimV2
+from simulation.aethermor_full_simulation_v2 import AethermorSimV2
 
 DATA_DIR = "data"
 os.makedirs(DATA_DIR, exist_ok=True)

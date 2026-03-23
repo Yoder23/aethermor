@@ -1,4 +1,4 @@
-from aethermor_full_simulation_v2 import AethermorSimV2
+from simulation.aethermor_full_simulation_v2 import AethermorSimV2
 
 def test_full_simulation_run():
     sim = AethermorSimV2(grid_shape=(5,5,3), steps=10)

@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 from deap import base, creator, tools
-from scarcity_aethermor import ScarcityAethermorSim
+from .scarcity_aethermor import ScarcityAethermorSim
 
 def evaluate_individual(individual, sim_steps=50, grid_size=30):
     (base_harvest, compute_cost, reproduction_cost,

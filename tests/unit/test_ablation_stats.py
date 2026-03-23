@@ -6,7 +6,7 @@ from experiments.exp_ablations import AblationSpec, _fdr_bh, _holm_bonferroni, _
 def test_summarize_experiment_reports_paired_statistics():
     spec = AblationSpec(
         name="metabolic_cluster",
-        script="benchmark_metabolic_cluster.py",
+        script="simulation.benchmark_metabolic_cluster",
         env_var="CLUSTER_ENABLE",
         kpi_path="unused.json",
         metric_key="peak_temp_reduction_C",

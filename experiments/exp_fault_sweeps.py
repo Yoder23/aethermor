@@ -16,11 +16,11 @@ ART_ROOT = os.getenv("BENCH_ARTIFACT_ROOT", "artifacts")
 REPORT_DIR = os.path.join(ART_ROOT, "_report")
 os.makedirs(REPORT_DIR, exist_ok=True)
 
-def run(script, env):
-    p = subprocess.run([sys.executable, script], capture_output=True, text=True, env=env)
+def run(module, env):
+    p = subprocess.run([sys.executable, "-m", module], capture_output=True, text=True, env=env)
     if p.returncode != 0:
         raise RuntimeError(
-            f"{script} failed (exit={p.returncode})\n"
+            f"{module} failed (exit={p.returncode})\n"
             f"STDOUT:\n{(p.stdout or '').strip()}\n"
             f"STDERR:\n{(p.stderr or '').strip()}"
         )
@@ -45,11 +45,11 @@ def main():
             env["MORPHO_ENABLE"] = "1"
             env["BENCH_ARTIFACT_ROOT"] = ART_ROOT
 
-            run("benchmark_morphogenesis.py", env)
+            run("simulation.benchmark_morphogenesis", env)
             km = read_kpis(os.path.join(ART_ROOT, "morphogenesis", "kpis.json")) or {}
 
             env["TWIN_ENABLE"] = "1"
-            run("benchmark_material_twin.py", env)
+            run("simulation.benchmark_material_twin", env)
             kt = read_kpis(os.path.join(ART_ROOT, "material_twin", "kpis.json")) or {}
 
             rows.append({

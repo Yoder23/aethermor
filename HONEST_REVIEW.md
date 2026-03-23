@@ -168,7 +168,9 @@ analysis/         # Research tools
   thermal_map.py        # Temperature field analysis
   tech_roadmap.py       # Node projection (130nm to 1.4nm)
 
+simulation/       # Legacy Monte Carlo / evolutionary simulation engine
 examples/         # 7 runnable research scripts
+experiments/      # Reproducibility scripts (ablations, scaling, fault sweeps)
 tests/            # 254 tests (pytest)
 validation/       # 133 physics cross-checks (validate_all.py)
 ```

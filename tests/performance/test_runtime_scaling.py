@@ -1,5 +1,5 @@
 import time
-from aethermor_full_simulation_v2 import AethermorSimV2
+from simulation.aethermor_full_simulation_v2 import AethermorSimV2
 
 def test_runtime_scaling():
     sim = AethermorSimV2(grid_shape=(60,60,10), steps=5)

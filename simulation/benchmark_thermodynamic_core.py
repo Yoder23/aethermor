@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from aethermor_full_simulation_v2 import AethermorSimV2
-from thermodynamic_core import ThermodynamicAICore
+from .aethermor_full_simulation_v2 import AethermorSimV2
+from .thermodynamic_core import ThermodynamicAICore
 
 ART_ROOT = os.getenv("BENCH_ARTIFACT_ROOT", "artifacts")
 ARTS = os.path.join(ART_ROOT, "thermo_core")

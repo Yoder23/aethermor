@@ -7,7 +7,7 @@ when combining the physics package, thermal transport, and energy models.
 
 import numpy as np
 import pytest
-from physical_simulation import PhysicalSimulation, PhysicalSimConfig
+from simulation.physical_simulation import PhysicalSimulation, PhysicalSimConfig
 
 
 class TestPhysicalSimulationBasic:

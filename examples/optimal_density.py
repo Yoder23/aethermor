@@ -24,7 +24,7 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 import numpy as np
-from physical_simulation import PhysicalSimulation, PhysicalSimConfig
+from simulation.physical_simulation import PhysicalSimulation, PhysicalSimConfig
 from physics.materials import MATERIAL_DB
 
 

@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.ndimage import convolve
-from aethermor_full_simulation_v2 import AethermorSimV2
+from simulation.aethermor_full_simulation_v2 import AethermorSimV2
 
 def test_field_diffusion_and_decay():
     sim = AethermorSimV2(grid_shape=(3,3,3), steps=1)

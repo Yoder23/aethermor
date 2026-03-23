@@ -19,7 +19,7 @@ import numpy as np
 # Adjust path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-from aethermor_full_simulation_v2 import AethermorSimV2
+from simulation.aethermor_full_simulation_v2 import AethermorSimV2
 
 
 def test_long_horizon_stability_1000_steps():

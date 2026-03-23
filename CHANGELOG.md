@@ -76,3 +76,7 @@ All notable changes to this project are documented in this file.
 - `CITATION.cff`, `.gitignore`, `.gitattributes`, `pyproject.toml`
 - CI: `.github/workflows/ci.yml` (test + dependency audit)
 - `.github/pull_request_template.md`, `.github/ISSUE_TEMPLATE/bug_report.md`
+
+### Changed — Project Structure
+- Moved legacy simulation scripts (12 files) from project root into
+  `simulation/` package for a clean, documented directory layout

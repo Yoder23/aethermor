@@ -10,8 +10,8 @@ overstated claims.
 import numpy as np
 import pytest
 
-from aethermor_full_simulation_v2 import AethermorSimV2
-from thermodynamic_core import ThermodynamicAICore
+from simulation.aethermor_full_simulation_v2 import AethermorSimV2
+from simulation.thermodynamic_core import ThermodynamicAICore
 
 
 class TestThermoCoreMethodology:

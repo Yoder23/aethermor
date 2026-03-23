@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
-from scarcity_aethermor import ScarcityAethermorSim
+from .scarcity_aethermor import ScarcityAethermorSim
 
 HW_LOG = 'data/synthetic_hardware_log.csv'
 

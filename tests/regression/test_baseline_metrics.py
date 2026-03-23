@@ -1,5 +1,5 @@
 import json
-from aethermor_full_simulation_v2 import AethermorSimV2
+from simulation.aethermor_full_simulation_v2 import AethermorSimV2
 
 def test_baseline_metrics_consistency():
     sim = AethermorSimV2(grid_shape=(10,10,2), steps=20)

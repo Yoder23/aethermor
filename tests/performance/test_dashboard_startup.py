@@ -11,7 +11,7 @@ def test_dashboard_startup():
         pytest.skip("aethermor_dashboard.py not present (see archive/extra_tools/)")
 
     # Requires an existing aethermor_sim_v2.pkl; run the sim quickly to generate
-    subprocess.run([sys.executable, 'aethermor_full_simulation_v2.py'], check=True)
+    subprocess.run([sys.executable, '-m', 'simulation.aethermor_full_simulation_v2'], check=True)
     proc = subprocess.Popen([sys.executable, dashboard_path])
     try:
         time.sleep(5)

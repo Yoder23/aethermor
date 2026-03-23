@@ -32,7 +32,7 @@ pip install -e ".[dashboard]"      # installs core + interactive UI
 python app.py
 ```
 
-Open **http://127.0.0.1:8050** in your browser. You get five interactive tabs:
+Open **http://127.0.0.1:8050** in your browser. You get six interactive tabs:
 
 | Tab | What You Can Do |
 |-----|-----------------|
@@ -226,8 +226,10 @@ python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
 app.py                # Interactive Explorer UI — run this
 physics/              # SI-unit thermodynamic models (extensible registries)
 analysis/             # Inverse design & research tools
+simulation/           # Legacy Monte Carlo / evolutionary simulation engine
 validation/           # 133 physics cross-checks
 examples/             # 7 ready-to-run research scripts
+experiments/          # Reproducibility scripts (ablations, scaling, fault sweeps)
 tests/                # 254 unit, integration, regression tests
 ```
 

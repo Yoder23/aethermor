@@ -211,7 +211,7 @@ class TestThermalRunaway:
 
     def test_physical_simulation_stops_on_runaway(self):
         """PhysicalSimulation.run() should stop early on runaway."""
-        from physical_simulation import PhysicalSimulation
+        from simulation.physical_simulation import PhysicalSimulation
         sim = PhysicalSimulation(
             grid_shape=(5, 5, 3),
             material="silicon",

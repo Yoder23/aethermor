@@ -1,7 +1,7 @@
 import os
 import uuid
 import pandas as pd
-import digital_twin_reparameterization as cal
+from simulation import digital_twin_reparameterization as cal
 
 def test_calibration_workflow(monkeypatch):
     csv_path = f"log_calibration_{uuid.uuid4().hex}.csv"
