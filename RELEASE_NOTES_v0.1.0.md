@@ -64,7 +64,7 @@ See [VALIDATION.md](VALIDATION.md) for full methodology and reference sources.
 ## Install
 
 ```bash
-git clone https://github.com/Yodes94/aethermor.git
+git clone https://github.com/Yoder23/aethermor.git
 cd aethermor
 pip install -e ".[all]"     # core + UI + dev tools
 python app.py               # launch interactive explorer

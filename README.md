@@ -18,7 +18,7 @@ the CRC Handbook, and ITRS/IRDS roadmaps.
 ## 1. Install
 
 ```bash
-git clone https://github.com/Yodes94/aethermor.git
+git clone https://github.com/Yoder23/aethermor.git
 cd aethermor
 pip install -e ".[dashboard]"      # installs core + interactive UI
 ```
@@ -262,6 +262,7 @@ See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 | [LIMITATIONS.md](LIMITATIONS.md) | Scope, simplifications, path to hardware validation |
 | [HONEST_REVIEW.md](HONEST_REVIEW.md) | Self-audit with grades and competitive comparison |
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
+| [RELEASE_NOTES_v0.1.0.md](RELEASE_NOTES_v0.1.0.md) | v0.1.0 release details |
 
 ## Contributing
 

@@ -31,7 +31,7 @@ corresponding validation check with a cited reference.
 ## Development Setup
 
 ```bash
-git clone https://github.com/Yodes94/aethermor.git
+git clone https://github.com/Yoder23/aethermor.git
 cd aethermor
 pip install -e ".[all]"    # core + dashboard + dev tools
 ```

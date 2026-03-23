@@ -399,12 +399,12 @@ resistance or temperature-dependent properties.
 
 Aethermor is released under the Apache 2.0 license at:
 
-> https://github.com/Yodes94/aethermor
+> https://github.com/Yoder23/aethermor
 
 To reproduce all results in this paper:
 
 ```bash
-git clone https://github.com/Yodes94/aethermor
+git clone https://github.com/Yoder23/aethermor
 cd aethermor
 pip install -e ".[all]"
 python -m validation.validate_all   # 133 checks
