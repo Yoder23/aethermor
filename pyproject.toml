@@ -5,13 +5,26 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aethermor"
 version = "0.1.0"
-description = "Thermal design tools for thermodynamic computing — explore material, cooling, energy, and architecture trade-offs."
+description = "Python toolkit for chip thermal analysis, cooling tradeoffs, and compute-density limits in advanced hardware systems."
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
+keywords = [
+    "thermal-analysis",
+    "chip-thermal-modeling",
+    "heat-transfer",
+    "computer-architecture",
+    "semiconductor",
+    "thermodynamics",
+    "cooling",
+    "compute-density",
+    "scientific-computing",
+    "simulation",
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Manufacturing",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",

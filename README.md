@@ -1,38 +1,49 @@
 # Aethermor
 
-**Thermal design tools for thermodynamic computing — explore hardware
-trade-offs interactively or programmatically.**
-
-Aethermor helps hardware engineers answer questions like:
-- *"What gate density can my substrate sustain before thermal runaway?"*
-- *"How much cooling do I actually need?"*
-- *"Where is the thermal bottleneck in my SoC?"*
-- *"When does adiabatic logic beat CMOS?"*
-- *"How would my custom material / paradigm perform against the built-ins?"*
-
-All models use real physics in SI units, cross-validated against CODATA 2018,
-the CRC Handbook, and ITRS/IRDS roadmaps.
+**Open-source Python toolkit for chip thermal analysis, cooling tradeoffs, and compute-density limits in advanced hardware systems.**
 
 ---
 
-## 1. Install
+As transistor scaling slows, **thermal constraints are becoming the primary
+bottleneck in computing**. Aethermor provides the tools to model, analyze, and
+design around those constraints — interactively or programmatically.
+
+### What you can do with Aethermor
+
+- **Find compute-density limits** — how many gates can a substrate actually sustain before thermal runaway?
+- **Explore cooling tradeoffs** — at what point does better cooling stop helping?
+- **Compare chip architectures** — CMOS vs. adiabatic vs. reversible logic under real thermal constraints
+- **Locate thermal bottlenecks** — per-block headroom analysis on heterogeneous SoCs
+- **Project technology scaling** — energy and thermal wall from 130 nm down to 1.4 nm
+- **Test your own materials** — plug in custom substrates, paradigms, and cooling layers
+
+All models use real physics in SI units, validated against CODATA 2018, the CRC
+Handbook, and ITRS/IRDS roadmaps.
+
+---
+
+## Quick Start
 
 ```bash
 git clone https://github.com/Yoder23/aethermor.git
 cd aethermor
-pip install -e ".[dashboard]"      # installs core + interactive UI
+pip install -e ".[dashboard]"      # core + interactive UI
+python app.py                      # open http://127.0.0.1:8050
 ```
 
 > **Core only** (no UI): `pip install -e .`
 > **Everything** (dev + UI): `pip install -e ".[all]"`
 
-## 2. Launch the Explorer UI
+---
+
+## Interactive Explorer Dashboard
 
 ```bash
 python app.py
 ```
 
-Open **http://127.0.0.1:8050** in your browser. You get six interactive tabs:
+The built-in dashboard lets you interactively explore thermal design spaces
+with live-updating charts. Every parameter is a slider or dropdown:
 
 | Tab | What You Can Do |
 |-----|-----------------|
@@ -43,16 +54,13 @@ Open **http://127.0.0.1:8050** in your browser. You get six interactive tabs:
 | **SoC Thermal Map** | Thermal headroom per block on a heterogeneous CPU+GPU+cache+IO chip — find the bottleneck |
 | **Custom Material** | Define your own substrate by entering its thermal properties — it instantly appears in every other tab |
 
-Every parameter is a slider or dropdown. Every chart updates live.
-
 ---
 
-## 3. Use the Python API
+## Python API
 
-If you prefer scripting, every capability in the UI is also available as a
-Python function.
+Every capability in the dashboard is also available as a Python function.
 
-### Which material gives me the most compute density?
+### Find the maximum compute density for a substrate
 
 ```python
 from analysis.thermal_optimizer import ThermalOptimizer
@@ -64,14 +72,14 @@ for r in ranking:
     print(f"{r['material_name']:<25s}  {r['max_density']:.2e} gates/elem")
 ```
 
-### How much cooling do I need?
+### Find minimum cooling requirements
 
 ```python
 req = opt.find_min_cooling("silicon", gate_density=1e5)
 print(f"Min h_conv: {req['min_h_conv']:.0f} W/(m²·K)  →  {req['cooling_category']}")
 ```
 
-### Where is my SoC's thermal bottleneck?
+### Locate thermal bottlenecks on a heterogeneous SoC
 
 ```python
 from physics.chip_floorplan import ChipFloorplan
@@ -82,7 +90,7 @@ for block in headroom:
     print(f"{block['name']:<20s}  T={block['T_max_K']:.0f} K  headroom={block['density_headroom_factor']:.1f}×")
 ```
 
-### When does adiabatic logic beat CMOS?
+### Compare CMOS vs. adiabatic logic crossover
 
 ```python
 from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
@@ -93,7 +101,7 @@ f_cross = adiabatic.crossover_frequency(cmos)
 print(f"Adiabatic beats CMOS below {f_cross:.2e} Hz")
 ```
 
-### How does scaling change things from 130 nm to 1.4 nm?
+### Project technology scaling from 130 nm to 1.4 nm
 
 ```python
 from analysis.tech_roadmap import TechnologyRoadmap
@@ -102,7 +110,7 @@ roadmap = TechnologyRoadmap()
 print(roadmap.full_report())
 ```
 
-### Build a realistic cooling stack
+### Model a realistic cooling stack
 
 ```python
 from physics.cooling import CoolingStack
@@ -113,7 +121,7 @@ print(f"Effective h = {h_eff:.0f} W/(m²·K)")
 print(f"Max power   = {stack.max_power_W(100e-6):.1f} W")
 ```
 
-### Bring your own material
+### Add custom materials, paradigms, and cooling layers
 
 Aethermor is **fully extensible**. Register custom materials, computing paradigms,
 and cooling layers — they instantly work everywhere: optimizer, UI, chip floorplan.
@@ -137,7 +145,7 @@ registry.register("hex_bn", Material(
 ranking = opt.material_ranking(h_conv=1000, materials=["silicon", "hex_bn"])
 ```
 
-### Bring your own computing paradigm
+### Register a custom computing paradigm
 
 ```python
 from dataclasses import dataclass
@@ -173,7 +181,7 @@ walkthrough of all extensibility features.
 
 ---
 
-## 4. Run the Examples
+## Examples
 
 Seven ready-to-run scripts that each answer a specific research question:
 
@@ -187,7 +195,7 @@ python examples/thermal_optimizer.py     # Inverse design: headroom + power redi
 python examples/custom_material.py       # Register your own material, paradigm, and cooling layer
 ```
 
-## 5. Run the Tests
+## Tests
 
 ```bash
 python -m pytest tests/ -v              # 254 tests, ~2 minutes
@@ -196,9 +204,16 @@ python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
 
 ---
 
+## Who This Is For
+
+- **Chip design engineers** evaluating thermal headroom and cooling requirements
+- **Computer architecture researchers** exploring density vs. thermal tradeoffs
+- **Thermal / heat transfer engineers** modeling chip-scale cooling stacks
+- **Anyone studying the physical limits of computation** — Landauer limit, adiabatic switching, technology scaling
+
 ## What's Inside
 
-### `physics/` — SI-Unit Thermodynamic Models
+### `physics/` — Chip Thermal and Energy Models (SI Units)
 
 | Module | What It Does |
 |--------|-------------|
@@ -209,7 +224,7 @@ python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
 | `cooling.py` | Multi-layer cooling stacks + custom layer registry with JSON serialization |
 | `chip_floorplan.py` | Heterogeneous SoC: CPU/GPU/cache/IO blocks with per-block paradigms |
 
-### `analysis/` — Inverse Design & Research Tools
+### `analysis/` — Inverse Design & Thermal Optimization
 
 | Module | What It Does |
 |--------|-------------|
@@ -235,13 +250,16 @@ tests/                # 254 unit, integration, regression tests
 
 ---
 
-## Trust & Validation
+## Scientific Grounding & Validation
+
+Aethermor is built on established heat transfer and semiconductor physics.
+Every model is cross-validated against published reference data:
 
 | Check | Result |
 |-------|--------|
 | Unit tests | 254 pass, 0 fail |
-| Physics validation | 133 cross-checks vs CODATA, CRC, ITRS/IRDS | 
-| Energy conservation | 0.00% error in Fourier solver |
+| Physics validation | 133 cross-checks vs CODATA 2018, CRC Handbook, ITRS/IRDS | 
+| Energy conservation | 0.00% error in 3D Fourier solver |
 | Reproducibility | Seeded, deterministic |
 | Examples | 7/7 run clean |
 
@@ -251,8 +269,8 @@ See [VALIDATION.md](VALIDATION.md) for methodology and reference sources.
 
 Aethermor operates at the **thermal and energy level** — not transistor or
 circuit level. Models use published material properties and standard physics
-(Fourier's law, CMOS scaling, Landauer's principle) but have not been validated
-against fabricated hardware.
+(Fourier's law, CMOS scaling, Landauer's principle). Results have not yet been
+validated against fabricated hardware.
 
 See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 

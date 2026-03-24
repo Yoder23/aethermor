@@ -2,10 +2,11 @@
 
 ## Release Scope
 
-Aethermor v0.1.0 is a thermal design toolkit for thermodynamic computing
-research. It helps hardware engineers answer: *What gate density can my
-substrate sustain? How much cooling do I need? Where is my SoC's thermal
-bottleneck? When does adiabatic logic beat CMOS?*
+Aethermor v0.1.0 is an open-source Python toolkit for chip thermal analysis,
+cooling tradeoffs, and compute-density limits. It helps engineers and
+researchers answer: *What gate density can my substrate sustain? How much
+cooling do I need? Where is my SoC's thermal bottleneck? When does adiabatic
+logic beat CMOS?*
 
 All models use SI-unit physics cross-validated against CODATA 2018, the CRC
 Handbook, and ITRS/IRDS roadmaps.

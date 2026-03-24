@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use Aethermor in research, please cite this software."
-title: "Aethermor: Thermal Design Tools for Thermodynamic Computing Research"
+title: "Aethermor: Chip Thermal Analysis, Cooling Tradeoffs, and Compute-Density Limits"
 type: software
 authors:
   - family-names: "Aethermor Contributors"
@@ -9,24 +9,27 @@ version: "0.1.0"
 date-released: 2026-03-23
 repository-code: "https://github.com/Yoder23/aethermor"
 abstract: >
-  Aethermor provides thermal design tools for exploring material, cooling,
-  energy, and architecture trade-offs in thermodynamic computing. It includes
-  SI-unit physics models (Fourier 3D thermal transport, CMOS/adiabatic/
-  reversible gate energy, 9 substrate materials with extensible registry),
-  inverse design tools (max density, min cooling, headroom mapping, power
-  redistribution), technology roadmap projection (130 nm to 1.4 nm), and an
-  interactive explorer UI. All models are cross-validated against CODATA 2018,
-  the CRC Handbook, and ITRS/IRDS roadmaps (133 physics checks, 254 tests).
+  Aethermor is an open-source Python toolkit for chip thermal analysis,
+  cooling tradeoffs, and compute-density limits in advanced hardware systems.
+  It provides SI-unit physics models (Fourier 3D thermal transport,
+  CMOS/adiabatic/reversible gate energy, 9 substrate materials with extensible
+  registry), inverse design tools (max density, min cooling, headroom mapping,
+  power redistribution), technology roadmap projection (130 nm to 1.4 nm),
+  and an interactive explorer dashboard. All models are cross-validated against
+  CODATA 2018, the CRC Handbook, and ITRS/IRDS roadmaps (133 physics checks,
+  254 tests).
 keywords:
-  - thermodynamic computing
-  - thermal design
-  - inverse thermal design
+  - thermal analysis
+  - chip thermal modeling
+  - heat transfer
+  - computer architecture
+  - semiconductor
+  - thermodynamics
+  - cooling tradeoffs
+  - compute density
   - Landauer limit
-  - gate energy models
-  - substrate materials
-  - Fourier heat diffusion
-  - chip thermal management
-  - reproducibility
+  - scientific computing
+  - simulation
 references:
   - type: generic
     title: "Aethermor: Thermal Design Tools for Thermodynamic Computing"
