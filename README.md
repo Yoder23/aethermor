@@ -54,6 +54,12 @@ with live-updating charts. Every parameter is a slider or dropdown:
 | **SoC Thermal Map** | Thermal headroom per block on a heterogeneous CPU+GPU+cache+IO chip — find the bottleneck |
 | **Custom Material** | Define your own substrate by entering its thermal properties — it instantly appears in every other tab |
 
+![Explorer Dashboard — Material Ranking](docs/screenshot.png)
+
+*The Material Ranking tab comparing maximum compute density across five
+substrates at the 7 nm node and 1 GHz. Diamond sustains 28× higher gate
+density than GaAs under the same thermal and cooling constraints.*
+
 ---
 
 ## Python API

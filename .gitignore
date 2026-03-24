@@ -34,6 +34,7 @@ calibrated_params.json
 
 # Generated images and ad-hoc exports
 *.png
+!docs/*.png
 
 # Ad-hoc test/probe files
 codex_write_*.txt
