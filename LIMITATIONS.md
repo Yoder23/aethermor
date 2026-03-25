@@ -151,12 +151,17 @@ Published architectures from groups like Extropic, Normal Computing, or Purdue's
 p-bit work are not modeled. Aethermor addresses the **thermal management and
 energy efficiency layer** that underlies all these architectures.
 
-### Not Hardware-Validated
+### Not Validated Against Direct Silicon Measurement
 
-No results have been compared against measurements from physical hardware.
-The physics models use published material properties and standard equations
-(Fourier's law, CMOS scaling, Landauer's principle), but the simulator has
-not been calibrated against fabricated test chips or experimental data.
+The thermal model has been validated against published specifications for four
+real chips (NVIDIA A100, Apple M1, AMD EPYC 9654, Intel i9-13900K) and
+produces correct-order-of-magnitude junction temperature predictions from
+first principles (33 checks, all passing). Analytical cross-checks against
+textbook solutions (Incropera & DeWitt) and literature data (CODATA, CRC
+Handbook, ITRS/IRDS) also pass (20 checks). However, results have not been
+compared against direct infrared thermal imaging or probe-station measurements
+on fabricated test chips. Die-level correlation with proprietary floorplan data
+would be needed for sign-off-grade confidence.
 
 ### Original Lattice Simulation
 

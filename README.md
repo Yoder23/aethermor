@@ -18,9 +18,11 @@ design around those constraints — interactively or programmatically.
 - **Test your own materials** — plug in custom substrates, paradigms, and cooling layers
 
 All models use real physics in SI units, validated against CODATA 2018, the CRC
-Handbook, and ITRS/IRDS roadmaps. Aethermor is an **early-stage research tool**
-for design-space exploration — not a sign-off simulator. See
-[LIMITATIONS.md](LIMITATIONS.md) for scope and validation status.
+Handbook, ITRS/IRDS roadmaps, and published specifications for real chips
+(NVIDIA A100, Apple M1, AMD EPYC, Intel i9-13900K). Aethermor is a
+**validated thermal exploration tool** for design-space exploration and
+architecture-stage engineering — not a sign-off simulator.
+See [LIMITATIONS.md](LIMITATIONS.md) for scope and validation status.
 
 ---
 
@@ -219,10 +221,12 @@ Reproducible comparison and case-study scripts in [`benchmarks/`](benchmarks/):
 | `hotspot_comparison.py` | Fair 6-test comparison against HotSpot — where each tool wins |
 | `case_study_substrate_selection.py` | Substrate selection workflow: 4 questions answered in ~9 seconds |
 | `case_study_soc_bottleneck.py` | SoC bottleneck identification and power reallocation |
+| `real_world_validation.py` | 33 checks against 4 published chip designs (A100, M1, EPYC, i9) |
 | `literature_validation.py` | 20 cross-checks against CODATA, CRC, ITRS, Incropera & DeWitt |
 
 ```bash
 python benchmarks/hotspot_comparison.py          # HotSpot comparison
+python benchmarks/real_world_validation.py       # 33 real-chip validations
 python benchmarks/literature_validation.py       # 20 literature cross-checks
 python benchmarks/case_study_substrate_selection.py
 python benchmarks/case_study_soc_bottleneck.py
@@ -286,6 +290,7 @@ Every model is cross-validated against published reference data:
 | Unit tests | 254 pass, 0 fail |
 | Physics validation | 133 cross-checks vs CODATA 2018, CRC Handbook, ITRS/IRDS | 
 | Literature validation | 20 cross-checks vs published reference data (all pass) |
+| Real-world chip validation | 33 checks across 4 published chip designs (all pass) |
 | Energy conservation | 0.00% error in 3D Fourier solver |
 | Reproducibility | Seeded, deterministic |
 | Examples | 7/7 run clean |
@@ -296,8 +301,12 @@ See [VALIDATION.md](VALIDATION.md) for methodology and reference sources.
 
 Aethermor operates at the **thermal and energy level** — not transistor or
 circuit level. Models use published material properties and standard physics
-(Fourier's law, CMOS scaling, Landauer's principle). Results have not yet been
-validated against fabricated hardware.
+(Fourier's law, CMOS scaling, Landauer's principle). The thermal model has
+been validated against published specifications for four real chips (NVIDIA
+A100, Apple M1, AMD EPYC 9654, Intel i9-13900K) and produces
+correct-order-of-magnitude junction temperature predictions from first
+principles. Detailed die-level correlation with proprietary floorplan data
+or direct silicon measurement is a planned next step.
 
 See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 

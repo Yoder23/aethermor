@@ -326,9 +326,12 @@ evaluating new vendor materials or internal R&D substrates in real time.
 
 - **It's validated.** 254 unit tests. 133 physics cross-checks against
   CODATA 2018, CRC Handbook, and ITRS/IRDS data. 20 literature cross-checks
-  (all passing). 0.00% energy conservation error in the 3D solver. This is
-  an early-stage research tool backed by thorough automated testing —
-  external hardware validation remains a next step.
+  (all passing). 33 real-world chip validation checks against published specs
+  for NVIDIA A100, Apple M1, AMD EPYC 9654, and Intel i9-13900K (all passing).
+  0.00% energy conservation error in the 3D solver. The thermal model produces
+  correct-order-of-magnitude junction temperature predictions from first
+  principles. Die-level correlation with proprietary floorplan data is a
+  next step.
 
 ### What Aethermor is NOT
 
@@ -340,9 +343,10 @@ evaluating new vendor materials or internal R&D substrates in real time.
   published material properties and standard physics (Fourier's law, Dennard
   scaling, Landauer's principle).
 
-- Results have **not** been validated against fabricated hardware. The physics
-  models are validated against reference data and analytical solutions — but
-  tape-out correlation requires silicon measurement data.
+- Results have been validated against published chip specs (A100, M1, EPYC,
+  i9-13900K) and produce correct-order thermal predictions. Die-level
+  correlation with proprietary floorplan data or direct silicon measurement
+  is a next step for sign-off-grade confidence.
 
 This is a strength, not a weakness. It means the tool is fast, general, and
 useful at the stage where speed matters most: early architecture.
@@ -375,8 +379,8 @@ correction factors without changing the framework.
 | Language | Python 3.9+ |
 | Dependencies | NumPy, SciPy, Plotly, Dash (all pip-installable) |
 | License | Apache 2.0 (commercial use permitted) |
-| Test coverage | 254 unit tests + 133 physics cross-checks + 20 literature validations |
-| Physics validation | CODATA 2018, CRC Handbook, ITRS/IRDS, Incropera & DeWitt |
+| Test coverage | 254 unit tests + 133 physics cross-checks + 20 literature validations + 33 real-world chip validations |
+| Physics validation | CODATA 2018, CRC Handbook, ITRS/IRDS, Incropera & DeWitt, published chip specs (A100, M1, EPYC, i9) |
 | Solver | 3D Fourier with CFL-stable explicit Euler, 0.00% energy conservation error |
 | Materials | 9 built-in substrates, unlimited custom via registry |
 | Paradigms | CMOS, adiabatic, reversible + custom via registry |

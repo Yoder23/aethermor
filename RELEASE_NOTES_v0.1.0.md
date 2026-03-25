@@ -9,7 +9,8 @@ cooling do I need? Where is my SoC's thermal bottleneck? When does adiabatic
 logic beat CMOS?*
 
 All models use SI-unit physics cross-validated against CODATA 2018, the CRC
-Handbook, and ITRS/IRDS roadmaps.
+Handbook, ITRS/IRDS roadmaps, and published specifications for four real
+chip designs (NVIDIA A100, Apple M1, AMD EPYC 9654, Intel i9-13900K).
 
 ## Key Capabilities
 
@@ -53,11 +54,16 @@ Handbook, and ITRS/IRDS roadmaps.
 ```bash
 python -m pytest tests/ -v               # 254 tests, ~2 minutes
 python -m validation.validate_all        # 133 physics cross-checks, ~13 seconds
+python benchmarks/literature_validation.py    # 20 literature cross-checks
+python benchmarks/real_world_validation.py    # 33 real-world chip validations
 ```
 
 - **254 tests** across unit, integration, regression, and performance layers
 - **133 physics cross-checks** against CODATA 2018, CRC Handbook 97th ed.,
   ITRS 2013, IRDS 2022, Incropera & DeWitt, Carslaw & Jaeger
+- **20 literature cross-checks** against textbook solutions
+- **33 real-world chip validation checks** against published specs for
+  NVIDIA A100, Apple M1, AMD EPYC 9654, Intel i9-13900K
 - **0.00% energy conservation error** in the 3D Fourier solver
 
 See [VALIDATION.md](VALIDATION.md) for full methodology and reference sources.

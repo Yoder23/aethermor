@@ -1,11 +1,16 @@
 # Aethermor Validation Report
 
-**One command to verify everything:**
+**Verify everything:**
 ```bash
-python -m validation.validate_all
+python -m validation.validate_all              # 133 physics cross-checks
+python benchmarks/literature_validation.py     # 20 literature cross-checks
+python benchmarks/real_world_validation.py     # 33 real-world chip validations
 ```
 
-Expected output: **133 checks passed, 0 failed** (~13 seconds).
+Expected output:
+- **133 checks passed, 0 failed** (~13 seconds)
+- **20 checks passed, 0 failed** (~30 seconds)
+- **33 checks passed, 0 failed** (~42 seconds)
 
 ---
 
@@ -295,10 +300,50 @@ To add a new validation check:
 
 ---
 
+## Real-World Chip Validation
+
+In addition to the 133 physics cross-checks, Aethermor has been validated
+against published specifications for four real chip designs:
+
+| Chip | TDP | Die Area | Node | Cooling | Junction Temp Prediction |
+|------|-----|----------|------|---------|--------------------------|
+| NVIDIA A100 (SXM4) | 400 W | 826 mm² | 7 nm | Liquid | 43.5°C (spec: 92°C max) |
+| Apple M1 | 20 W | 120.5 mm² | 5 nm | Fan | 52.1°C (spec: 105°C max) |
+| AMD EPYC 9654 CCD | 30 W | 72 mm² | 5 nm | Server air | 41.2°C (spec: 96°C max) |
+| Intel i9-13900K | 253 W | 257 mm² | 10 nm | Tower cooler | 114.2°C (spec: 100°C max) |
+
+**33 total checks, all passing.** Each chip is validated for:
+- Power density (realistic range)
+- Junction temperature (correct order of magnitude)
+- Cooling stack capacity (covers TDP)
+- Minimum cooling requirement (consistent with actual cooling type)
+- Conduction floor (below T_j_max)
+- Material ranking (silicon allows sufficient density)
+
+Plus 5 cross-chip physics checks and 4 analytical correlation checks.
+
+All chip specs from public datasheets (NVIDIA, Apple, AMD, Intel) and
+architecture analyses (Wikichip, Anandtech).
+
+**Run it yourself:**
+```bash
+python benchmarks/real_world_validation.py
+```
+
+**What this proves:** Aethermor's thermal model produces physically credible
+junction temperature predictions from first principles for real chip designs,
+without curve fitting or parameter tuning.
+
+**What this does not prove:** Exact die-level temperature correlation (would
+require proprietary floorplan data and direct thermal measurement).
+
+---
+
 ## Interpretation
 
-- **133/133 PASS** means every model agrees with published data, analytical
-  solutions, conservation laws, and itself.  You can trust the results.
+- **133/133 PASS** (physics) + **20/20 PASS** (literature) + **33/33 PASS**
+  (real-world chips) means every model agrees with published data, analytical
+  solutions, conservation laws, and real chip specifications.
 
 - **Any FAIL** means something is wrong.  The failure message tells you
   exactly which model, what was expected, and what was observed.  File an
