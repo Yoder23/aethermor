@@ -342,13 +342,17 @@ require proprietary floorplan data and direct thermal measurement).
 ## Interpretation
 
 - **133/133 PASS** (physics) + **20/20 PASS** (literature) + **33/33 PASS**
-  (real-world chips) means every model agrees with published data, analytical
-  solutions, conservation laws, and real chip specifications.
+  (real-world chips) means every model agrees with published reference data,
+  analytical solutions, conservation laws, and real chip specifications
+  within the scope of the tests listed above.
 
 - **Any FAIL** means something is wrong.  The failure message tells you
   exactly which model, what was expected, and what was observed.  File an
   issue or investigate before using results from that model.
 
-- **The validation suite is the contract.**  If it passes on your machine,
-  the physics is correct.  If it fails, something in the environment or
-  code has changed and needs investigation.
+- **The validation suite is a necessary but not sufficient check.**  If it
+  passes on your machine, the models are internally consistent and agree
+  with the published references listed above.  This does not substitute
+  for validation against direct hardware measurement or proprietary
+  simulation tools, which remains outside the current scope
+  (see [LIMITATIONS.md](LIMITATIONS.md)).

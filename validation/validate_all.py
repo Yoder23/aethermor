@@ -18,8 +18,8 @@ and you will see every physics model cross-checked against:
   5. Constraint satisfaction     (optimizer respects its own contracts)
   6. Monotonicity & limit checks (correct qualitative behaviour)
 
-If every check reads PASS, a researcher can trust that Aethermor's
-predictions are grounded in validated physics — not just code that runs.
+If every check reads PASS, the models are internally consistent and
+agree with the published references listed in each section.
 
 Exit code: 0 if all checks pass, 1 if any fail.
 """
@@ -884,9 +884,9 @@ def main():
         print()
         print("  ✓ ALL CHECKS PASSED")
         print()
-        print("  Every model has been validated against published reference data,")
-        print("  analytical solutions, conservation laws, and internal consistency.")
-        print("  Researchers can trust these results.")
+        print("  Every model is internally consistent and agrees with published")
+        print("  reference data, analytical solutions, and conservation laws.")
+        print("  See LIMITATIONS.md for scope of validation.")
         print()
     else:
         print()
