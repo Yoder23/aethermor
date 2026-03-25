@@ -11,9 +11,8 @@ compute temperature). Aethermor's optimiser works backwards:
 
     Given constraints → find the best design.
 
-This is the capability that makes Aethermor a breakthrough research tool.
-It finds answers that would take weeks of manual sweeps in COMSOL or
-custom MATLAB scripts.
+This workflow compression — from manual sweep campaigns to single function
+calls — is the core value of Aethermor for architecture-stage exploration.
 
 Capabilities:
   1.  **Max-density finder**: Binary search for the highest uniform density
@@ -520,14 +519,14 @@ class ThermalOptimizer:
         Optimise gate density distribution across blocks to maximise
         total throughput under a power budget and thermal limit.
 
-        This is the core inverse-design capability that makes Aethermor
-        a breakthrough tool. It answers:
+        This is the core inverse-design capability of Aethermor.  It answers:
 
             "Given my power budget and cooling, how should I distribute
              compute across CPU, GPU, cache, and I/O to maximise total
              throughput without exceeding the thermal limit?"
 
-        No other open-source tool can answer this question.
+        Tools like HotSpot solve the forward thermal problem; this solver
+        works backwards from constraints to an optimal density distribution.
 
         Algorithm:
         1. Compute die-level thermal budget from h_conv and die area

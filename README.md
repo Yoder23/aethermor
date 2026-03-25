@@ -18,7 +18,9 @@ design around those constraints — interactively or programmatically.
 - **Test your own materials** — plug in custom substrates, paradigms, and cooling layers
 
 All models use real physics in SI units, validated against CODATA 2018, the CRC
-Handbook, and ITRS/IRDS roadmaps.
+Handbook, and ITRS/IRDS roadmaps. Aethermor is an **early-stage research tool**
+for design-space exploration — not a sign-off simulator. See
+[LIMITATIONS.md](LIMITATIONS.md) for scope and validation status.
 
 ---
 
@@ -208,6 +210,24 @@ python -m pytest tests/ -v              # 254 tests, ~2 minutes
 python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
 ```
 
+## Benchmarks
+
+Reproducible comparison and case-study scripts in [`benchmarks/`](benchmarks/):
+
+| Script | What It Shows |
+|--------|---------------|
+| `hotspot_comparison.py` | Fair 6-test comparison against HotSpot — where each tool wins |
+| `case_study_substrate_selection.py` | Substrate selection workflow: 4 questions answered in ~9 seconds |
+| `case_study_soc_bottleneck.py` | SoC bottleneck identification and power reallocation |
+| `literature_validation.py` | 20 cross-checks against CODATA, CRC, ITRS, Incropera & DeWitt |
+
+```bash
+python benchmarks/hotspot_comparison.py          # HotSpot comparison
+python benchmarks/literature_validation.py       # 20 literature cross-checks
+python benchmarks/case_study_substrate_selection.py
+python benchmarks/case_study_soc_bottleneck.py
+```
+
 ---
 
 ## Who This Is For
@@ -265,6 +285,7 @@ Every model is cross-validated against published reference data:
 |-------|--------|
 | Unit tests | 254 pass, 0 fail |
 | Physics validation | 133 cross-checks vs CODATA 2018, CRC Handbook, ITRS/IRDS | 
+| Literature validation | 20 cross-checks vs published reference data (all pass) |
 | Energy conservation | 0.00% error in 3D Fourier solver |
 | Reproducibility | Seeded, deterministic |
 | Examples | 7/7 run clean |

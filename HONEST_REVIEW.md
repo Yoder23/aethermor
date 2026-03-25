@@ -7,12 +7,13 @@
 
 ## Executive Summary
 
-Aethermor is a **thermodynamic computing research toolkit** that uniquely combines
+Aethermor is a **thermodynamic computing research toolkit** that integrates
 Landauer-aware energy modeling, 3D Fourier thermal simulation, heterogeneous chip
 floorplanning, cooling stack design, technology roadmap projection, and inverse
-thermal design.
+thermal design into a single exploratory workflow.
 
-No other open-source tool answers questions like:
+It is designed to answer questions that are usually spread across separate
+tools and manual sweep campaigns:
 
 - *"Given my 50 W power budget, 7 nm process, and liquid cooling, how should I
   distribute compute across CPU, GPU, cache, and I/O to maximise throughput
@@ -22,18 +23,18 @@ No other open-source tool answers questions like:
 - *"How does my cooling architecture's diminishing-returns floor change between
   silicon and diamond?"*
 
-These are questions hardware researchers currently answer through weeks of manual
-COMSOL sweeps or custom MATLAB scripts. Aethermor answers them in seconds with
-validated, physically-grounded models.
+These are questions hardware researchers currently answer through manual
+COMSOL sweeps, HotSpot configurations, or custom scripts. Aethermor integrates
+them into a single API and interactive dashboard.
 
 **Test suite**: 254 tests passing, 1 skipped (dashboard requires optional `dash`).
 **Energy conservation**: 0.00 % error in 3D Fourier solver (tolerance: 5 %).
 
 ---
 
-## Section 1: What Makes Aethermor a Breakthrough
+## Section 1: What Makes Aethermor Different
 
-### 1.1 Inverse Thermal Design (No Open-Source Equivalent)
+### 1.1 Inverse Thermal Design
 
 Most thermal tools solve the *forward problem*: given a design, compute the
 temperature.  Aethermor solves the *inverse problem*: given constraints, **find
@@ -50,8 +51,17 @@ the best design**.
 | `optimize_power_distribution()` | Optimal gate density distribution under power + thermal limits | Constrained allocation with thermal/power binding detection |
 | `full_design_exploration()` | One-call comprehensive design space analysis | Combines all above |
 
-**No other open-source tool offers these capabilities.** COMSOL is commercial
-($25k+/year). HotSpot is forward-only — it cannot find optimal configurations.
+**This integrated inverse-design workflow is Aethermor's core differentiator.**
+Individual thermal tools (HotSpot, COMSOL, custom scripts) can be configured to
+perform some of these tasks, but Aethermor packages them into a single,
+validated, interactive environment. HotSpot's HotFloorplan offers
+optimization-oriented thermal analysis; Aethermor adds Landauer-aware energy
+models, multi-paradigm comparison, cooling stack modeling, and extensible
+registries on top of the thermal core.
+
+The value is **workflow compression**: what normally requires configuring
+multiple tools and writing glue code becomes a single function call or
+dashboard interaction.
 
 ### 1.2 Physics Foundation
 
@@ -231,20 +241,19 @@ architecture-level thermal budgeting but not for detailed circuit design.
 
 | Capability | Aethermor | HotSpot | COMSOL | Custom scripts |
 |---|---|---|---|---|
-| Forward thermal simulation | 3D Fourier | Compact | FEM | varies |
-| Inverse design (find optimal) | 8 tools | No | No (needs scripting) | No (manual) |
+| Forward thermal simulation | 3D Fourier | Compact + grid | FEM | varies |
+| Inverse design (find optimal) | 8 integrated tools | HotFloorplan (layout opt.) | Scripted sweeps | Manual |
 | Landauer gap tracking | per-paradigm | No | No | No |
-| Multi-material comparison | 9 + custom | Si only | Yes | No |
+| Multi-material comparison | 9 + custom | Limited | Yes | No |
 | Adiabatic/reversible paradigms | 4 + custom | No | No | No |
-| Cooling stack modeling | multi-layer | partial | Yes | No |
+| Cooling stack modeling | multi-layer | Package model | Yes | No |
 | Technology roadmap | 130nm to 1.4nm | No | No | No |
 | Heterogeneous SoC floorplan | Yes | Yes | Yes | No |
-| Thermal headroom map | per-block | No | No | No |
+| Thermal headroom map | per-block | Partial (temps) | Partial | No |
 | Power redistribution optimizer | Yes | No | No | No |
 | Custom material/paradigm registry | Yes | No | No | No |
 | Interactive explorer UI | 6 tabs | No | No | No |
 | Open source | Apache 2.0 | BSD | No ($25k+/yr) | varies |
-| Price | Free | Free | $25,000+/yr | N/A |
 
 ---
 
@@ -260,14 +269,21 @@ architecture-level thermal budgeting but not for detailed circuit design.
 | Inverse design capability | **A** | 8 tools: max density, min cooling, headroom map, power redistribution, material ranking, paradigm comparison, cooling sweep, full exploration |
 | Claims accuracy | **A-** | All current claims backed by physics models. Legacy benchmarks honestly documented as mechanism validation. |
 | Documentation | **A** | README, LIMITATIONS, HONEST_REVIEW, VALIDATION.md, 7 examples, all accurate |
-| Unique capability | **A** | The only open-source tool combining Landauer-aware energy + 3D thermal + inverse design + multi-paradigm + extensible registries + tech roadmap |
-| **OSS readiness** | **Ready — genuine breakthrough** | Novel capabilities with no open-source equivalent |
+| Unique capability | **B+** | Integrates Landauer-aware energy + 3D thermal + inverse design + multi-paradigm + extensible registries + tech roadmap in one workflow. Individual capabilities exist elsewhere; the combination and accessibility are new. |
+| **OSS readiness** | **Ready for exploratory use** | Useful for architecture-stage exploration. Not yet validated against fabricated hardware or benchmarked against established tools on representative cases. |
 
-**Bottom line**: Aethermor is the first open-source tool that answers inverse
-thermal design questions for thermodynamic computing research. A hardware
-researcher can use it to explore material selections, cooling architectures,
-paradigm crossovers, density limits, and optimal power distributions — work
-that currently requires weeks of manual sweeps in commercial tools or custom
-scripts. 254 unit tests pass, 133 physics cross-checks verify every model
-against published data (CODATA, CRC Handbook, ITRS/IRDS), and limitations
-are honestly documented.
+**Bottom line**: Aethermor integrates inverse thermal design, Landauer-aware
+energy models, heterogeneous SoC analysis, and multi-paradigm comparison into
+a single open-source toolkit. A hardware researcher can use it to explore
+material selections, cooling architectures, paradigm crossovers, density
+limits, and optimal power distributions — work that normally requires
+configuring multiple separate tools or writing custom scripts.
+
+254 unit tests pass, 133 physics cross-checks verify every model against
+published data (CODATA, CRC Handbook, ITRS/IRDS), and limitations are
+honestly documented.
+
+The project is at the **early-stage research tool** level: useful for
+exploratory work and fast hypothesis testing, not yet validated against
+fabricated hardware or benchmarked against established tools on
+representative cases. External validation is the next milestone.

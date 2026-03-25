@@ -420,12 +420,12 @@ and can be run on any machine with Python ≥ 3.10 and NumPy.
 
 ## 10. Conclusion
 
-Aethermor provides the first open-source toolkit for inverse thermal design
-in thermodynamic computing research. By combining calibrated energy models,
+Aethermor provides an integrated open-source toolkit for inverse thermal design
+in thermodynamic computing research.  By combining calibrated energy models,
 validated thermal solvers, and systematic inverse design algorithms, it
-enables hardware architects to explore material selections, cooling
-trade-offs, paradigm crossovers, and heterogeneous SoC optimisations in
-seconds rather than weeks. The built-in validation suite of 133 cross-checks
+compresses the exploratory workflow for material selections, cooling
+trade-offs, paradigm crossovers, and heterogeneous SoC optimisations into
+interactive, sub-second queries. The built-in validation suite of 133 cross-checks
 against published data ensures that every result is grounded in verified
 physics. As transistor scaling pushes designs closer to the Landauer limit,
 tools like Aethermor become essential for navigating the narrowing design

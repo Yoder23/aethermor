@@ -6,8 +6,8 @@ need: "At what technology node does each computing paradigm enter
 the thermodynamic regime, and when does the Landauer limit become a
 practical constraint?"
 
-No other open-source tool combines Landauer-aware energy models with
-multi-material thermal simulation to produce roadmap projections like:
+Aethermor integrates Landauer-aware energy models with multi-material
+thermal simulation to produce roadmap projections including:
   - Energy per operation vs. technology node for all paradigms
   - Landauer gap closure curve per paradigm
   - Maximum sustainable density per node per material per cooling strategy

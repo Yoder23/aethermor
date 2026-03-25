@@ -176,9 +176,16 @@ on a screen share, without writing a single line of Python.
 | **License cost** | $50K–$200K/seat/year | Free. Apache 2.0 |
 | **When to use** | Final sign-off, detailed thermal validation | Early architecture, design space exploration, strategic planning |
 
-**Aethermor is not a replacement for ANSYS.** It's the tool that makes your ANSYS
-runs 10× more productive — because your architects already know the right design
-direction before they commit to a detailed simulation.
+**Aethermor is not a replacement for ANSYS.** It's the tool that narrows the
+design space *before* committing to a detailed simulation — so your ANSYS runs
+confirm rather than surprise.
+
+**Note:** HotSpot (open-source, UVA) also provides fast thermal simulation with
+compact-model accuracy. Its HotFloorplan module supports layout-level
+optimization. Where Aethermor adds value is in substrate-aware inverse design
+(density from constraints), paradigm crossover analysis, and Landauer-regime
+tracking — capabilities designed for early architecture exploration rather
+than layout refinement.
 
 ---
 
@@ -293,13 +300,15 @@ evaluating new vendor materials or internal R&D substrates in real time.
 
 ### Why it's different enough to be worth adding
 
-- **It solves the inverse problem.** Every existing tool goes forward (design →
-  temperature). Aethermor goes backward (constraints → maximum feasible design).
-  This is the question architects actually ask.
+- **It solves the inverse problem.** Most thermal tools go forward (design →
+  temperature). HotSpot's HotFloorplan does layout optimization, but
+  Aethermor works backward from thermal constraints to maximum feasible
+  compute density, substrate ranking, and paradigm selection — the questions
+  architects ask before detailed layout begins.
 
-- **It's Landauer-aware.** No other thermal tool tracks the distance to the
-  thermodynamic limit. As nodes shrink, this becomes a first-class design
-  constraint — not an academic curiosity.
+- **It's Landauer-aware.** Aethermor tracks the distance to the
+  thermodynamic limit per block, per node, per frequency. As nodes shrink,
+  this becomes a first-class design constraint — not an academic curiosity.
 
 - **It treats substrate material as a design variable.** Current tools treat
   the substrate as fixed input. Aethermor treats it as a variable to optimize
@@ -316,8 +325,10 @@ evaluating new vendor materials or internal R&D substrates in real time.
   everywhere.
 
 - **It's validated.** 254 unit tests. 133 physics cross-checks against
-  CODATA 2018, CRC Handbook, and ITRS/IRDS data. 0.00% energy conservation
-  error in the 3D solver. This isn't a prototype — it's tested infrastructure.
+  CODATA 2018, CRC Handbook, and ITRS/IRDS data. 20 literature cross-checks
+  (all passing). 0.00% energy conservation error in the 3D solver. This is
+  an early-stage research tool backed by thorough automated testing —
+  external hardware validation remains a next step.
 
 ### What Aethermor is NOT
 
@@ -364,8 +375,8 @@ correction factors without changing the framework.
 | Language | Python 3.9+ |
 | Dependencies | NumPy, SciPy, Plotly, Dash (all pip-installable) |
 | License | Apache 2.0 (commercial use permitted) |
-| Test coverage | 254 unit tests + 133 physics cross-checks |
-| Physics validation | CODATA 2018, CRC Handbook, ITRS/IRDS |
+| Test coverage | 254 unit tests + 133 physics cross-checks + 20 literature validations |
+| Physics validation | CODATA 2018, CRC Handbook, ITRS/IRDS, Incropera & DeWitt |
 | Solver | 3D Fourier with CFL-stable explicit Euler, 0.00% energy conservation error |
 | Materials | 9 built-in substrates, unlimited custom via registry |
 | Paradigms | CMOS, adiabatic, reversible + custom via registry |

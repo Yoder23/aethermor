@@ -9,7 +9,7 @@ cooling is needed to reach a target density?
 
 This script solves the INVERSE problem:
   Forward:  design → temperature   (what most tools do)
-  Inverse:  constraints → optimal design   (what Aethermor uniquely does)
+  Inverse:  constraints → optimal design   (Aethermor's core workflow)
 
 What this script demonstrates:
   1. Find max density for each material via 3D thermal binary search

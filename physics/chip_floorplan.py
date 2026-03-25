@@ -15,8 +15,8 @@ This module lets researchers:
   4.  Study how block placement affects thermal coupling and hotspots
   5.  Optimise floorplan placement for thermal balance
 
-No other open-source tool combines Landauer-aware energy models with
-heterogeneous chip floorplanning on a 3D thermal solver.
+Aethermor integrates Landauer-aware energy models with heterogeneous
+chip floorplanning on a 3D thermal solver in a single exploratory workflow.
 
 Example
 -------
