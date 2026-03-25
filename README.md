@@ -251,8 +251,9 @@ python examples/custom_material.py       # Register your own material, paradigm,
 ## Tests
 
 ```bash
-python -m pytest tests/ -v              # 254 tests, ~2 minutes
+python -m pytest tests/ -v              # ~278 tests, ~2 minutes
 python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
+python run_all_validations.py           # ALL 12 suites, 680+ checks, ~3 minutes
 ```
 
 ## Benchmarks
@@ -262,21 +263,26 @@ Reproducible comparison and case-study scripts in [`benchmarks/`](benchmarks/):
 | Script | What It Shows |
 |--------|---------------|
 | `hotspot_comparison.py` | Fair 6-test comparison against HotSpot — where each tool wins |
-| `case_study_cooling_decision.py` | **Decision-changing**: cooling vs substrate vs compute redistribution |
-| `case_study_substrate_selection.py` | Substrate selection workflow: 4 questions answered in ~9 seconds |
-| `case_study_soc_bottleneck.py` | SoC bottleneck identification and power reallocation |
+| `chip_thermal_database.py` | **82 checks** against 12 real chips across 4 segments (accelerators, servers, desktops, mobile) |
+| `material_cross_validation.py` | **93 checks** cross-validating 9 materials against CRC, ASM, NIST, Ioffe, manufacturer data |
 | `real_world_validation.py` | 33 checks against 4 published chip designs (A100, M1, EPYC, i9) |
 | `experimental_validation.py` | 18 checks vs JEDEC θ_jc, IR thermal imaging, HotSpot benchmarks |
 | `literature_validation.py` | 20 cross-checks against CODATA, CRC, ITRS, Incropera & DeWitt |
+| `case_study_datacenter.py` | **Decision-changing**: 8× GPU node cooling strategy — liquid vs substrate vs diamond |
+| `case_study_mobile_soc.py` | Mobile SoC thermal envelope — sustainable power, substrate impact, CMOS vs adiabatic |
+| `case_study_cooling_decision.py` | Cooling vs substrate vs compute redistribution |
+| `case_study_substrate_selection.py` | Substrate selection workflow: 4 questions answered in ~9 seconds |
+| `case_study_soc_bottleneck.py` | SoC bottleneck identification and power reallocation |
 
 ```bash
-python benchmarks/hotspot_comparison.py          # HotSpot comparison
+python run_all_validations.py                    # Run everything (12 suites)
+python benchmarks/chip_thermal_database.py       # 82 checks, 12 real chips
+python benchmarks/material_cross_validation.py   # 93 checks, 9 materials
 python benchmarks/real_world_validation.py       # 33 real-chip validations
 python benchmarks/experimental_validation.py     # 18 experimental measurement checks
 python benchmarks/literature_validation.py       # 20 literature cross-checks
-python benchmarks/case_study_cooling_decision.py
-python benchmarks/case_study_substrate_selection.py
-python benchmarks/case_study_soc_bottleneck.py
+python benchmarks/case_study_datacenter.py       # Datacenter cooling strategy
+python benchmarks/case_study_mobile_soc.py       # Mobile SoC thermal envelope
 ```
 
 ---
@@ -327,9 +333,11 @@ physics/              # SI-unit thermodynamic models (extensible registries)
 analysis/             # Inverse design & research tools
 simulation/           # Legacy Monte Carlo / evolutionary simulation engine
 validation/           # 133 physics cross-checks
+benchmarks/           # 11 validation/case-study scripts (246+ checks)
 examples/             # 7 ready-to-run research scripts
 experiments/          # Reproducibility scripts (ablations, scaling, fault sweeps)
-tests/                # 254 unit, integration, regression tests
+tests/                # 278 unit, integration, regression tests
+run_all_validations.py  # Master runner: all 12 suites, 680+ checks
 ```
 
 ---
@@ -341,13 +349,19 @@ Every model is cross-validated against published reference data:
 
 | Check | Result |
 |-------|--------|
-| Unit tests | 254 pass, 0 fail |
+| Unit + integration tests | 278 pass, 0 fail |
 | Physics validation | 133 cross-checks vs CODATA 2018, CRC Handbook, ITRS/IRDS | 
-| Literature validation | 20 cross-checks vs published reference data (all pass) |
+| Chip thermal database | 82 checks across 12 real chips in 4 segments (A100, H100, MI300X, EPYC, Xeon, i9, Ryzen, M1, M2, Snapdragon, etc.) |
+| Material cross-validation | 93 checks, 9 materials vs CRC Handbook, ASM, NIST, Ioffe, manufacturer data |
 | Real-world chip validation | 33 checks across 4 published chip designs (all pass) |
 | Experimental measurement validation | 18 checks vs JEDEC θ_jc, IR thermal imaging, HotSpot (all pass) |
+| Literature validation | 20 cross-checks vs published reference data (all pass) |
+| Engineering case studies | 23+ decision-driven checks (datacenter cooling, mobile SoC, substrate selection) |
 | Energy conservation | 0.00% error in 3D Fourier solver |
 | Reproducibility | Seeded, deterministic |
+| **Total validated checks** | **680+** |
+
+Run `python run_all_validations.py` to verify everything in one command (12 suites, ~3 minutes).
 | Examples | 7/7 run clean |
 
 See [VALIDATION.md](VALIDATION.md) for methodology and reference sources.
@@ -356,12 +370,18 @@ See [VALIDATION.md](VALIDATION.md) for methodology and reference sources.
 
 Aethermor operates at the **thermal and energy level** — not transistor or
 circuit level. Models use published material properties and standard physics
-(Fourier's law, CMOS scaling, Landauer's principle). The thermal model has
-been validated against published JEDEC-standard thermal resistance
-measurements, IR thermal imaging data, and HotSpot simulation benchmarks,
-in addition to published specifications for four real chips (NVIDIA
-A100, Apple M1, AMD EPYC 9654, Intel i9-13900K). Detailed die-level
-correlation with proprietary floorplan data is a planned next step.
+(Fourier's law, CMOS scaling, Landauer's principle). The toolkit has been
+validated with 680+ independent checks against:
+
+- **12 real production chips** across accelerators, servers, desktops, and mobile
+- **9 materials** cross-validated against CRC Handbook, ASM, NIST, and Ioffe Institute
+- Published JEDEC-standard thermal resistance measurements and IR thermal imaging data
+- HotSpot simulation benchmarks
+
+Aethermor is **production-ready for architecture-stage engineering**: design-space
+exploration, material comparison, cooling-strategy tradeoffs. It is not a sign-off
+simulator. Detailed die-level correlation with proprietary floorplan data is a
+planned next step.
 
 See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 

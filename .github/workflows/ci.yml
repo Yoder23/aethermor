@@ -41,6 +41,18 @@ jobs:
       - name: Run experimental measurement validation
         run: python benchmarks/experimental_validation.py
 
+      - name: Run chip thermal database validation
+        run: python benchmarks/chip_thermal_database.py
+
+      - name: Run material cross-validation
+        run: python benchmarks/material_cross_validation.py
+
+      - name: Run case study - datacenter
+        run: python benchmarks/case_study_datacenter.py
+
+      - name: Run case study - mobile SoC
+        run: python benchmarks/case_study_mobile_soc.py
+
   security:
     runs-on: ubuntu-latest
     timeout-minutes: 20
