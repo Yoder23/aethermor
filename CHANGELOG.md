@@ -2,7 +2,27 @@
 
 All notable changes to this project are documented in this file.
 
-## [0.1.0] - 2026-03-23
+## [Unreleased]
+
+## [0.1.0] - 2026-03-24
+
+### Added — Real-World Chip Validation
+- `benchmarks/real_world_validation.py`: 33 checks validating thermal predictions
+  against published specifications for NVIDIA A100, Apple M1, AMD EPYC 9654, and
+  Intel i9-13900K — all passing
+- Junction temperature predictions within expected ranges using first-principles
+  physics (conduction + package heat spreading + convection)
+- CI pipeline now runs literature and real-world chip validation on every push
+
+### Added — Benchmarks and Case Studies
+- `benchmarks/hotspot_comparison.py`: Fair 6-test comparison against HotSpot,
+  showing where each tool adds value
+- `benchmarks/literature_validation.py`: 20 cross-checks against CODATA, CRC
+  Handbook, ITRS/IRDS, Incropera & DeWitt — all passing
+- `benchmarks/case_study_substrate_selection.py`: Substrate selection workflow
+  answering 4 questions in ~9 seconds
+- `benchmarks/case_study_soc_bottleneck.py`: SoC bottleneck identification and
+  power reallocation
 
 ### Added — Physics Foundation
 - `physics/` package with real SI-unit thermodynamic models:

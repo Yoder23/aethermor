@@ -1,5 +1,10 @@
 # Aethermor
 
+[![CI](https://github.com/Yoder23/aethermor/actions/workflows/ci.yml/badge.svg)](https://github.com/Yoder23/aethermor/actions/workflows/ci.yml)
+![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/Yoder23/aethermor)](https://github.com/Yoder23/aethermor/releases)
+
 **Open-source Python toolkit for chip thermal analysis, cooling tradeoffs, and compute-density limits in advanced hardware systems.**
 
 ---
@@ -33,6 +38,12 @@ git clone https://github.com/Yoder23/aethermor.git
 cd aethermor
 pip install -e ".[dashboard]"      # core + interactive UI
 python app.py                      # open http://127.0.0.1:8050
+```
+
+Or install directly from the release wheel:
+
+```bash
+pip install https://github.com/Yoder23/aethermor/releases/download/v0.1.0/aethermor-0.1.0-py3-none-any.whl
 ```
 
 > **Core only** (no UI): `pip install -e .`
@@ -314,6 +325,7 @@ See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 
 | Document | What It Covers |
 |----------|---------------|
+| [docs/API_REFERENCE.md](docs/API_REFERENCE.md) | Complete API reference — all classes, methods, parameters |
 | [VALIDATION.md](VALIDATION.md) | Physics validation methodology & references |
 | [LIMITATIONS.md](LIMITATIONS.md) | Scope, simplifications, path to hardware validation |
 | [HONEST_REVIEW.md](HONEST_REVIEW.md) | Self-audit with grades and competitive comparison |

@@ -36,3 +36,9 @@ from physics.cooling import (
     validate_layer, layer_from_dict, layer_to_dict,
 )
 from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+
+try:
+    from importlib.metadata import version as _pkg_version
+    __version__ = _pkg_version("aethermor")
+except Exception:
+    __version__ = "0.1.0"

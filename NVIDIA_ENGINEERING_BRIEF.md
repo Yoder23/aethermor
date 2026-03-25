@@ -196,7 +196,7 @@ than layout refinement.
 git clone https://github.com/Yoder23/aethermor.git
 cd aethermor
 
-# 2. Install (Python 3.9+)
+# 2. Install (Python 3.10+)
 pip install -e ".[dashboard]"
 
 # 3. Launch the interactive explorer
@@ -376,7 +376,7 @@ correction factors without changing the framework.
 
 | Spec | Detail |
 |------|--------|
-| Language | Python 3.9+ |
+| Language | Python 3.10+ |
 | Dependencies | NumPy, SciPy, Plotly, Dash (all pip-installable) |
 | License | Apache 2.0 (commercial use permitted) |
 | Test coverage | 254 unit tests + 133 physics cross-checks + 20 literature validations + 33 real-world chip validations |

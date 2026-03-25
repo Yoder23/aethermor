@@ -29,6 +29,12 @@ jobs:
       - name: Run validation suite
         run: python -m validation.validate_all
 
+      - name: Run literature validation
+        run: python benchmarks/literature_validation.py
+
+      - name: Run real-world chip validation
+        run: python benchmarks/real_world_validation.py
+
   security:
     runs-on: ubuntu-latest
     timeout-minutes: 20
