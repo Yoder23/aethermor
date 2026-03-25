@@ -26,9 +26,10 @@ All models use real physics in SI units, validated against CODATA 2018, the CRC
 Handbook, ITRS/IRDS roadmaps, published specifications for real chips
 (NVIDIA A100, Apple M1, AMD EPYC, Intel i9-13900K), and published hardware
 measurements (JEDEC θ_jc thermal resistance, IR thermal imaging, HotSpot
-benchmarks). Aethermor is a **production-ready thermal exploration tool** for
-design-space exploration and architecture-stage engineering — not a sign-off
-simulator. See [LIMITATIONS.md](LIMITATIONS.md) for scope and validation status.
+benchmarks). Aethermor is **production-ready for architecture-stage
+engineering** — design-space exploration, material comparison,
+cooling-strategy tradeoffs — not a sign-off simulator.
+See [LIMITATIONS.md](LIMITATIONS.md) for scope and validation status.
 
 ---
 

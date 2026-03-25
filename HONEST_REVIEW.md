@@ -289,9 +289,9 @@ confirm correct-order thermal predictions for 4 published chip designs
 measurement checks validate against JEDEC θ_jc data, published IR thermal
 imaging, and HotSpot benchmarks. Limitations are honestly documented.
 
-The project is a **production-ready thermal exploration tool**: validated
-against published hardware measurements and proven to produce physically
-credible results for real chip configurations. Suitable for architecture-stage
-engineering work — substrate selection, cooling tradeoffs, density limits,
-paradigm crossover analysis. Die-level correlation with proprietary floorplan
+The project is **production-ready for architecture-stage engineering**:
+validated against published hardware measurements and proven to produce
+physically credible results for real chip configurations. Suitable for
+substrate selection, cooling tradeoffs, density limits, and paradigm
+crossover analysis. Die-level correlation with proprietary floorplan
 data is the next milestone on the path to sign-off-grade use.
