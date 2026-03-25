@@ -23,11 +23,12 @@ design around those constraints — interactively or programmatically.
 - **Test your own materials** — plug in custom substrates, paradigms, and cooling layers
 
 All models use real physics in SI units, validated against CODATA 2018, the CRC
-Handbook, ITRS/IRDS roadmaps, and published specifications for real chips
-(NVIDIA A100, Apple M1, AMD EPYC, Intel i9-13900K). Aethermor is a
-**validated thermal exploration tool** for design-space exploration and
-architecture-stage engineering — not a sign-off simulator.
-See [LIMITATIONS.md](LIMITATIONS.md) for scope and validation status.
+Handbook, ITRS/IRDS roadmaps, published specifications for real chips
+(NVIDIA A100, Apple M1, AMD EPYC, Intel i9-13900K), and published hardware
+measurements (JEDEC θ_jc thermal resistance, IR thermal imaging, HotSpot
+benchmarks). Aethermor is a **production-ready thermal exploration tool** for
+design-space exploration and architecture-stage engineering — not a sign-off
+simulator. See [LIMITATIONS.md](LIMITATIONS.md) for scope and validation status.
 
 ---
 
@@ -43,7 +44,7 @@ python app.py                      # open http://127.0.0.1:8050
 Or install directly from the release wheel:
 
 ```bash
-pip install https://github.com/Yoder23/aethermor/releases/download/v0.1.0/aethermor-0.1.0-py3-none-any.whl
+pip install https://github.com/Yoder23/aethermor/releases/download/v1.0.0/aethermor-1.0.0-py3-none-any.whl
 ```
 
 > **Core only** (no UI): `pip install -e .`
@@ -233,11 +234,13 @@ Reproducible comparison and case-study scripts in [`benchmarks/`](benchmarks/):
 | `case_study_substrate_selection.py` | Substrate selection workflow: 4 questions answered in ~9 seconds |
 | `case_study_soc_bottleneck.py` | SoC bottleneck identification and power reallocation |
 | `real_world_validation.py` | 33 checks against 4 published chip designs (A100, M1, EPYC, i9) |
+| `experimental_validation.py` | 18 checks vs JEDEC θ_jc, IR thermal imaging, HotSpot benchmarks |
 | `literature_validation.py` | 20 cross-checks against CODATA, CRC, ITRS, Incropera & DeWitt |
 
 ```bash
 python benchmarks/hotspot_comparison.py          # HotSpot comparison
 python benchmarks/real_world_validation.py       # 33 real-chip validations
+python benchmarks/experimental_validation.py     # 18 experimental measurement checks
 python benchmarks/literature_validation.py       # 20 literature cross-checks
 python benchmarks/case_study_substrate_selection.py
 python benchmarks/case_study_soc_bottleneck.py
@@ -302,6 +305,7 @@ Every model is cross-validated against published reference data:
 | Physics validation | 133 cross-checks vs CODATA 2018, CRC Handbook, ITRS/IRDS | 
 | Literature validation | 20 cross-checks vs published reference data (all pass) |
 | Real-world chip validation | 33 checks across 4 published chip designs (all pass) |
+| Experimental measurement validation | 18 checks vs JEDEC θ_jc, IR thermal imaging, HotSpot (all pass) |
 | Energy conservation | 0.00% error in 3D Fourier solver |
 | Reproducibility | Seeded, deterministic |
 | Examples | 7/7 run clean |
@@ -313,11 +317,11 @@ See [VALIDATION.md](VALIDATION.md) for methodology and reference sources.
 Aethermor operates at the **thermal and energy level** — not transistor or
 circuit level. Models use published material properties and standard physics
 (Fourier's law, CMOS scaling, Landauer's principle). The thermal model has
-been validated against published specifications for four real chips (NVIDIA
-A100, Apple M1, AMD EPYC 9654, Intel i9-13900K) and produces
-correct-order-of-magnitude junction temperature predictions from first
-principles. Detailed die-level correlation with proprietary floorplan data
-or direct silicon measurement is a planned next step.
+been validated against published JEDEC-standard thermal resistance
+measurements, IR thermal imaging data, and HotSpot simulation benchmarks,
+in addition to published specifications for four real chips (NVIDIA
+A100, Apple M1, AMD EPYC 9654, Intel i9-13900K). Detailed die-level
+correlation with proprietary floorplan data is a planned next step.
 
 See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 

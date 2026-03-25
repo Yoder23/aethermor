@@ -38,6 +38,9 @@ jobs:
       - name: Run real-world chip validation
         run: python benchmarks/real_world_validation.py
 
+      - name: Run experimental measurement validation
+        run: python benchmarks/experimental_validation.py
+
   security:
     runs-on: ubuntu-latest
     timeout-minutes: 20

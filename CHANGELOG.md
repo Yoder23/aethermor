@@ -4,6 +4,31 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-03-25
+
+### Added — Experimental Measurement Validation
+- `benchmarks/experimental_validation.py`: 18 checks validating the thermal model
+  against published hardware measurements — all passing:
+  - **Tier 1**: JEDEC-standard junction-to-case thermal resistance (θ_jc) for
+    NVIDIA A100, Intel i9-13900K, AMD Ryzen 7950X
+  - **Tier 2**: Published experimental data — Kandlikar 2003 microchannel ΔT,
+    Bar-Cohen & Wang 2009 IR hotspot, Yovanovich 1998 spreading resistance,
+    full-path junction temperature for 100 W desktop package
+  - **Tier 3**: HotSpot ev6 benchmark, Incropera analytical, Biot number,
+    thermal time constant, COMSOL-verified fin geometry, 3D Fourier energy
+    conservation
+- CI pipeline now runs experimental measurement validation on every push
+
+### Changed
+- Version bumped to 1.0.0 — production-ready for architecture-stage engineering
+- Development Status classifier upgraded from "4 - Beta" to "5 - Production/Stable"
+- Updated VALIDATION.md with experimental measurement validation section
+- Updated LIMITATIONS.md: "Not Validated Against Direct Silicon Measurement" →
+  "Validated Against Published Hardware Measurements — Not Custom Test Chips"
+- Updated HONEST_REVIEW.md: added 18 experimental checks to validation grade,
+  OSS readiness upgraded to "Production-ready for architecture-stage engineering"
+- CI matrix tests Python 3.10, 3.11, and 3.12
+
 ## [0.1.0] - 2026-03-24
 
 ### Added — Real-World Chip Validation

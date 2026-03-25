@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aethermor"
-version = "0.1.0"
+version = "1.0.0"
 description = "Python toolkit for chip thermal analysis, cooling tradeoffs, and compute-density limits in advanced hardware systems."
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -22,7 +22,7 @@ keywords = [
     "simulation",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Manufacturing",
     "License :: OSI Approved :: Apache Software License",

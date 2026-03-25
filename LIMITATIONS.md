@@ -151,17 +151,24 @@ Published architectures from groups like Extropic, Normal Computing, or Purdue's
 p-bit work are not modeled. Aethermor addresses the **thermal management and
 energy efficiency layer** that underlies all these architectures.
 
-### Not Validated Against Direct Silicon Measurement
+### Validated Against Published Hardware Measurements — Not Custom Test Chips
 
-The thermal model has been validated against published specifications for four
-real chips (NVIDIA A100, Apple M1, AMD EPYC 9654, Intel i9-13900K) and
-produces correct-order-of-magnitude junction temperature predictions from
-first principles (33 checks, all passing). Analytical cross-checks against
-textbook solutions (Incropera & DeWitt) and literature data (CODATA, CRC
-Handbook, ITRS/IRDS) also pass (20 checks). However, results have not been
-compared against direct infrared thermal imaging or probe-station measurements
-on fabricated test chips. Die-level correlation with proprietary floorplan data
-would be needed for sign-off-grade confidence.
+The thermal model has been validated at three tiers:
+
+1. **Published chip specifications** — 33 checks against NVIDIA A100, Apple M1,
+   AMD EPYC 9654, and Intel i9-13900K (all pass).
+2. **Published hardware measurements** — 18 checks against JEDEC-standard
+   junction-to-case thermal resistance (θ_jc) for the A100, i9-13900K, and
+   Ryzen 7950X; published IR thermal imaging data (Kandlikar 2003, Bar-Cohen &
+   Wang 2009); Yovanovich 1998 spreading resistance; and the HotSpot ev6
+   benchmark (all pass).
+3. **Literature and analytical** — 20 checks against CODATA 2018, CRC Handbook,
+   ITRS/IRDS, and Incropera & DeWitt textbook solutions (all pass).
+
+However, results have not been compared against direct infrared thermal imaging
+or probe-station measurements on **custom fabricated test chips** with known
+power maps. Die-level correlation with proprietary floorplan data would be
+needed for sign-off-grade confidence.
 
 ### Original Lattice Simulation
 
@@ -221,9 +228,9 @@ See the benchmark documentation for details.
 
 ---
 
-## Path to Hardware Validation
+## Path to Further Hardware Validation
 
-For teams moving from exploration to hardware validation:
+For teams moving from exploration to sign-off-grade validation:
 
 1. **Calibrate material properties** against your foundry's measured values
    rather than textbook defaults. Material properties in `physics/materials.py`
@@ -232,9 +239,11 @@ For teams moving from exploration to hardware validation:
 2. **Compare against SPICE** at the block level: run the same workload profile
    in Aethermor and in a thermal-aware SPICE simulator, then compare power maps.
 
-3. **Validate against thermal imaging** of a test chip: inject known power
-   patterns and compare the simulated temperature map against infrared
-   measurements.
+3. **Validate against your own thermal imaging**: Aethermor already matches
+   published IR thermal data (Kandlikar 2003, Bar-Cohen & Wang 2009) and
+   JEDEC θ_jc measurements for three commercial chips. The next step is to
+   compare against IR measurements of **your specific** test chip with known
+   power patterns.
 
 4. **Extend the energy models** for your target paradigm: the framework
    (`physics/energy_models.py`) is designed to be subclassed. Add your own
