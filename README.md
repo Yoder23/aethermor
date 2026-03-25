@@ -32,6 +32,36 @@ simulator. See [LIMITATIONS.md](LIMITATIONS.md) for scope and validation status.
 
 ---
 
+## Case Study: The Cooling Upgrade That Wouldn't Help
+
+> *Full writeup: [docs/CASE_STUDY.md](docs/CASE_STUDY.md) · Run it: `python benchmarks/case_study_cooling_decision.py`*
+
+A team designing a 5 nm AI accelerator is considering a **$2M data center
+retrofit** to upgrade from air cooling to direct liquid cooling. Their
+assumption: 20× more aggressive cooling should unlock significantly more
+compute density.
+
+**Aethermor shows this assumption is wrong — in 10 seconds.**
+
+| Strategy | Density Gain | Cost |
+|----------|-------------|------|
+| Upgrade to liquid cooling (20× more aggressive) | **0.3%** | $2M retrofit |
+| Switch to SiC substrate (same air cooling) | **232%** | Per-die premium |
+| Redistribute compute across SoC blocks | **47% throughput** | **Free** |
+
+The reason: silicon's conduction floor — an irreducible thermal resistance
+set by the substrate's thermal conductivity — means heat can't leave the die
+interior fast enough regardless of how well you cool the surface. Switching
+substrate is 780× more effective than upgrading cooling. And redistributing
+compute from the thermally-limited GPU block to the underutilized L3 cache
+(26× thermal headroom) gives 47% more throughput with zero hardware changes.
+
+**This is the type of non-obvious, decision-changing insight** that
+architecture-stage thermal exploration surfaces — and the reason Aethermor
+exists.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -231,6 +261,7 @@ Reproducible comparison and case-study scripts in [`benchmarks/`](benchmarks/):
 | Script | What It Shows |
 |--------|---------------|
 | `hotspot_comparison.py` | Fair 6-test comparison against HotSpot — where each tool wins |
+| `case_study_cooling_decision.py` | **Decision-changing**: cooling vs substrate vs compute redistribution |
 | `case_study_substrate_selection.py` | Substrate selection workflow: 4 questions answered in ~9 seconds |
 | `case_study_soc_bottleneck.py` | SoC bottleneck identification and power reallocation |
 | `real_world_validation.py` | 33 checks against 4 published chip designs (A100, M1, EPYC, i9) |
@@ -242,6 +273,7 @@ python benchmarks/hotspot_comparison.py          # HotSpot comparison
 python benchmarks/real_world_validation.py       # 33 real-chip validations
 python benchmarks/experimental_validation.py     # 18 experimental measurement checks
 python benchmarks/literature_validation.py       # 20 literature cross-checks
+python benchmarks/case_study_cooling_decision.py
 python benchmarks/case_study_substrate_selection.py
 python benchmarks/case_study_soc_bottleneck.py
 ```
@@ -250,10 +282,17 @@ python benchmarks/case_study_soc_bottleneck.py
 
 ## Who This Is For
 
-- **Chip design engineers** evaluating thermal headroom and cooling requirements
-- **Computer architecture researchers** exploring density vs. thermal tradeoffs
-- **Thermal / heat transfer engineers** modeling chip-scale cooling stacks
+Aethermor is for **architecture-stage, pre-CAD thermal exploration** — the
+stage where you decide *what* to build before committing to detailed design.
+
+- **Chip architects** deciding between substrates, cooling strategies, and density targets
+- **Computer architecture researchers** exploring density vs. thermal tradeoffs across paradigms
+- **Thermal engineers** evaluating cooling stack options and identifying diminishing returns
 - **Anyone studying the physical limits of computation** — Landauer limit, adiabatic switching, technology scaling
+
+It is **not** a sign-off simulator or a replacement for COMSOL/HotSpot at the
+detailed-design stage. It is the tool that tells you *which* detailed designs
+are worth simulating.
 
 ## What's Inside
 
@@ -329,12 +368,13 @@ See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 
 | Document | What It Covers |
 |----------|---------------|
+| [docs/CASE_STUDY.md](docs/CASE_STUDY.md) | Decision-changing case study: cooling vs substrate vs redistribution |
 | [docs/API_REFERENCE.md](docs/API_REFERENCE.md) | Complete API reference — all classes, methods, parameters |
 | [VALIDATION.md](VALIDATION.md) | Physics validation methodology & references |
 | [LIMITATIONS.md](LIMITATIONS.md) | Scope, simplifications, path to hardware validation |
 | [HONEST_REVIEW.md](HONEST_REVIEW.md) | Self-audit with grades and competitive comparison |
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
-| [RELEASE_NOTES_v0.1.0.md](RELEASE_NOTES_v0.1.0.md) | v0.1.0 release details |
+| [RELEASE_NOTES_v1.0.0.md](RELEASE_NOTES_v1.0.0.md) | v1.0.0 release details |
 
 ## Contributing
 
