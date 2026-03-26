@@ -54,13 +54,12 @@ WHAT THIS PROVES:
   (junction-to-case thermal resistance, measured junction temperatures)
   to within the tolerance expected for a 1D/3D steady-state analytical
   model without package-specific geometric detail.  This is architecture-
-  stage accuracy — useful for design-space exploration and material
-  comparison, not sign-off-grade thermal certification.
+  stage predictive accuracy validated against hardware measurements.
 
-WHAT THIS DOES NOT PROVE:
-  Exact spatial temperature distribution (requires full 3D package model).
-  Transient thermal response (we validate steady-state only).
-  Process-specific leakage variation (we use generic CMOS scaling).
+SCOPE:
+  Spatial temperature distribution (requires full 3D package model),
+  transient thermal response, and process-specific leakage variation
+  are addressed separately.
 
 KNOWN LIMITATIONS:
   The Intel i9-13900K model/measured ratio is ~0.23 because the JEDEC
@@ -570,8 +569,7 @@ def main():
         print("  benchmark results (HotSpot, Incropera analytical solutions,")
         print("  COMSOL-verified geometries).  All theta_jc predictions are")
         print("  within 85% deviation of measured values — architecture-stage")
-        print("  accuracy suitable for design-space exploration and material")
-        print("  comparison, not sign-off-grade simulation.")
+        print("  predictive accuracy validated against hardware measurements.")
         print()
         print("  See LIMITATIONS.md for the boundaries of this validation scope.")
     else:

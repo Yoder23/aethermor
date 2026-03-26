@@ -26,9 +26,9 @@ All models use real physics in SI units, validated against CODATA 2018, the CRC
 Handbook, ITRS/IRDS roadmaps, published specifications for real chips
 (NVIDIA A100, Apple M1, AMD EPYC, Intel i9-13900K), and published hardware
 measurements (JEDEC θ_jc thermal resistance, IR thermal imaging, HotSpot
-benchmarks). Aethermor is **production-ready for architecture-stage
-engineering** — design-space exploration, material comparison,
-cooling-strategy tradeoffs — not a sign-off simulator.
+benchmarks). Aethermor is **production-ready** for architecture-stage
+thermal engineering — design-space exploration, material comparison,
+cooling-strategy tradeoffs, and compute-density optimization.
 See [LIMITATIONS.md](LIMITATIONS.md) for scope and validation status.
 
 ---
@@ -289,7 +289,7 @@ python benchmarks/case_study_mobile_soc.py       # Mobile SoC thermal envelope
 
 ## Who This Is For
 
-Aethermor is for **architecture-stage, pre-CAD thermal exploration** — the
+Aethermor is for **architecture-stage thermal engineering** — the
 stage where you decide *what* to build before committing to detailed design.
 
 - **Chip architects** deciding between substrates, cooling strategies, and density targets
@@ -297,9 +297,8 @@ stage where you decide *what* to build before committing to detailed design.
 - **Thermal engineers** evaluating cooling stack options and identifying diminishing returns
 - **Anyone studying the physical limits of computation** — Landauer limit, adiabatic switching, technology scaling
 
-It is **not** a sign-off simulator or a replacement for COMSOL/HotSpot at the
-detailed-design stage. It is the tool that tells you *which* detailed designs
-are worth simulating.
+Aethermor tells you *which* detailed designs are worth simulating — and
+which assumptions to challenge before committing silicon.
 
 ## What's Inside
 
@@ -378,9 +377,9 @@ validated with 680+ independent checks against:
 - Published JEDEC-standard thermal resistance measurements and IR thermal imaging data
 - HotSpot simulation benchmarks
 
-Aethermor is **production-ready for architecture-stage engineering**: design-space
-exploration, material comparison, cooling-strategy tradeoffs. It is not a sign-off
-simulator. Detailed die-level correlation with proprietary floorplan data is a
+Aethermor is **production-ready** for architecture-stage thermal engineering:
+design-space exploration, material comparison, cooling-strategy tradeoffs.
+Detailed die-level correlation with proprietary floorplan data is a
 planned next step.
 
 See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.

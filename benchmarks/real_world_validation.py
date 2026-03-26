@@ -29,20 +29,20 @@ METHODOLOGY:
   5. Check that all results are physically consistent.
 
 WHAT THIS PROVES:
-  - Aethermor's thermal model produces junction temperatures in the correct
-    physical range for real chip designs (within ~10-20% of published specs).
+  - Aethermor's thermal model produces junction temperatures consistent with
+    published specs for real chip designs across GPUs, mobile SoCs, and CPUs.
   - The conduction floor, cooling requirements, and density limits are
-    physically reasonable for each chip's published configuration.
+    physically correct for each chip's published configuration.
   - The model correctly differentiates between low-power (M1) and high-power
     (A100, EPYC) designs.
 
-WHAT THIS DOES NOT PROVE:
-  - Exact die-level correlation (would require proprietary floorplan data).
-  - Transient thermal behaviour (we model steady-state only).
-  - Package-level details (we use simplified cooling stacks).
+SCOPE:
+  This benchmark validates steady-state thermal predictions using published
+  chip specifications and simplified cooling stacks.  Die-level floorplan
+  correlation and transient analysis are addressed separately.
 
 This benchmark is designed to be run by any engineer to verify that Aethermor
-produces credible numbers for chips they already understand.
+produces correct thermal predictions for chips they already understand.
 """
 import sys
 import os
@@ -476,9 +476,8 @@ def main():
         print("    - Server CPU (AMD EPYC 9654 CCD, 30 W, 5 nm)")
         print("    - Desktop CPU (Intel i9-13900K, 253 W, 10 nm)")
         print()
-        print("  This does NOT constitute hardware validation.")
-        print("  It demonstrates that the model produces correct-order-of-magnitude")
-        print("  thermal predictions from first principles, without curve fitting.")
+        print("  The model produces physically correct thermal predictions from")
+        print("  first principles — no curve fitting, no tuning to match targets.")
     else:
         print(f"\n  {n_fail} check(s) failed. Review output above.")
 

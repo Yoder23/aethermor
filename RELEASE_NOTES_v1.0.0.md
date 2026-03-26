@@ -48,14 +48,19 @@ measurement validation — closing the gap between "matches published specs" and
 ## Full Verification Suite
 
 ```bash
-python -m pytest tests/ -v                    # 254 tests
+python -m pytest tests/ -v                    # 278 tests
 python -m validation.validate_all             # 133 physics cross-checks
+python benchmarks/chip_thermal_database.py    # 82 chip thermal database checks (12 chips)
+python benchmarks/material_cross_validation.py # 93 material cross-validation checks (9 materials)
 python benchmarks/literature_validation.py    # 20 literature cross-checks
 python benchmarks/real_world_validation.py    # 33 real-world chip validations
 python benchmarks/experimental_validation.py  # 18 experimental measurement checks
+python benchmarks/case_study_datacenter.py    # 13 datacenter cooling strategy checks
+python benchmarks/case_study_mobile_soc.py    # 10 mobile SoC thermal envelope checks
+python run_all_validations.py                 # Master runner: 12 suites, all checks
 ```
 
-**Total: 458 checks, all passing.**
+**Total: 680+ checks, all passing.**
 
 ## Install
 
