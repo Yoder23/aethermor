@@ -8,8 +8,13 @@ Use this to verify the entire evidence surface in one command:
 
     python run_all_validations.py
 
+Quick smoke test (fast subset, ~30 seconds):
+
+    python run_all_validations.py --smoke
+
 Exit code 0 = all suites pass.  Non-zero = at least one failure.
 """
+import argparse
 import subprocess
 import sys
 import time
@@ -42,17 +47,35 @@ SUITES = [
      [sys.executable, "-m", "benchmarks.case_study_soc_bottleneck"]),
 ]
 
+# Fast subset for --smoke: physics core + one benchmark + one case study
+SMOKE_SUITES = [
+    ("Physics validation (validate_all.py)",
+     [sys.executable, "validation/validate_all.py"]),
+    ("Literature validation",
+     [sys.executable, "-m", "benchmarks.literature_validation"]),
+    ("Material cross-validation (93 checks, 9 materials)",
+     [sys.executable, "-m", "benchmarks.material_cross_validation"]),
+]
+
 
 def main():
+    parser = argparse.ArgumentParser(description="Aethermor master validation runner")
+    parser.add_argument("--smoke", action="store_true",
+                        help="Run a fast smoke-test subset (~30 seconds)")
+    args = parser.parse_args()
+
+    suites = SMOKE_SUITES if args.smoke else SUITES
+    mode = "SMOKE TEST" if args.smoke else "FULL"
+
     print("=" * 72)
-    print("  AETHERMOR MASTER VALIDATION RUNNER")
+    print(f"  AETHERMOR MASTER VALIDATION RUNNER  ({mode})")
     print("=" * 72)
     print()
 
     results = []
     total_start = time.time()
 
-    for label, cmd in SUITES:
+    for label, cmd in suites:
         print(f"  Running: {label} ...")
         start = time.time()
         try:

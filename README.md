@@ -26,9 +26,7 @@ All models use real physics in SI units, validated against CODATA 2018, the CRC
 Handbook, ITRS/IRDS roadmaps, published specifications for real chips
 (NVIDIA A100, Apple M1, AMD EPYC, Intel i9-13900K), and published hardware
 measurements (JEDEC θ_jc thermal resistance, IR thermal imaging, HotSpot
-benchmarks). Aethermor is **production-ready** for architecture-stage
-thermal engineering — design-space exploration, material comparison,
-cooling-strategy tradeoffs, and compute-density optimization.
+benchmarks). **Scope: Production-stable for architecture-stage thermal exploration and inverse design; not intended for sign-off, transient package verification, or transistor-level thermal closure.**
 See [LIMITATIONS.md](LIMITATIONS.md) for scope and validation status.
 
 ---
@@ -377,8 +375,7 @@ validated with 680+ independent checks against:
 - Published JEDEC-standard thermal resistance measurements and IR thermal imaging data
 - HotSpot simulation benchmarks
 
-Aethermor is **production-ready** for architecture-stage thermal engineering:
-design-space exploration, material comparison, cooling-strategy tradeoffs.
+**Scope: Production-stable for architecture-stage thermal exploration and inverse design; not intended for sign-off, transient package verification, or transistor-level thermal closure.**
 Detailed die-level correlation with proprietary floorplan data is a
 planned next step.
 
@@ -388,11 +385,21 @@ See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 
 | Document | What It Covers |
 |----------|---------------|
-| [docs/CASE_STUDY.md](docs/CASE_STUDY.md) | Decision-changing case study: cooling vs substrate vs redistribution |
+| [docs/CASE_STUDY.md](docs/CASE_STUDY.md) | Case study: cooling vs substrate vs redistribution |
+| [docs/CASE_STUDY_SOC.md](docs/CASE_STUDY_SOC.md) | Case study: SoC bottleneck reallocation (47% throughput for free) |
+| [docs/CASE_STUDY_PARADIGM.md](docs/CASE_STUDY_PARADIGM.md) | Case study: material + paradigm selection (SiC 232%, diamond 1387%) |
+| [docs/ACCURACY.md](docs/ACCURACY.md) | Error metrics, benchmark corpus, operating envelope |
+| [docs/SAFE_USE.md](docs/SAFE_USE.md) | Safe / caution / not-for use-case tables |
+| [docs/INSTALL_VERIFY.md](docs/INSTALL_VERIFY.md) | Install, verify, smoke test, troubleshooting |
+| [docs/EXTERNAL_VALIDATION.md](docs/EXTERNAL_VALIDATION.md) | External correlation and pilot user framework |
+| [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) | Seed policy, tolerance policy, gold outputs |
+| [docs/benchmark_protocol.md](docs/benchmark_protocol.md) | Benchmark suite classification and release-gate thresholds |
 | [docs/API_REFERENCE.md](docs/API_REFERENCE.md) | Complete API reference — all classes, methods, parameters |
 | [VALIDATION.md](VALIDATION.md) | Physics validation methodology & references |
 | [LIMITATIONS.md](LIMITATIONS.md) | Scope, simplifications, path to hardware validation |
 | [HONEST_REVIEW.md](HONEST_REVIEW.md) | Self-audit with grades and competitive comparison |
+| [docs/SUPPORT_POLICY.md](docs/SUPPORT_POLICY.md) | Version support, response expectations, deprecation |
+| [docs/SEMVER.md](docs/SEMVER.md) | Semantic versioning policy |
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
 | [RELEASE_NOTES_v1.0.0.md](RELEASE_NOTES_v1.0.0.md) | v1.0.0 release details |
 

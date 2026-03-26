@@ -1,8 +1,11 @@
 # Scope and Model Architecture
 
 Aethermor is a **production thermal engineering toolkit** for chip thermal
-analysis, cooling tradeoffs, and compute-density optimization. This document
-describes what the project provides, the physics it models, and its
+analysis, cooling tradeoffs, and compute-density optimization.
+
+> **Scope: Production-stable for architecture-stage thermal exploration and inverse design; not intended for sign-off, transient package verification, or transistor-level thermal closure.**
+
+This document describes what the project provides, the physics it models, and its
 validation coverage.
 
 ---

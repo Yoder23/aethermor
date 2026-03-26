@@ -2,10 +2,12 @@
 
 ## What's New in 1.0.0
 
-Aethermor v1.0.0 upgrades the project from Beta to **Production/Stable** for
-architecture-stage thermal engineering. The key addition is experimental
-measurement validation — closing the gap between "matches published specs" and
-"matches real hardware measurements."
+Aethermor v1.0.0 upgrades the project from Beta to **Production/Stable**.
+
+> **Scope: Production-stable for architecture-stage thermal exploration and inverse design; not intended for sign-off, transient package verification, or transistor-level thermal closure.**
+
+The key addition is experimental measurement validation — closing the gap between
+"matches published specs" and "matches real hardware measurements."
 
 ## Experimental Measurement Validation (18 checks)
 

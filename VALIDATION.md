@@ -1,5 +1,7 @@
 # Aethermor Validation Report
 
+> **Scope: Production-stable for architecture-stage thermal exploration and inverse design; not intended for sign-off, transient package verification, or transistor-level thermal closure.**
+
 **Verify everything:**
 ```bash
 python -m validation.validate_all              # 133 physics cross-checks

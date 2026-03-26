@@ -180,6 +180,8 @@ on a screen share, without writing a single line of Python.
 design space *before* committing to a detailed simulation — so your ANSYS runs
 confirm rather than surprise.
 
+> **Scope: Production-stable for architecture-stage thermal exploration and inverse design; not intended for sign-off, transient package verification, or transistor-level thermal closure.**
+
 **Note:** HotSpot (open-source, UVA) also provides fast thermal simulation with
 compact-model accuracy. Its HotFloorplan module supports layout-level
 optimization. Where Aethermor adds value is in substrate-aware inverse design

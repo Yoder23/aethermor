@@ -53,6 +53,15 @@ jobs:
       - name: Run case study - mobile SoC
         run: python benchmarks/case_study_mobile_soc.py
 
+      - name: Run production benchmark suite (20 cases, release gates)
+        run: python benchmarks/production_suite/run_production_suite.py
+
+      - name: Verify gold outputs (regression check)
+        run: python scripts/freeze_gold_outputs.py --verify-only
+
+      - name: Run release readiness check
+        run: python scripts/release_check.py
+
   security:
     runs-on: ubuntu-latest
     timeout-minutes: 20
