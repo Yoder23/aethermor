@@ -328,12 +328,13 @@ which assumptions to challenge before committing silicon.
 app.py                # Interactive Explorer UI — run this
 physics/              # SI-unit thermodynamic models (extensible registries)
 analysis/             # Inverse design & research tools
-simulation/           # Legacy Monte Carlo / evolutionary simulation engine
+simulation/           # Monte Carlo / evolutionary simulation engine
 validation/           # 133 physics cross-checks
 benchmarks/           # 11 validation/case-study scripts (246+ checks)
 examples/             # 7 ready-to-run research scripts
 experiments/          # Reproducibility scripts (ablations, scaling, fault sweeps)
 tests/                # 278 unit, integration, regression tests
+scripts/              # Release, benchmarking, and maintenance utilities
 run_all_validations.py  # Master runner: all 12 suites, 680+ checks
 ```
 
@@ -359,7 +360,6 @@ Every model is cross-validated against published reference data:
 | **Total validated checks** | **680+** |
 
 Run `python run_all_validations.py` to verify everything in one command (12 suites, ~3 minutes).
-| Examples | 7/7 run clean |
 
 See [VALIDATION.md](VALIDATION.md) for methodology and reference sources.
 
@@ -383,25 +383,42 @@ See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 
 ## Documentation
 
+### Getting Started
+
 | Document | What It Covers |
 |----------|---------------|
-| [docs/CASE_STUDY.md](docs/CASE_STUDY.md) | Case study: cooling vs substrate vs redistribution |
-| [docs/CASE_STUDY_SOC.md](docs/CASE_STUDY_SOC.md) | Case study: SoC bottleneck reallocation (47% throughput for free) |
-| [docs/CASE_STUDY_PARADIGM.md](docs/CASE_STUDY_PARADIGM.md) | Case study: material + paradigm selection (SiC 232%, diamond 1387%) |
-| [docs/ACCURACY.md](docs/ACCURACY.md) | Error metrics, benchmark corpus, operating envelope |
-| [docs/SAFE_USE.md](docs/SAFE_USE.md) | Safe / caution / not-for use-case tables |
 | [docs/INSTALL_VERIFY.md](docs/INSTALL_VERIFY.md) | Install, verify, smoke test, troubleshooting |
-| [docs/EXTERNAL_VALIDATION.md](docs/EXTERNAL_VALIDATION.md) | External correlation and pilot user framework |
-| [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) | Seed policy, tolerance policy, gold outputs |
-| [docs/benchmark_protocol.md](docs/benchmark_protocol.md) | Benchmark suite classification and release-gate thresholds |
 | [docs/API_REFERENCE.md](docs/API_REFERENCE.md) | Complete API reference — all classes, methods, parameters |
+| [docs/SAFE_USE.md](docs/SAFE_USE.md) | Safe / caution / not-for use-case tables |
+
+### Engineering Case Studies
+
+| Document | What It Covers |
+|----------|---------------|
+| [docs/CASE_STUDY.md](docs/CASE_STUDY.md) | Cooling vs substrate vs compute redistribution |
+| [docs/CASE_STUDY_SOC.md](docs/CASE_STUDY_SOC.md) | SoC bottleneck reallocation (47% throughput for free) |
+| [docs/CASE_STUDY_PARADIGM.md](docs/CASE_STUDY_PARADIGM.md) | Material + paradigm selection (SiC 232%, diamond 1387%) |
+
+### Validation & Rigor
+
+| Document | What It Covers |
+|----------|---------------|
 | [VALIDATION.md](VALIDATION.md) | Physics validation methodology & references |
 | [LIMITATIONS.md](LIMITATIONS.md) | Scope, simplifications, path to hardware validation |
 | [HONEST_REVIEW.md](HONEST_REVIEW.md) | Self-audit with grades and competitive comparison |
-| [docs/SUPPORT_POLICY.md](docs/SUPPORT_POLICY.md) | Version support, response expectations, deprecation |
-| [docs/SEMVER.md](docs/SEMVER.md) | Semantic versioning policy |
+| [docs/ACCURACY.md](docs/ACCURACY.md) | Error metrics, benchmark corpus, operating envelope |
+| [docs/EXTERNAL_VALIDATION.md](docs/EXTERNAL_VALIDATION.md) | External correlation and pilot user results |
+| [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) | Seed policy, tolerance policy, gold outputs |
+| [docs/benchmark_protocol.md](docs/benchmark_protocol.md) | Benchmark suite classification and release-gate thresholds |
+
+### Project Governance
+
+| Document | What It Covers |
+|----------|---------------|
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
 | [RELEASE_NOTES_v1.0.0.md](RELEASE_NOTES_v1.0.0.md) | v1.0.0 release details |
+| [docs/SEMVER.md](docs/SEMVER.md) | Semantic versioning policy |
+| [docs/SUPPORT_POLICY.md](docs/SUPPORT_POLICY.md) | Version support, response expectations, deprecation |
 
 ## Contributing
 

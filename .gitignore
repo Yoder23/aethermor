@@ -42,6 +42,11 @@ codex_write_*.txt
 # Pareto CSV exports
 aethermor_pareto_params*.csv
 
+# Build outputs
+dist/
+build/
+*.egg-info/
+
 # Archive (internal-only, not for public distribution)
 archive/
 
