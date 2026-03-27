@@ -41,6 +41,7 @@ benchmarks/production_suite/
 | Energy conservation | ≤ 5.0% | 3D Fourier solver |
 | Gold regression | ≤ 1.0% per case | Current vs frozen gold outputs |
 | All cases valid | 100% | Every case produces finite, positive Tj |
+| Operating envelope | 100% within 250–700 K | All Tj predictions within declared envelope |
 
 ---
 

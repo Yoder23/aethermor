@@ -32,6 +32,8 @@ THRESHOLDS = {
     "energy_conservation_pct": 5.0,       # ≤ 5% 3D Fourier conservation error
     "gold_regression_max_pct": 1.0,       # No output regresses > 1% vs gold
     "all_cases_pass": True,               # Every case must produce valid output
+    "tj_max_K": 700.0,                    # Supported envelope upper bound (K)
+    "tj_min_K": 250.0,                    # Supported envelope lower bound (K)
 }
 
 
@@ -46,6 +48,8 @@ def load_cases():
             row["node_nm"] = int(row["node_nm"])
             row["tj_max_c"] = float(row["tj_max_c"])
             row["theta_jc_kw"] = float(row["theta_jc_kw"]) if row["theta_jc_kw"] else None
+            row["pkg_area_mm2"] = float(row["pkg_area_mm2"])
+            row["h_conv"] = float(row["h_conv"])
             cases.append(row)
     return cases
 
@@ -54,42 +58,44 @@ def run_case(case):
     """Run a single benchmark case and return results dict."""
     si = get_material("silicon")
     die_m2 = case["die_area_mm2"] * 1e-6
+    pkg_m2 = case["pkg_area_mm2"] * 1e-6
     tdp = case["tdp_w"]
-    thick = 0.775e-3  # standard wafer thickness
+    h_conv = case["h_conv"]
 
-    # 1D conduction thermal resistance
-    R_cond = thick / (si.thermal_conductivity * die_m2)
+    # Die thickness: thinned wafer for advanced nodes, standard otherwise
+    t_die = 200e-6 if case["node_nm"] <= 7 else 775e-6
 
-    # Cooling: use representative h values by cooling type
-    h_map = {
-        "liquid": 10000.0,
-        "server_air": 500.0,
-        "desktop_air": 200.0,
-        "fanless": 50.0,
-        "fan": 100.0,
-        "variable": 1000.0,
-    }
-    h_conv = h_map.get(case["cooling"], 500.0)
-    R_conv = 1.0 / (h_conv * die_m2)
+    # 1D conduction through die (heat generated across die area)
+    R_cond = t_die / (si.thermal_conductivity * die_m2)
+
+    # Convection at package/IHS surface (heat spreads to package area)
+    R_conv = 1.0 / (h_conv * pkg_m2)
 
     T_amb = 300.0  # 27°C
-    Tj_K = T_amb + tdp * (R_cond + R_conv)
+    R_total = R_cond + R_conv
+    Tj_K = T_amb + tdp * R_total
     Tj_C = Tj_K - 273.15
 
-    # Theta_jc model
+    # Theta_jc model (conduction-only component)
     theta_jc_model = R_cond
 
     # Power density
     power_density = tdp / die_m2
 
+    # Envelope check: is Tj within supported range?
+    in_envelope = (THRESHOLDS["tj_min_K"] <= Tj_K <= THRESHOLDS["tj_max_K"])
+
     result = {
         "chip": case["chip"],
         "segment": case["segment"],
-        "Tj_C": round(Tj_C, 2),
+        "Tj_C": round(Tj_C, 1),
+        "Tj_K": round(Tj_K, 1),
         "R_cond_KW": round(R_cond, 6),
+        "R_conv_KW": round(R_conv, 4),
         "theta_jc_model": round(theta_jc_model, 6),
-        "power_density_Wm2": round(power_density, 1),
+        "power_density_Wm2": round(power_density, 0),
         "valid": bool(Tj_K > 0 and np.isfinite(Tj_K)),
+        "in_envelope": in_envelope,
     }
 
     # If published theta_jc is available, compute ratio
@@ -159,15 +165,22 @@ def main():
     # 1. Load and run cases
     cases = load_cases()
     print(f"Running {len(cases)} benchmark cases...")
+    print(f"Operating envelope: {THRESHOLDS['tj_min_K']:.0f}–{THRESHOLDS['tj_max_K']:.0f} K "
+          f"({THRESHOLDS['tj_min_K']-273.15:.0f}–{THRESHOLDS['tj_max_K']-273.15:.0f} °C)")
+    print()
     results = []
     for case in cases:
         r = run_case(case)
         results.append(r)
-        status = "PASS" if r["valid"] else "FAIL"
-        print(f"  [{status}]  {r['chip']:<35} Tj={r['Tj_C']:>8.1f}°C  P={r['power_density_Wm2']:>12.0f} W/m²")
+        env = "  " if r["in_envelope"] else " !"
+        status = "PASS" if (r["valid"] and r["in_envelope"]) else "FAIL"
+        print(f"  [{status}]{env} {r['chip']:<35} Tj={r['Tj_C']:>7.1f}°C  P={r['power_density_Wm2']:>12.0f} W/m²")
 
     all_valid = all(r["valid"] for r in results)
-    print(f"\n  Cases: {sum(1 for r in results if r['valid'])}/{len(results)} valid")
+    all_in_envelope = all(r["in_envelope"] for r in results)
+    n_env = sum(1 for r in results if r["in_envelope"])
+    print(f"\n  Cases: {sum(1 for r in results if r['valid'])}/{len(results)} valid, "
+          f"{n_env}/{len(results)} within envelope")
 
     # 2. Material checks
     print("\nMaterial property cross-validation...")
@@ -193,6 +206,7 @@ def main():
     print("=" * 70)
     gates = {
         "all_cases_valid": all_valid,
+        "all_in_envelope": all_in_envelope,
         "material_median_ok": mat["median_pct_error"] <= THRESHOLDS["material_median_pct_error"],
         "material_max_ok": mat["max_pct_error"] <= THRESHOLDS["material_max_pct_error"],
         "no_regressions": len(regression.get("regressions", [])) == 0,
