@@ -20,14 +20,26 @@ All notable changes to this project are documented in this file.
 - CI pipeline now runs experimental measurement validation on every push
 
 ### Changed
-- Version bumped to 1.0.0 — production-ready for architecture-stage engineering
-- Development Status classifier upgraded from "4 - Beta" to "5 - Production/Stable"
-- Updated VALIDATION.md with experimental measurement validation section
+- Version bumped to 1.0.0 — production-ready for architecture-stage engineering.
+  **Why**: 680+ validated checks now pass including experimental hardware
+  measurements; the project meets the standard for production-stable tooling.
+- Development Status classifier upgraded from "4 - Beta" to "5 - Production/Stable".
+  **Why**: All validation tiers (specifications, measurements, literature,
+  analytical solutions) are passing; no known blockers remain.
+- Updated VALIDATION.md with experimental measurement validation section.
+  **Why**: New Tier 2 checks (JEDEC θ_jc, IR imaging, HotSpot) needed
+  documentation alongside the existing literature cross-checks.
 - Updated LIMITATIONS.md: "Not Validated Against Direct Silicon Measurement" →
-  "Validated Against Published Hardware Measurements — Not Custom Test Chips"
+  "Validated Against Published Hardware Measurements — Not Custom Test Chips".
+  **Why**: The 18 experimental checks close the "no hardware validation" gap
+  while honestly scoping what "validated" means (published data, not our own
+  test chips).
 - Updated HONEST_REVIEW.md: added 18 experimental checks to validation grade,
-  OSS readiness upgraded to "Production-ready for architecture-stage engineering"
-- CI matrix tests Python 3.10, 3.11, and 3.12
+  OSS readiness upgraded to "Production-ready for architecture-stage engineering".
+  **Why**: The self-assessment must track the actual validation state.
+- CI matrix tests Python 3.10, 3.11, and 3.12.
+  **Why**: Production users run multiple Python versions; 3.12 is the current
+  stable release.
 
 ## [0.1.0] - 2026-03-24
 
@@ -124,4 +136,6 @@ All notable changes to this project are documented in this file.
 
 ### Changed — Project Structure
 - Moved legacy simulation scripts (12 files) from project root into
-  `simulation/` package for a clean, documented directory layout
+  `simulation/` package for a clean, documented directory layout.
+  **Why**: A flat root with 20+ scripts is unprofessional and makes it hard
+  to distinguish production code from experimental scripts.

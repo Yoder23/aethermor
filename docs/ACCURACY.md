@@ -49,6 +49,29 @@ This is within the range of published values for α-SiC across different
 polytypes and measurement conditions. All thermal conductivities are exact
 matches to CRC reference values.
 
+#### Per-Material Source Attribution
+
+| Material | k Source | c_p Source | ρ Source | Notes |
+|----------|---------|-----------|---------|-------|
+| Silicon | CRC 97th ed. | CRC 97th ed. | CRC 97th ed. | Standard reference wafer |
+| Silicon Dioxide | CRC 97th ed. | CRC 97th ed. | CRC 97th ed. | Amorphous (thermal oxide) |
+| Gallium Arsenide | CRC 97th ed. | CRC 97th ed. | CRC 97th ed. | Semi-insulating bulk |
+| Diamond | CRC 97th ed. | CRC 97th ed. | CRC 97th ed. | Type IIa single-crystal |
+| Graphene | Balandin (2008) | Nika (2009) | Calculated | Effective monolayer on SiO₂ |
+| Copper | CRC 97th ed. | CRC 97th ed. | CRC 97th ed. | OFHC grade |
+| Indium Phosphide | CRC 97th ed. | Ioffe Institute | CRC 97th ed. | Semi-insulating |
+| Silicon Carbide | CRC 97th ed. | CRC / Ioffe | CRC 97th ed. | α-SiC (6H polytype) |
+| Gallium Nitride | CRC 97th ed. | Ioffe Institute | CRC 97th ed. | Wurtzite |
+
+All values at 300 K. Properties are temperature-independent in the model;
+see LIMITATIONS.md §9 for the impact above 400 K.
+
+#### Accumulated Error: Thermal Diffusivity
+
+Thermal diffusivity α = k / (ρ · c_p) compounds errors from three properties.
+Worst-case accumulated error (SiC): k=0%, c_p=8%, ρ=0.06% → α ≈ 8% error.
+For all other materials, accumulated α error is < 2%.
+
 ### 3. JEDEC θ_jc Thermal Resistance (Model vs Published Measurement)
 
 | Chip | θ_jc Published (K/W) | θ_jc Model (K/W) | Model/Measured Ratio |
@@ -68,6 +91,12 @@ measurement is the interface/package resistance — which is expected for a
 physics; the difference quantifies the package thermal path not modeled.
 For architecture-stage use (material comparison, cooling tradeoffs, density
 limits), the conductive component is the dominant variable being optimized.
+
+**Why the gap exists:** Published JEDEC θ_jc measures the full package
+path (die → TIM → IHS → interfaces). Aethermor computes die conduction
+only: `R = dx / (2·k·A)`. The missing resistance is package-specific
+geometry that does not affect material rankings or cooling tradeoff curves.
+See LIMITATIONS.md §11 for a detailed breakdown.
 
 ### 4. Real-World Chip Thermal Predictions
 

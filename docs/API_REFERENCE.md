@@ -179,6 +179,15 @@ FourierThermalTransport(
 | `energy_balance()` | dict | Conservation check (generated/removed/stored/error) |
 | `steady_state_temperature(heat_W, max_steps=10000, tol=0.01)` | ndarray | Run to steady state |
 
+**`energy_balance()` return dict:**
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `generated_J` | float | Total energy injected (J) |
+| `removed_J` | float | Total energy removed by boundaries (J) |
+| `stored_J` | float | Energy stored as temperature rise (J) |
+| `error_pct` | float | Conservation error: ‖gen − rem − stored‖ / gen × 100 |
+
 ### Class: `ThermalBoundaryCondition`
 
 ```python
@@ -317,10 +326,89 @@ ThermalOptimizer(
 | `cooling_sweep(material, density, h_values)` | Temperature vs cooling tradeoff + conduction floor |
 | `thermal_headroom_map(floorplan, freq, h_conv)` | Per-block thermal budget utilization |
 | `optimize_power_distribution(floorplan, ...)` | Optimal density allocation under constraints |
-| `design_exploration(materials, paradigms, h_values)` | Comprehensive one-call analysis |
+| `paradigm_density_comparison(material, h_conv)` | CMOS vs adiabatic max-density comparison |
+| `full_design_exploration(material, h_conv, power, T_max)` | Comprehensive one-call analysis |
 
-All methods return structured dicts. Use `format_material_ranking()` and
-`format_headroom_map()` for human-readable output.
+All methods return structured dicts. Use `format_material_ranking()` for
+human-readable output of material comparison results.
+
+### Return Type Details
+
+**`find_max_density()` → dict**
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `max_density` | float | Maximum sustainable gates per element |
+| `T_max_K` | float | Peak temperature at max density (K) |
+| `power_W` | float | Total chip power (W) |
+| `power_density_W_cm2` | float | Power density (W/cm²) |
+| `landauer_gap` | float | Ratio of actual to Landauer energy |
+| `thermal_headroom_K` | float | Material limit − T_max (K) |
+| `material` | str | Material key |
+| `material_name` | str | Human-readable material name |
+| `h_conv` | float | Cooling coefficient used |
+| `paradigm` | str | Energy model used |
+| `throughput_ops_s` | float | Total switching operations per second |
+
+**`find_min_cooling()` → dict**
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `min_h_conv` | float | Minimum cooling coefficient (W/(m²·K)), `inf` if conduction-limited |
+| `material` | str | Material key |
+| `gate_density` | float | Target density |
+| `T_max_target_K` | float | Target temperature (K) |
+| `conduction_floor_K` | float | Temperature at h→∞ (conduction-only limit) |
+| `cooling_category` | str | Human-readable category (e.g., "liquid cold plate") |
+| `note` | str | Model description |
+
+**`thermal_headroom_map()` → List[dict]**
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `name` | str | Block name |
+| `paradigm` | str | Block energy model |
+| `gate_density` | float | Block gate density |
+| `T_max_K` | float | Block peak temperature (K) |
+| `T_mean_K` | float | Block mean temperature (K) |
+| `thermal_headroom_K` | float | Material limit − T_max (K) |
+| `is_bottleneck` | bool | True if this is the hottest block |
+| `density_headroom_factor` | float | Multiplier: how much more density is sustainable |
+| `recommended_action` | str | Engineering recommendation |
+
+**`optimize_power_distribution()` → dict**
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `optimised_blocks` | List[dict] | Per-block optimised densities and temperatures |
+| `total_throughput_ops_s` | float | Total optimised throughput |
+| `total_power_W` | float | Total power (W) |
+| `power_budget_W` | float | Requested power budget (W) |
+| `thermal_power_limit_W` | float | Power at which all blocks hit thermal limit |
+| `binding_constraint` | str | `"thermal"` or `"power"` |
+| `improvement_ratio` | float | Throughput ratio vs original layout |
+
+**`paradigm_density_comparison()` → dict**
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `cmos` | dict | `find_max_density()` result for CMOS |
+| `adiabatic` | dict | `find_max_density()` result for adiabatic |
+| `adiabatic_advantage_ratio` | float | Adiabatic max density / CMOS max density |
+| `material` | str | Material key |
+| `h_conv` | float | Cooling coefficient used |
+
+**`full_design_exploration()` → dict**
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `material_ranking` | List[dict] | Ranked substrates by max density |
+| `best_material` | dict | Top-ranked material result |
+| `max_density` | dict | `find_max_density()` result for target material |
+| `cooling_requirement` | dict | `find_min_cooling()` at 50% of max density |
+| `paradigm_comparison` | dict | `paradigm_density_comparison()` result |
+| `cooling_sweep` | List[dict] | Temperature vs h_conv sweep |
+| `insights` | List[str] | Auto-generated engineering insights |
 
 ---
 
@@ -424,3 +512,47 @@ thermal_summary(temperature_field, T_ambient, max_temp) → dict
 | `peak_temp_K` | float | Peak temperature |
 | `extent` | int | Number of elements |
 | `thermal_risk` | str | "low" / "medium" / "high" / "critical" |
+
+---
+
+## Orchestration Example: ChipFloorplan → ThermalOptimizer
+
+End-to-end workflow showing how modules compose to answer a real
+architecture question: *"Where is my thermal budget being wasted, and
+how should I redistribute compute density?"*
+
+```python
+from physics.chip_floorplan import ChipFloorplan
+from analysis.thermal_optimizer import ThermalOptimizer
+
+# 1. Define a heterogeneous SoC
+chip = ChipFloorplan.modern_soc(material="silicon", h_conv=2000.0)
+
+# 2. Create the optimizer (matching the chip's grid)
+opt = ThermalOptimizer(
+    grid_shape=chip.grid_shape,
+    element_size_m=chip.element_size_m,
+    tech_node_nm=7.0,
+    frequency_Hz=3e9,
+    T_ambient=300.0,
+)
+
+# 3. Identify wasted thermal budget (per-block headroom)
+headroom = opt.thermal_headroom_map(chip, frequency_Hz=3e9, h_conv=2000.0)
+for block in headroom:
+    print(f"{block['name']:>10s}  T={block['T_max_K']:.0f} K  "
+          f"headroom={block['thermal_headroom_K']:.0f} K  "
+          f"{'⚠ BOTTLENECK' if block['is_bottleneck'] else ''}")
+
+# 4. Redistribute density to maximise throughput under constraints
+result = opt.optimize_power_distribution(
+    chip, power_budget_W=150.0, frequency_Hz=3e9, h_conv=2000.0,
+)
+print(f"\nTotal throughput: {result['total_throughput_ops_s']:.2e} ops/s")
+print(f"Improvement over original: {result['improvement_ratio']:.1f}×")
+print(f"Binding constraint: {result['binding_constraint']}")
+
+# 5. Compare substrates — would diamond help?
+ranking = opt.material_ranking(h_conv=2000.0)
+print(opt.format_material_ranking(ranking, h_conv=2000.0))
+```

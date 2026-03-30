@@ -235,6 +235,36 @@ See the benchmark documentation for details.
    different physical aspects (spreading vs. convective removal). Both are
    documented and appropriate for their respective use cases.
 
+9. **Temperature-independent material properties**: All material properties
+   (thermal conductivity, specific heat, density) are fixed at their 300 K
+   reference values. In reality, silicon thermal conductivity drops ~20% by
+   400 K (148 → ~118 W/(m·K)) due to increased phonon-phonon scattering, and
+   specific heat increases. This means the model slightly overestimates
+   thermal performance at elevated temperatures. **Validated range: 250–400 K.**
+   Above 400 K, users should calibrate material properties to
+   temperature-appropriate values via `MaterialRegistry`.
+
+10. **Spreading resistance for small dies**: The 1D thermal model assumes
+    heat flows uniformly through the die thickness. For dies significantly
+    smaller than the package or heat spreader (die area < 1 cm²), lateral
+    heat spreading in the IHS/heatsink creates additional spreading
+    resistance not captured by the 1D model. The 3D Fourier solver does
+    capture lateral spreading within the die, but not beyond it. For small
+    dies on large packages, the actual thermal resistance will be higher
+    than the 1D model predicts. Use `CoolingStack` with measured package
+    data to account for this.
+
+11. **Model vs measured θ_jc gap**: The model computes conduction-path
+    resistance only (`R = dx/(2·k·A)`). Published JEDEC θ_jc values
+    measure the full package path: die → TIM → IHS → contact interfaces.
+    This produces model/measured ratios of 0.047–0.670 (model is 5–21×
+    lower). The gap is the package thermal resistance — not a model error.
+    For architecture-stage decisions (material selection, cooling tradeoffs,
+    density limits), the conductive component is the independent variable
+    being optimized. To recover full-path θ_jc, add package resistance:
+    `θ_jc_total = θ_jc_model + θ_package` (from vendor data or
+    `CoolingStack.total_resistance()`).
+
 ---
 
 ## Extending Aethermor for Your Design Flow

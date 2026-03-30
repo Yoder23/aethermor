@@ -1,6 +1,6 @@
 # Aethermor: Independent Technical Review
 
-**Date**: 2026-03-11 (original) · 2026-03-20 (current revision)
+**Date**: 2026-03-11 (original) · 2026-03-30 (current revision)
 **Scope**: Full codebase, physics models, analysis tools, tests, documentation, and claims audit.
 
 ---
@@ -111,22 +111,22 @@ necessary? At what node does silicon hit its thermal wall?"*
 
 ### 2.1 Test Suite
 
-254 tests across unit, integration, regression, and performance layers:
+277 tests across unit, integration, regression, and performance layers:
 
 | Module | Tests | Status |
 |---|---|---|
-| Physics constants & materials | 15 | All pass |
-| Energy models (CMOS, adiabatic, reversible) | 20 | All pass |
-| Thermal transport (3D Fourier) | 12 | All pass |
-| Cooling stack | 18 | All pass |
-| Chip floorplan | 15 | All pass |
-| Tech roadmap | 12 | All pass |
+| Physics constants & materials | 13 | All pass |
+| Energy models (CMOS, adiabatic, reversible) | 16 | All pass |
+| Thermal transport (3D Fourier) | 16 | All pass |
+| Cooling stack | 26 | All pass |
+| Chip floorplan | 23 | All pass |
+| Tech roadmap | 15 | All pass |
 | Thermal optimizer (incl. headroom, redistribution) | 51 | All pass |
-| Landauer analysis, design space, regime maps | 18 | All pass |
+| Landauer analysis, design space, regime maps | 16 | All pass |
 | Extensible registries (material, paradigm, cooling) | 43 | All pass |
-| Integration & regression | 20 | All pass |
-| Legacy benchmarks & publication gates | 30 | All pass |
-| Dashboard | 1 | Skipped (requires `dash`) |
+| Integration & regression | 38 | All pass |
+| Benchmarks, statistics & publication gates | 18 | All pass |
+| Performance & dashboard | 3 | 2 pass, 1 skipped (dash) |
 
 ### 2.2 Validation Suite — 133 Physics Checks
 
@@ -181,7 +181,7 @@ analysis/         # Research tools
 simulation/       # Legacy Monte Carlo / evolutionary simulation engine
 examples/         # 7 runnable research scripts
 experiments/      # Reproducibility scripts (ablations, scaling, fault sweeps)
-tests/            # 254 tests (pytest)
+tests/            # 277 tests (pytest)
 validation/       # 133 physics cross-checks (validate_all.py)
 ```
 
@@ -261,7 +261,7 @@ architecture-level thermal budgeting but not for detailed circuit design.
 
 | Dimension | Grade | Notes |
 |---|---|---|
-| Code quality | **A** | Clean, 254 tests passing, well-structured packages |
+| Code quality | **A** | Clean, 277 tests passing, well-structured packages |
 | Physics validation | **A+** | 133 cross-checks against CODATA, CRC Handbook, ITRS/IRDS, analytical solutions. 20 literature cross-checks (Incropera, CODATA, CRC). 33 real-world chip validations (A100, M1, EPYC, i9-13900K). 18 experimental measurement checks (JEDEC θ_jc, IR thermal imaging, HotSpot benchmark). |
 | Statistical infrastructure | **A-** | Rigorous paired ablations, Holm correction, bootstrap CIs |
 | Reproducibility | **A** | Seeded, manifested, CI-verified, deterministic validation suite |

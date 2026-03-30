@@ -15,6 +15,11 @@ The key addition is experimental measurement validation — closing the gap betw
 **published hardware measurements**, not just published specifications:
 
 ### Tier 1: JEDEC-Measured Thermal Resistance (θ_jc)
+
+θ_jc (junction-to-case thermal resistance) is the JEDEC-standard metric for
+how effectively heat flows from the die junction to the package case surface,
+measured in K/W. Lower is better.
+
 - NVIDIA A100: published θ_jc = 0.029 K/W
 - Intel i9-13900K: published θ_jc = 0.43 K/W
 - AMD Ryzen 7950X: published θ_jc = 0.11 K/W
