@@ -21,7 +21,7 @@ What this script demonstrates:
 import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
-from analysis.thermal_optimizer import ThermalOptimizer
+from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
 # Use a moderate grid for speed; larger grids give more accurate results
 opt = ThermalOptimizer(
@@ -125,7 +125,7 @@ print("THERMAL HEADROOM MAP: Where is thermal budget wasted on a heterogeneous S
 print("=" * 95)
 print()
 
-from physics.chip_floorplan import ChipFloorplan
+from aethermor.physics.chip_floorplan import ChipFloorplan
 
 # Use 500 µm elements on a 20×20×4 grid → 10 mm × 10 mm = 100 mm² die
 # (Coarse grid for speed; element_size sets the physical scale.)

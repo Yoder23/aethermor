@@ -45,11 +45,11 @@ def main():
             env["MORPHO_ENABLE"] = "1"
             env["BENCH_ARTIFACT_ROOT"] = ART_ROOT
 
-            run("simulation.benchmark_morphogenesis", env)
+            run("aethermor.simulation.benchmark_morphogenesis", env)
             km = read_kpis(os.path.join(ART_ROOT, "morphogenesis", "kpis.json")) or {}
 
             env["TWIN_ENABLE"] = "1"
-            run("simulation.benchmark_material_twin", env)
+            run("aethermor.simulation.benchmark_material_twin", env)
             kt = read_kpis(os.path.join(ART_ROOT, "material_twin", "kpis.json")) or {}
 
             rows.append({

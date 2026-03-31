@@ -1,4 +1,4 @@
-from simulation.aethermor_full_simulation_v2 import AethermorSimV2
+from aethermor.simulation.aethermor_full_simulation_v2 import AethermorSimV2
 
 def test_field_history_integrity():
     sim = AethermorSimV2(grid_shape=(4,4,2), steps=5)

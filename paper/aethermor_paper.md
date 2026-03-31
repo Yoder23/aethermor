@@ -145,7 +145,7 @@ hotspot detection.
 ### 2.3 Interface Layer
 
 Users interact with Aethermor through three channels: (1) a browser-based
-interactive explorer (`app.py`) with six parameterised tabs updated in real
+interactive explorer (`aethermor dashboard`) with six parameterised tabs updated in real
 time; (2) a Python scripting API; (3) seven ready-to-run example scripts.
 
 ---
@@ -293,7 +293,7 @@ satisfies its constraints; the headroom map obeys T + headroom = T_limit.
 ### 5.5 Reproducibility
 
 All functions return identical results across independent runs with the same
-inputs. The full test suite (254 tests) and validation suite (133 checks)
+inputs. The full test suite (277 tests) and validation suite (133 checks)
 execute deterministically.
 
 | Category | Reference | Checks | Status |
@@ -409,9 +409,9 @@ To reproduce all results in this paper:
 git clone https://github.com/Yoder23/aethermor
 cd aethermor
 pip install -e ".[all]"
-python -m validation.validate_all   # 133 checks
-python -m pytest tests/ -v          # 254 tests
-python app.py                       # Interactive UI
+python -m aethermor.validation.validate_all   # 133 checks
+python -m pytest tests/ -v          # 277 tests
+aethermor dashboard                 # Interactive UI
 ```
 
 All random number generators are seeded for deterministic output. The

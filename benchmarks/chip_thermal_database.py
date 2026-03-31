@@ -34,12 +34,11 @@ import os
 import time
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
-from physics.materials import get_material
-from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
-from physics.cooling import CoolingStack
+from aethermor.physics.materials import get_material
+from aethermor.physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
+from aethermor.physics.cooling import CoolingStack
 
 _pass = 0
 _fail = 0

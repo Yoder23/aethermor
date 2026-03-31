@@ -30,8 +30,8 @@ import numpy as np
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
-from physics.constants import k_B, landauer_limit, thermal_energy
-from physics.energy_models import (
+from aethermor.physics.constants import k_B, landauer_limit, thermal_energy
+from aethermor.physics.energy_models import (
     CMOSGateEnergy,
     AdiabaticGateEnergy,
     ReversibleGateEnergy,

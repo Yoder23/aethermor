@@ -39,15 +39,15 @@ pip install -e ".[all]"    # core + dashboard + dev tools
 Run tests:
 
 ```bash
-python -m pytest tests/ -v              # 254 tests
-python -m validation.validate_all       # 133 physics cross-checks
+python -m pytest tests/ -v              # 277 tests
+python -m aethermor.validation.validate_all       # 133 physics cross-checks
 ```
 
 Run examples:
 
 ```bash
 python examples/custom_material.py      # extensibility walkthrough
-python app.py                           # interactive explorer UI
+aethermor dashboard                     # interactive explorer UI
 ```
 
 ## Pull Request Requirements

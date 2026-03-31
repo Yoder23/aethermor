@@ -1,5 +1,5 @@
 import numpy as np
-from simulation.aethermor_full_simulation_v2 import AethermorSimV2
+from aethermor.simulation.aethermor_full_simulation_v2 import AethermorSimV2
 
 def test_harvest_temperature_dependence():
     sim = AethermorSimV2(grid_shape=(1,1,1), steps=1)

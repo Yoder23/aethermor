@@ -17,7 +17,7 @@ Extensibility
 -------------
 Register your own materials::
 
-    from physics.materials import registry, Material
+    from aethermor.physics.materials import registry, Material
 
     registry.register("boron_nitride", Material(
         name="Hexagonal Boron Nitride (h-BN)",
@@ -31,7 +31,7 @@ Register your own materials::
     ))
 
     # Now available everywhere:
-    from physics.materials import get_material
+    from aethermor.physics.materials import get_material
     mat = get_material("boron_nitride")
 
 Or from a JSON file::
@@ -360,7 +360,7 @@ class MaterialRegistry:
     -----
     Import the module-level singleton::
 
-        from physics.materials import registry
+        from aethermor.physics.materials import registry
 
     Register a custom material::
 

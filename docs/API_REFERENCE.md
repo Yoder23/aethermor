@@ -522,8 +522,8 @@ architecture question: *"Where is my thermal budget being wasted, and
 how should I redistribute compute density?"*
 
 ```python
-from physics.chip_floorplan import ChipFloorplan
-from analysis.thermal_optimizer import ThermalOptimizer
+from aethermor.physics.chip_floorplan import ChipFloorplan
+from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
 # 1. Define a heterogeneous SoC
 chip = ChipFloorplan.modern_soc(material="silicon", h_conv=2000.0)

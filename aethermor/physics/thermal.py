@@ -25,8 +25,8 @@ from dataclasses import dataclass, field
 from typing import Optional, Tuple
 from scipy.ndimage import convolve
 
-from physics.constants import k_B
-from physics.materials import Material, MATERIAL_DB
+from aethermor.physics.constants import k_B
+from aethermor.physics.materials import Material, MATERIAL_DB
 
 
 @dataclass

@@ -7,7 +7,7 @@ factory methods, and physical consistency of the cooling path model.
 
 import math
 import pytest
-from physics.cooling import (
+from aethermor.physics.cooling import (
     ThermalLayer,
     THERMAL_LAYERS,
     CoolingStack,

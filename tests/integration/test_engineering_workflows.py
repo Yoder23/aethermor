@@ -10,19 +10,19 @@ decision output.
 import math
 import numpy as np
 import pytest
-from physics.constants import k_B, landauer_limit
-from physics.materials import get_material, registry as material_registry
-from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
-from physics.cooling import CoolingStack
-from physics.energy_models import (
+from aethermor.physics.constants import k_B, landauer_limit
+from aethermor.physics.materials import get_material, registry as material_registry
+from aethermor.physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
+from aethermor.physics.cooling import CoolingStack
+from aethermor.physics.energy_models import (
     CMOSGateEnergy,
     AdiabaticGateEnergy,
     ReversibleGateEnergy,
     LandauerLimitEnergy,
 )
-from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
-from analysis.thermal_optimizer import ThermalOptimizer
-from analysis.tech_roadmap import TechnologyRoadmap
+from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+from aethermor.analysis.thermal_optimizer import ThermalOptimizer
+from aethermor.analysis.tech_roadmap import TechnologyRoadmap
 
 ALL_MATERIAL_NAMES = [
     "silicon", "silicon_dioxide", "gallium_arsenide", "diamond",

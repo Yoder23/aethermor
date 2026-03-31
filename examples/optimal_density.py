@@ -17,15 +17,14 @@ Run:
 
 import sys
 import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Ensure UTF-8 output on Windows terminals
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 import numpy as np
-from simulation.physical_simulation import PhysicalSimulation, PhysicalSimConfig
-from physics.materials import MATERIAL_DB
+from aethermor.simulation.physical_simulation import PhysicalSimulation, PhysicalSimConfig
+from aethermor.physics.materials import MATERIAL_DB
 
 
 def find_thermal_wall():

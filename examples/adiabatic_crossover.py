@@ -18,15 +18,14 @@ Run:
 
 import sys
 import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Ensure UTF-8 output on Windows terminals
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
-from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
-from physics.constants import landauer_limit
-from analysis.regime_map import paradigm_comparison, classify_regime
+from aethermor.physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
+from aethermor.physics.constants import landauer_limit
+from aethermor.analysis.regime_map import paradigm_comparison, classify_regime
 
 
 def crossover_vs_technology_node():
@@ -77,7 +76,7 @@ def energy_vs_frequency_comparison():
 
     cmos = CMOSGateEnergy(tech_node_nm=7)
     adiab = AdiabaticGateEnergy(tech_node_nm=7)
-    from physics.energy_models import ReversibleGateEnergy, LandauerLimitEnergy
+    from aethermor.physics.energy_models import ReversibleGateEnergy, LandauerLimitEnergy
     rev = ReversibleGateEnergy()
     landauer = LandauerLimitEnergy()
 
@@ -117,7 +116,7 @@ def temperature_sensitivity():
 
     cmos = CMOSGateEnergy(tech_node_nm=7)
     adiab = AdiabaticGateEnergy(tech_node_nm=7)
-    from physics.energy_models import ReversibleGateEnergy
+    from aethermor.physics.energy_models import ReversibleGateEnergy
     rev = ReversibleGateEnergy()
 
     print(f"{'Temperature':>12} {'CMOS Gap':>12} {'Adiab Gap':>12} {'Rev Gap':>12} "

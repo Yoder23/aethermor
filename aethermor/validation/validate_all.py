@@ -7,7 +7,7 @@ This script is the **trust anchor** for the entire project.
 
 Run it once:
 
-    python -m validation.validate_all
+    python -m aethermor.validation.validate_all
 
 and you will see every physics model cross-checked against:
 
@@ -91,7 +91,7 @@ def _check_order(description: str, a, b, label_a="a", label_b="b"):
 
 def validate_constants():
     _header("FUNDAMENTAL CONSTANTS — CODATA 2018 / NIST reference values")
-    from physics.constants import k_B, h_PLANCK, h_BAR, E_CHARGE, C_LIGHT, SIGMA_SB
+    from aethermor.physics.constants import k_B, h_PLANCK, h_BAR, E_CHARGE, C_LIGHT, SIGMA_SB
 
     # NIST CODATA 2018 exact values
     _check_close("Boltzmann constant k_B", k_B, 1.380649e-23, rtol=1e-10)
@@ -108,7 +108,7 @@ def validate_constants():
 
 def validate_landauer():
     _header("LANDAUER LIMIT — k_B · T · ln(2) at reference temperatures")
-    from physics.constants import k_B, landauer_limit, LANDAUER_LIMIT
+    from aethermor.physics.constants import k_B, landauer_limit, LANDAUER_LIMIT
 
     # At 300 K: k_B × 300 × ln(2)
     expected_300 = 1.380649e-23 * 300.0 * math.log(2.0)
@@ -134,7 +134,7 @@ def validate_landauer():
 
 def validate_materials():
     _header("MATERIAL PROPERTIES — CRC Handbook / published reference values")
-    from physics.materials import get_material
+    from aethermor.physics.materials import get_material
 
     # --- Silicon (Si) ---
     # CRC Handbook, 95th ed.: k = 148 W/(m·K), cp = 700 J/(kg·K), ρ = 2329 kg/m³
@@ -193,8 +193,8 @@ def validate_materials():
 
 def validate_energy_models():
     _header("CMOS ENERGY MODEL — ITRS/IRDS-calibrated voltage and capacitance")
-    from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
-    from physics.constants import landauer_limit
+    from aethermor.physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
+    from aethermor.physics.constants import landauer_limit
 
     # V_dd scaling vs ITRS data points
     # ITRS 2013 + IRDS 2022: 130nm→1.2V, 65nm→1.0V, 45nm→0.9V, 14nm→0.75V, 7nm→0.7V
@@ -261,8 +261,8 @@ def validate_energy_models():
 
 def validate_fourier_solver():
     _header("FOURIER THERMAL SOLVER — Analytical steady-state comparison")
-    from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
-    from physics.materials import get_material
+    from aethermor.physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
+    from aethermor.physics.materials import get_material
 
     # Test case: uniform heat generation in a 3D block with convective BC.
     # For a uniform block with all faces cooled, the centre temperature
@@ -344,9 +344,9 @@ def validate_fourier_solver():
 
 def validate_analytical_model():
     _header("ANALYTICAL 1D MODEL — Self-consistency & cross-validation")
-    from analysis.thermal_optimizer import ThermalOptimizer
-    from physics.constants import k_B, landauer_limit
-    from physics.materials import get_material
+    from aethermor.analysis.thermal_optimizer import ThermalOptimizer
+    from aethermor.physics.constants import k_B, landauer_limit
+    from aethermor.physics.materials import get_material
 
     opt = ThermalOptimizer(
         grid_shape=(10, 10, 3),
@@ -367,7 +367,7 @@ def validate_analytical_model():
     si = get_material("silicon")
     dx = opt.element_size_m
     A = dx ** 2
-    from physics.energy_models import CMOSGateEnergy
+    from aethermor.physics.energy_models import CMOSGateEnergy
     _cmos = CMOSGateEnergy(tech_node_nm=7)
     E_switch = _cmos.energy_per_switch(1e9, 300.0)
     ppg = 0.2 * 1e9 * E_switch  # activity * freq * E_switch
@@ -412,7 +412,7 @@ def validate_analytical_model():
 
 def validate_max_density_reciprocity():
     _header("MAX DENSITY SEARCH — Reciprocity with analytical model")
-    from analysis.thermal_optimizer import ThermalOptimizer
+    from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
     opt = ThermalOptimizer(
         grid_shape=(10, 10, 3),
@@ -429,7 +429,7 @@ def validate_max_density_reciprocity():
     T_at_max = result["T_max_K"]
 
     # Verify T at max density is near material limit
-    from physics.materials import get_material
+    from aethermor.physics.materials import get_material
     si = get_material("silicon")
     _check_close("T at max density ≈ T_limit",
                  T_at_max, si.max_operating_temp, rtol=0.02)
@@ -445,7 +445,7 @@ def validate_max_density_reciprocity():
 
     # Cross-check: analytical max density (algebraic inverse) should
     # give T = T_limit when fed back into analytical model.
-    from physics.energy_models import CMOSGateEnergy
+    from aethermor.physics.energy_models import CMOSGateEnergy
     _model = CMOSGateEnergy(tech_node_nm=7)
     _E = _model.energy_per_switch(1e9, 300.0)
     _ppg = 0.2 * 1e9 * _E
@@ -475,7 +475,7 @@ def validate_max_density_reciprocity():
 
 def validate_min_cooling_inverse():
     _header("MIN COOLING SEARCH — Inverse consistency with analytical model")
-    from analysis.thermal_optimizer import ThermalOptimizer
+    from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
     opt = ThermalOptimizer(
         grid_shape=(10, 10, 3),
@@ -490,7 +490,7 @@ def validate_min_cooling_inverse():
     h_min = result["min_h_conv"]
 
     # At h_min, T should be ≈ T_limit
-    from physics.materials import get_material
+    from aethermor.physics.materials import get_material
     si = get_material("silicon")
     T_at_hmin = opt._analytical_T_max(density, "silicon", h_conv=h_min)
     _check_close("T at h_min ≈ T_limit",
@@ -519,9 +519,9 @@ def validate_min_cooling_inverse():
 
 def validate_optimizer_constraints():
     _header("POWER REDISTRIBUTION — Constraint satisfaction guarantees")
-    from analysis.thermal_optimizer import ThermalOptimizer
-    from physics.chip_floorplan import ChipFloorplan
-    from physics.materials import get_material
+    from aethermor.analysis.thermal_optimizer import ThermalOptimizer
+    from aethermor.physics.chip_floorplan import ChipFloorplan
+    from aethermor.physics.materials import get_material
 
     opt = ThermalOptimizer(
         grid_shape=(10, 10, 3),
@@ -591,8 +591,8 @@ def validate_optimizer_constraints():
 
 def validate_headroom_map():
     _header("THERMAL HEADROOM MAP — Physics consistency checks")
-    from analysis.thermal_optimizer import ThermalOptimizer
-    from physics.chip_floorplan import ChipFloorplan
+    from aethermor.analysis.thermal_optimizer import ThermalOptimizer
+    from aethermor.physics.chip_floorplan import ChipFloorplan
 
     opt = ThermalOptimizer(
         grid_shape=(10, 10, 3),
@@ -624,7 +624,7 @@ def validate_headroom_map():
                f"T = {bn['T_max_K']:.1f}")
 
     # Headroom + T_max should equal T_limit
-    from physics.materials import get_material
+    from aethermor.physics.materials import get_material
     si = get_material("silicon")
     for r in results:
         T_sum = r["T_max_K"] + r["thermal_headroom_K"]
@@ -646,7 +646,7 @@ def validate_headroom_map():
 
 def validate_cooling_stack():
     _header("COOLING STACK — Thermal resistance consistency")
-    from physics.cooling import CoolingStack, ThermalLayer
+    from aethermor.physics.cooling import CoolingStack, ThermalLayer
 
     # Single layer: R = t / (k · A), h_eff = k / t
     # A 1mm copper layer: k=401, t=0.001 → R = 0.001/(401·A) → h_eff = 401/0.001 = 401000
@@ -689,7 +689,7 @@ def validate_cooling_stack():
 
 def validate_tech_roadmap():
     _header("TECHNOLOGY ROADMAP — Physical trends across nodes")
-    from analysis.tech_roadmap import TechnologyRoadmap
+    from aethermor.analysis.tech_roadmap import TechnologyRoadmap
 
     rm = TechnologyRoadmap()
     proj = rm.energy_roadmap()
@@ -725,9 +725,9 @@ def validate_tech_roadmap():
 
 def validate_dimensions():
     _header("DIMENSIONAL ANALYSIS — Unit consistency spot-checks")
-    from physics.materials import get_material
-    from physics.energy_models import CMOSGateEnergy
-    from physics.constants import landauer_limit
+    from aethermor.physics.materials import get_material
+    from aethermor.physics.energy_models import CMOSGateEnergy
+    from aethermor.physics.constants import landauer_limit
 
     si = get_material("silicon")
 
@@ -768,7 +768,7 @@ def validate_dimensions():
 
 def validate_full_exploration():
     _header("FULL DESIGN EXPLORATION — Response completeness")
-    from analysis.thermal_optimizer import ThermalOptimizer
+    from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
     opt = ThermalOptimizer(
         grid_shape=(10, 10, 3),
@@ -810,7 +810,7 @@ def validate_full_exploration():
 
 def validate_reproducibility():
     _header("REPRODUCIBILITY — Deterministic outputs across runs")
-    from analysis.thermal_optimizer import ThermalOptimizer
+    from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
     opt = ThermalOptimizer(
         grid_shape=(10, 10, 3),

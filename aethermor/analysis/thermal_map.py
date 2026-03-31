@@ -20,7 +20,7 @@ import numpy as np
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass
 
-from physics.thermal import FourierThermalTransport
+from aethermor.physics.thermal import FourierThermalTransport
 
 
 @dataclass

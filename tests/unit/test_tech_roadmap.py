@@ -6,7 +6,7 @@ paradigm crossover detection, and thermal wall calculations.
 """
 
 import pytest
-from analysis.tech_roadmap import TechnologyRoadmap
+from aethermor.analysis.tech_roadmap import TechnologyRoadmap
 
 
 class TestTechnologyRoadmap:

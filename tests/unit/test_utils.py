@@ -1,4 +1,4 @@
-from simulation.aethermor_full_simulation_v2 import AethermorSimV2
+from aethermor.simulation.aethermor_full_simulation_v2 import AethermorSimV2
 
 def test_neighbor_generation_edges():
     sim = AethermorSimV2(grid_shape=(2,2,2), steps=1)

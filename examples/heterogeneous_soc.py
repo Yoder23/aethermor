@@ -20,8 +20,8 @@ What this script demonstrates:
 import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
-from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
-from physics.cooling import CoolingStack
+from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+from aethermor.physics.cooling import CoolingStack
 
 # ═══════════════════════════════════════════════════════════════
 # Part 1: Modern SoC floorplan analysis
@@ -148,7 +148,7 @@ print("-" * 72)
 for label, cs in cooling_configs:
     h_eff = cs.effective_h(die_area)
     th = soc.simulate(frequency_Hz=freq, steps=500, cooling_stack=cs)
-    from physics.materials import MATERIAL_DB
+    from aethermor.physics.materials import MATERIAL_DB
     headroom = MATERIAL_DB["silicon"].max_operating_temp - th.max_temperature()
     status = "OK" if headroom > 0 else "OVER LIMIT"
     print(f"{label:<25s}  {h_eff:>9.0f}  {th.max_temperature():>10.1f}  "

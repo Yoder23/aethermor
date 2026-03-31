@@ -42,13 +42,13 @@ def main():
         env["BENCH_STEPS"] = "80"
         env["BENCH_ARTIFACT_ROOT"] = ART_ROOT
 
-        run("simulation.benchmark_morphogenesis", env)
+        run("aethermor.simulation.benchmark_morphogenesis", env)
         km = read_kpis(os.path.join(ART_ROOT, "morphogenesis", "kpis.json")) or {}
 
-        run("simulation.benchmark_material_twin", env)
+        run("aethermor.simulation.benchmark_material_twin", env)
         kt = read_kpis(os.path.join(ART_ROOT, "material_twin", "kpis.json")) or {}
 
-        run("simulation.benchmark_metabolic_cluster", env)
+        run("aethermor.simulation.benchmark_metabolic_cluster", env)
         kc = read_kpis(os.path.join(ART_ROOT, "metabolic_cluster", "kpis.json")) or {}
 
         rows.append({

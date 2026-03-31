@@ -16,7 +16,7 @@ thermal simulation to produce roadmap projections including:
 
 Example
 -------
->>> from analysis.tech_roadmap import TechnologyRoadmap
+>>> from aethermor.analysis.tech_roadmap import TechnologyRoadmap
 >>> roadmap = TechnologyRoadmap()
 >>> table = roadmap.energy_roadmap()
 >>> print(roadmap.format_energy_roadmap(table))
@@ -27,15 +27,15 @@ import numpy as np
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Tuple
 
-from physics.constants import k_B, landauer_limit
-from physics.materials import MATERIAL_DB, get_material
-from physics.energy_models import (
+from aethermor.physics.constants import k_B, landauer_limit
+from aethermor.physics.materials import MATERIAL_DB, get_material
+from aethermor.physics.energy_models import (
     CMOSGateEnergy,
     AdiabaticGateEnergy,
     ReversibleGateEnergy,
     LandauerLimitEnergy,
 )
-from analysis.regime_map import thermal_density_limit, classify_regime
+from aethermor.analysis.regime_map import thermal_density_limit, classify_regime
 
 
 @dataclass

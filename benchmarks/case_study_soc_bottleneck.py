@@ -32,10 +32,9 @@ import time
 # Force UTF-8 output on Windows
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
-from analysis.thermal_optimizer import ThermalOptimizer
+from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
 def build_soc():
     """A representative modern SoC layout."""

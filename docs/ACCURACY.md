@@ -16,7 +16,7 @@
 | Experimental measurement | 18 | 3 (A100, i9-13900K, Ryzen 7950X) | 1 | 1 | Package-level |
 | Literature / analytical | 20 | — | — | — | — |
 | Physics cross-checks | 133 | — | 9 | 4 | 6 factory configs |
-| Unit + integration tests | 278 | — | 9 | 4 | 6 factory configs |
+| Unit + integration tests | 277 | — | 9 | 4 | 6 factory configs |
 | Engineering case studies | 46 | — | 5 | 2 | 3 configs |
 
 **Total: 680+ independently validated checks, all passing.**
@@ -179,7 +179,7 @@ python benchmarks/material_cross_validation.py    # 93 checks
 python benchmarks/real_world_validation.py        # 33 checks
 python benchmarks/experimental_validation.py      # 18 checks
 python benchmarks/literature_validation.py        # 20 checks
-python -m validation.validate_all                 # 133 checks
+python -m aethermor.validation.validate_all                 # 133 checks
 
 # Accuracy metrics script
 python scripts/gather_accuracy_metrics.py

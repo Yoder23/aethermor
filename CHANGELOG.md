@@ -4,6 +4,37 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-03-31
+
+### Added — Peer Review Response
+- **Package restructure**: All modules moved under `aethermor/` namespace
+  (`aethermor.physics`, `aethermor.analysis`, `aethermor.validation`,
+  `aethermor.simulation`). Proper installable package with `pip install -e .`.
+- **CLI entry point**: `aethermor dashboard`, `aethermor validate`,
+  `aethermor version` via `[project.scripts]` in pyproject.toml.
+- **Dashboard split**: Monolithic `app.py` (730 lines) replaced with modular
+  `aethermor/app/` package — 6 tab modules + shared utils + main entry point.
+- **Calibration case study**: `docs/calibration_case_study.md` — 15 real
+  production chips (A100, H100, MI300X, i9-13900K, Ryzen 7950X, RTX 4090, etc.)
+  validated against datasheet Tj_max values.
+- **Datacenter GPU case study**: `docs/case_study_datacenter_gpu.md` — 8-GPU
+  node cooling decision matrix (air vs liquid vs substrate).
+- **Uncertainty & sensitivity analysis**: `docs/uncertainty_sensitivity.md` —
+  Monte Carlo uncertainty propagation, OAT sensitivity, transient roadmap.
+- **README enhancements**: "Start Here" evaluation guide, validation summary
+  table, expected accuracy section, "When This Model Breaks" failure modes,
+  CFD comparison table, reproducibility section, academic references.
+
+### Changed
+- All 65+ source files updated from `physics.*` → `aethermor.physics.*` imports.
+- All `sys.path.insert` hacks removed (20 files).
+- All documentation updated for new package paths and consistent test counts.
+- pyproject.toml: `packages.find` now includes only `aethermor*`.
+
+### Removed
+- Monolithic `app.py` — replaced by `aethermor/app/` modular architecture.
+- All `sys.path` manipulation from `tests/conftest.py`.
+
 ## [1.0.0] - 2026-03-25
 
 ### Added — Experimental Measurement Validation
@@ -94,7 +125,7 @@ All notable changes to this project are documented in this file.
   - `thermal_map.py`: Hotspot detection, cooling efficiency maps
 
 ### Added — Interactive Explorer UI
-- `app.py`: Dash-based interactive explorer with 6 tabs:
+- `aethermor/app/`: Modular Dash-based interactive explorer with 6 tabs:
   - Material Ranking, Cooling Analysis, Paradigm Comparison,
     Technology Roadmap, SoC Thermal Map, Custom Material registration
 
@@ -119,7 +150,7 @@ All notable changes to this project are documented in this file.
 
 ### Added — Validation & Testing
 - 254 unit, integration, regression, and performance tests (pytest)
-- 133 physics cross-checks (`python -m validation.validate_all`) against
+- 133 physics cross-checks (`python -m aethermor.validation.validate_all`) against
   CODATA 2018, CRC Handbook, ITRS/IRDS, analytical solutions
 - 43 registry-specific tests covering all three extensible registries
 

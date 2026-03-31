@@ -30,7 +30,7 @@ jobs:
         run: python -m pytest tests/ -q
 
       - name: Run validation suite
-        run: python -m validation.validate_all
+        run: python -m aethermor.validation.validate_all
 
       - name: Run literature validation
         run: python benchmarks/literature_validation.py

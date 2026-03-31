@@ -10,7 +10,6 @@ import sys
 import os
 import json
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 GOLD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                         "benchmarks", "gold_outputs")
@@ -21,7 +20,6 @@ def main():
     verify_only = "--verify-only" in sys.argv
 
     # Import and run the production suite
-    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(
         os.path.abspath(__file__))), "benchmarks", "production_suite"))
     from run_production_suite import main as run_suite
 

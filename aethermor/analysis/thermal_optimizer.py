@@ -35,7 +35,7 @@ Capabilities:
 
 Example
 -------
->>> from analysis.thermal_optimizer import ThermalOptimizer
+>>> from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 >>> opt = ThermalOptimizer()
 >>> result = opt.find_max_density("silicon", h_conv=1000)
 >>> print(f"Max density: {result['max_density']:.2e} gates/element")
@@ -47,11 +47,11 @@ import numpy as np
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Tuple
 
-from physics.constants import landauer_limit
-from physics.materials import MATERIAL_DB, get_material
-from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
-from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
-from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+from aethermor.physics.constants import landauer_limit
+from aethermor.physics.materials import MATERIAL_DB, get_material
+from aethermor.physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
+from aethermor.physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
+from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
 
 
 @dataclass

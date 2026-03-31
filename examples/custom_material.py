@@ -12,16 +12,15 @@ Run:
 
 import sys, os
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from dataclasses import dataclass
-from physics.materials import registry, Material, get_material, validate_material
-from physics.materials import material_to_dict, material_from_dict
-from physics.energy_models import paradigm_registry, EnergyModel
-from physics.cooling import cooling_registry, ThermalLayer, CoolingStack
-from physics.constants import landauer_limit
-from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
-from analysis.thermal_optimizer import ThermalOptimizer
+from aethermor.physics.materials import registry, Material, get_material, validate_material
+from aethermor.physics.materials import material_to_dict, material_from_dict
+from aethermor.physics.energy_models import paradigm_registry, EnergyModel
+from aethermor.physics.cooling import cooling_registry, ThermalLayer, CoolingStack
+from aethermor.physics.constants import landauer_limit
+from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
 
 # ── 1.  Register a custom substrate material ─────────────────────────

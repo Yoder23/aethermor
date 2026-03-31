@@ -5,10 +5,10 @@ import sys
 import os
 
 MODULES = [
-    "simulation.benchmark_morphogenesis",
-    "simulation.benchmark_thermodynamic_core",
-    "simulation.benchmark_material_twin",
-    "simulation.benchmark_metabolic_cluster",
+    "aethermor.simulation.benchmark_morphogenesis",
+    "aethermor.simulation.benchmark_thermodynamic_core",
+    "aethermor.simulation.benchmark_material_twin",
+    "aethermor.simulation.benchmark_metabolic_cluster",
 ]
 
 def main():

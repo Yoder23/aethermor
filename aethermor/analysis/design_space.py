@@ -22,10 +22,10 @@ from typing import List, Dict, Tuple, Optional, Callable
 import itertools
 import json
 
-from physics.constants import k_B, landauer_limit
-from physics.materials import Material, MATERIAL_DB
-from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
-from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
+from aethermor.physics.constants import k_B, landauer_limit
+from aethermor.physics.materials import Material, MATERIAL_DB
+from aethermor.physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
+from aethermor.physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
 
 
 @dataclass

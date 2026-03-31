@@ -55,8 +55,8 @@ measured in K/W. Lower is better.
 ## Full Verification Suite
 
 ```bash
-python -m pytest tests/ -v                    # 278 tests
-python -m validation.validate_all             # 133 physics cross-checks
+python -m pytest tests/ -v                    # 277 tests
+python -m aethermor.validation.validate_all             # 133 physics cross-checks
 python benchmarks/chip_thermal_database.py    # 82 chip thermal database checks (12 chips)
 python benchmarks/material_cross_validation.py # 93 material cross-validation checks (9 materials)
 python benchmarks/literature_validation.py    # 20 literature cross-checks

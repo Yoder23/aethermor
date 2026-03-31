@@ -31,13 +31,12 @@ import os
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from physics.constants import k_B, landauer_limit
-from physics.materials import get_material
-from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
-from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
-from physics.cooling import CoolingStack
+from aethermor.physics.constants import k_B, landauer_limit
+from aethermor.physics.materials import get_material
+from aethermor.physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
+from aethermor.physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
+from aethermor.physics.cooling import CoolingStack
 import numpy as np
 
 
@@ -259,7 +258,7 @@ def validate_cooling_stack():
 
     # A copper slab 2mm thick, area 1 cm²:
     # R = L / (k * A) = 0.002 / (401 * 1e-4) = 0.0499 K/W
-    from physics.cooling import ThermalLayer
+    from aethermor.physics.cooling import ThermalLayer
     copper = ThermalLayer(
         name="copper_test",
         thickness_m=0.002,

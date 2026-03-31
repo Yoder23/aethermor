@@ -18,8 +18,8 @@ from dataclasses import dataclass
 
 import pytest
 
-from physics.constants import landauer_limit
-from physics.materials import (
+from aethermor.physics.constants import landauer_limit
+from aethermor.physics.materials import (
     Material,
     MaterialRegistry,
     registry,
@@ -32,7 +32,7 @@ from physics.materials import (
     unregister_material,
     MATERIAL_DB,
 )
-from physics.energy_models import (
+from aethermor.physics.energy_models import (
     EnergyModel,
     CMOSGateEnergy,
     AdiabaticGateEnergy,
@@ -42,7 +42,7 @@ from physics.energy_models import (
     paradigm_registry,
     register_paradigm,
 )
-from physics.cooling import (
+from aethermor.physics.cooling import (
     ThermalLayer,
     CoolingStack,
     CoolingRegistry,
@@ -53,8 +53,8 @@ from physics.cooling import (
     layer_to_dict,
     THERMAL_LAYERS,
 )
-from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
-from analysis.thermal_optimizer import ThermalOptimizer
+from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────

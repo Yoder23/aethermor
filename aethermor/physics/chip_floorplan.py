@@ -20,7 +20,7 @@ chip floorplanning on a 3D thermal solver in a single exploratory workflow.
 
 Example
 -------
->>> from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+>>> from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
 >>> fp = ChipFloorplan(grid_shape=(60, 60, 8), element_size_m=50e-6)
 >>> fp.add_block(FunctionalBlock(
 ...     name="CPU_cluster",
@@ -43,16 +43,16 @@ import numpy as np
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Tuple
 
-from physics.constants import landauer_limit
-from physics.materials import Material, MATERIAL_DB, get_material
-from physics.energy_models import (
+from aethermor.physics.constants import landauer_limit
+from aethermor.physics.materials import Material, MATERIAL_DB, get_material
+from aethermor.physics.energy_models import (
     CMOSGateEnergy,
     AdiabaticGateEnergy,
     ReversibleGateEnergy,
     LandauerLimitEnergy,
     paradigm_registry,
 )
-from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
+from aethermor.physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
 
 
 @dataclass

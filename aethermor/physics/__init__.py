@@ -14,14 +14,14 @@
 #     from physics import paradigm_registry # ParadigmRegistry
 #     from physics import cooling_registry  # CoolingRegistry
 
-from physics.constants import k_B, LANDAUER_LIMIT, h_PLANCK, E_CHARGE
-from physics.materials import (
+from aethermor.physics.constants import k_B, LANDAUER_LIMIT, h_PLANCK, E_CHARGE
+from aethermor.physics.materials import (
     Material, MATERIAL_DB,
     registry, register_material, unregister_material,
     get_material, list_materials,
     validate_material, material_from_dict, material_to_dict,
 )
-from physics.energy_models import (
+from aethermor.physics.energy_models import (
     CMOSGateEnergy,
     AdiabaticGateEnergy,
     ReversibleGateEnergy,
@@ -29,13 +29,13 @@ from physics.energy_models import (
     EnergyModel,
     paradigm_registry, register_paradigm,
 )
-from physics.thermal import FourierThermalTransport
-from physics.cooling import (
+from aethermor.physics.thermal import FourierThermalTransport
+from aethermor.physics.cooling import (
     CoolingStack, ThermalLayer, THERMAL_LAYERS,
     cooling_registry, register_cooling_layer,
     validate_layer, layer_from_dict, layer_to_dict,
 )
-from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
 
 try:
     from importlib.metadata import version as _pkg_version

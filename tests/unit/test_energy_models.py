@@ -8,8 +8,8 @@ the simulation gives hardware researchers trustworthy numbers.
 
 import math
 import pytest
-from physics.constants import k_B, landauer_limit
-from physics.energy_models import (
+from aethermor.physics.constants import k_B, landauer_limit
+from aethermor.physics.energy_models import (
     CMOSGateEnergy,
     AdiabaticGateEnergy,
     ReversibleGateEnergy,

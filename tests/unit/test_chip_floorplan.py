@@ -8,7 +8,7 @@ thermal simulation, and factory methods for standard architectures.
 import math
 import numpy as np
 import pytest
-from physics.chip_floorplan import FunctionalBlock, ChipFloorplan
+from aethermor.physics.chip_floorplan import FunctionalBlock, ChipFloorplan
 
 
 class TestFunctionalBlock:
@@ -131,7 +131,7 @@ class TestChipFloorplan:
 
     def test_simulate_returns_thermal(self, simple_floorplan):
         """simulate() should return a FourierThermalTransport."""
-        from physics.thermal import FourierThermalTransport
+        from aethermor.physics.thermal import FourierThermalTransport
         thermal = simple_floorplan.simulate(steps=10)
         assert isinstance(thermal, FourierThermalTransport)
 

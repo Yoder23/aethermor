@@ -1,6 +1,6 @@
 import json
 import uuid
-from simulation.aethermor_full_simulation_v2 import AethermorSimV2
+from aethermor.simulation.aethermor_full_simulation_v2 import AethermorSimV2
 
 def test_param_loading_defaults():
     sim = AethermorSimV2(grid_shape=(1,1,1), steps=1, calibrated_params_file="nonexistent.json")

@@ -4,7 +4,7 @@
 
 **Verify everything:**
 ```bash
-python -m validation.validate_all              # 133 physics cross-checks
+python -m aethermor.validation.validate_all              # 133 physics cross-checks
 python benchmarks/literature_validation.py     # 20 literature cross-checks
 python benchmarks/real_world_validation.py     # 33 real-world chip validations
 ```
@@ -284,7 +284,7 @@ To add a new validation check:
 
 2. Call it from `main()`.
 
-3. Run `python -m validation.validate_all` — you should see your new checks.
+3. Run `python -m aethermor.validation.validate_all` — you should see your new checks.
 
 ---
 

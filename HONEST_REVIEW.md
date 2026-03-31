@@ -27,7 +27,7 @@ These are questions hardware researchers currently answer through manual
 COMSOL sweeps, HotSpot configurations, or custom scripts. Aethermor integrates
 them into a single API and interactive dashboard.
 
-**Test suite**: 254 tests passing, 1 skipped (dashboard requires optional `dash`).
+**Test suite**: 277 tests passing, 1 skipped (dashboard requires optional `dash`).
 **Energy conservation**: 0.00 % error in 3D Fourier solver (tolerance: 5 %).
 
 ---
@@ -135,7 +135,7 @@ cross-checks every physics model against published reference data, analytical
 solutions, conservation laws, and internal self-consistency.
 
 ```bash
-python -m validation.validate_all    # 133 checks, ~13 seconds
+python -m aethermor.validation.validate_all    # 133 checks, ~13 seconds
 ```
 
 | Validation Area | Checks | Reference Source |
@@ -162,7 +162,7 @@ and interpretation guide.
 ### 2.3 Code Structure
 
 ```
-physics/          # SI-unit models
+aethermor/physics/          # SI-unit models
   constants.py    # k_B, Planck, Boltzmann, landauer_limit()
   materials.py    # 9 substrates + extensible registry with validation
   energy_models.py  # 4 paradigms + extensible registry with protocol checking
@@ -170,7 +170,7 @@ physics/          # SI-unit models
   cooling.py      # CoolingStack + extensible layer registry
   chip_floorplan.py  # ChipFloorplan, FunctionalBlock
 
-analysis/         # Research tools
+aethermor/analysis/         # Research tools
   thermal_optimizer.py  # Inverse design (8 capabilities)
   design_space.py       # Pareto sweeps
   landauer_gap.py       # Gap analysis
@@ -178,11 +178,11 @@ analysis/         # Research tools
   thermal_map.py        # Temperature field analysis
   tech_roadmap.py       # Node projection (130nm to 1.4nm)
 
-simulation/       # Legacy Monte Carlo / evolutionary simulation engine
+aethermor/simulation/       # Monte Carlo / evolutionary simulation engine
 examples/         # 7 runnable research scripts
 experiments/      # Reproducibility scripts (ablations, scaling, fault sweeps)
 tests/            # 277 tests (pytest)
-validation/       # 133 physics cross-checks (validate_all.py)
+aethermor/validation/       # 133 physics cross-checks (validate_all.py)
 ```
 
 ### 2.4 Reproducibility

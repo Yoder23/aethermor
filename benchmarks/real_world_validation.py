@@ -51,14 +51,13 @@ import time
 # Force UTF-8 output on Windows
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
-from physics.materials import get_material
-from physics.energy_models import CMOSGateEnergy
-from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
-from physics.cooling import CoolingStack
-from analysis.thermal_optimizer import ThermalOptimizer
+from aethermor.physics.materials import get_material
+from aethermor.physics.energy_models import CMOSGateEnergy
+from aethermor.physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
+from aethermor.physics.cooling import CoolingStack
+from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
 # ── Helpers ───────────────────────────────────────────────────────────
 
@@ -416,7 +415,7 @@ def validate_analytical_correlation():
 
     # CoolingStack should match manual calculation
     stack = CoolingStack(h_ambient=1000, T_ambient=300.0)
-    from physics.cooling import cooling_registry
+    from aethermor.physics.cooling import cooling_registry
     si_layer = cooling_registry.get("silicon_interposer")
     stack.add_layer(si_layer)
     R_stack = stack.total_resistance(area_cm2)

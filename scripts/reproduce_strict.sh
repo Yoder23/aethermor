@@ -13,7 +13,7 @@ export PUB_SWEEP_N="${PUB_SWEEP_N:-20}"
 export PUB_SWEEP_STEPS="${PUB_SWEEP_STEPS:-80}"
 export PUB_SWEEP_BASE_SEED="${PUB_SWEEP_BASE_SEED:-13000}"
 
-python -m simulation.run_all_benchmarks
+python -m aethermor.simulation.run_all_benchmarks
 python experiments/exp_ablations.py
-python -m simulation.publication_gate
+python -m aethermor.simulation.publication_gate
 python experiments/exp_publication_robustness.py

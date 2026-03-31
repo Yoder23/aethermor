@@ -8,7 +8,7 @@ is sound.
 
 import math
 import pytest
-from physics.constants import (
+from aethermor.physics.constants import (
     k_B, h_PLANCK, h_BAR, E_CHARGE, LANDAUER_LIMIT,
     landauer_limit, thermal_noise_voltage, thermal_energy, bits_per_joule,
 )

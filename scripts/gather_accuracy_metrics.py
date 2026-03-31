@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Gather accuracy metrics from all benchmark suites for docs/ACCURACY.md."""
 import sys, os, json
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import numpy as np
-from physics.materials import get_material, MATERIAL_DB
-from physics.constants import k_B, h_PLANCK, landauer_limit
+from aethermor.physics.materials import get_material, MATERIAL_DB
+from aethermor.physics.constants import k_B, h_PLANCK, landauer_limit
 
 # ── 1. Fundamental Constants ──
 print("=== 1. Fundamental Constants (CODATA 2018) ===")
@@ -122,7 +121,7 @@ err = abs(R_model - R_exact) / R_exact * 100
 print(f"  Thermal resistance:    exact={R_exact:.4f} K/W, model={R_model:.4f} K/W, err={err:.2e}%")
 
 # Landauer limit
-from physics.constants import landauer_limit
+from aethermor.physics.constants import landauer_limit
 T = 300.0
 E_L = landauer_limit(T)
 E_L_exact = k_B * T * np.log(2)
@@ -131,7 +130,7 @@ print(f"  Landauer limit (300K): exact={E_L_exact:.6e} J, model={E_L:.6e} J, err
 
 # ── 6. Energy Conservation (3D Fourier) ──
 print("\n=== 6. 3D Fourier Energy Conservation ===")
-from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
+from aethermor.physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
 bc = ThermalBoundaryCondition()
 bc.mode = "convective"
 solver = FourierThermalTransport(

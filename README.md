@@ -61,13 +61,44 @@ exists.
 
 ---
 
+## Start Here (Thermal Engineers)
+
+New to Aethermor? Follow this 5-minute evaluation path:
+
+```bash
+# 1. Install
+git clone https://github.com/Yoder23/aethermor.git && cd aethermor
+pip install -e ".[all]"
+
+# 2. Run the full validation suite — 680+ physics checks, ~3 min
+python run_all_validations.py
+
+# 3. Try an inverse-design question
+python examples/optimal_density.py
+
+# 4. Launch the interactive dashboard
+aethermor dashboard
+```
+
+**What to look at first**:
+
+| Your Interest | Start With |
+|---------------|-----------|
+| "Does the physics check out?" | [docs/calibration_case_study.md](docs/calibration_case_study.md) — 15 real chips vs model |
+| "What can it actually do?" | [docs/CASE_STUDY.md](docs/CASE_STUDY.md) — cooling vs substrate decision |
+| "What are the limitations?" | [LIMITATIONS.md](LIMITATIONS.md) — scope, simplifications, known gaps |
+| "How accurate is it?" | [docs/ACCURACY.md](docs/ACCURACY.md) — error bands and operating envelope |
+| "Full API reference" | [docs/API_REFERENCE.md](docs/API_REFERENCE.md) |
+
+---
+
 ## Quick Start
 
 ```bash
 git clone https://github.com/Yoder23/aethermor.git
 cd aethermor
 pip install -e ".[dashboard]"      # core + interactive UI
-python app.py                      # open http://127.0.0.1:8050
+aethermor dashboard                # open http://127.0.0.1:8050
 ```
 
 Or install directly from the release wheel:
@@ -84,7 +115,7 @@ pip install https://github.com/Yoder23/aethermor/releases/download/v1.0.0/aether
 ## Interactive Explorer Dashboard
 
 ```bash
-python app.py
+aethermor dashboard
 ```
 
 The built-in dashboard lets you interactively explore thermal design spaces
@@ -114,7 +145,7 @@ Every capability in the dashboard is also available as a Python function.
 ### Find the maximum compute density for a substrate
 
 ```python
-from analysis.thermal_optimizer import ThermalOptimizer
+from aethermor.analysis.thermal_optimizer import ThermalOptimizer
 
 opt = ThermalOptimizer(tech_node_nm=7, frequency_Hz=1e9)
 
@@ -133,7 +164,7 @@ print(f"Min h_conv: {req['min_h_conv']:.0f} W/(m²·K)  →  {req['cooling_categ
 ### Locate thermal bottlenecks on a heterogeneous SoC
 
 ```python
-from physics.chip_floorplan import ChipFloorplan
+from aethermor.physics.chip_floorplan import ChipFloorplan
 
 soc = ChipFloorplan.modern_soc()
 headroom = opt.thermal_headroom_map(soc, h_conv=1000.0)
@@ -144,7 +175,7 @@ for block in headroom:
 ### Compare CMOS vs. adiabatic logic crossover
 
 ```python
-from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
+from aethermor.physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
 
 cmos = CMOSGateEnergy(tech_node_nm=7)
 adiabatic = AdiabaticGateEnergy(tech_node_nm=7)
@@ -155,7 +186,7 @@ print(f"Adiabatic beats CMOS below {f_cross:.2e} Hz")
 ### Project technology scaling from 130 nm to 1.4 nm
 
 ```python
-from analysis.tech_roadmap import TechnologyRoadmap
+from aethermor.analysis.tech_roadmap import TechnologyRoadmap
 
 roadmap = TechnologyRoadmap()
 print(roadmap.full_report())
@@ -164,7 +195,7 @@ print(roadmap.full_report())
 ### Model a realistic cooling stack
 
 ```python
-from physics.cooling import CoolingStack
+from aethermor.physics.cooling import CoolingStack
 
 stack = CoolingStack.liquid_cooled()
 h_eff = stack.effective_h(die_area_m2=100e-6)
@@ -178,7 +209,7 @@ Aethermor is **fully extensible**. Register custom materials, computing paradigm
 and cooling layers — they instantly work everywhere: optimizer, UI, chip floorplan.
 
 ```python
-from physics.materials import registry, Material
+from aethermor.physics.materials import registry, Material
 
 # Register a custom substrate
 registry.register("hex_bn", Material(
@@ -200,8 +231,8 @@ ranking = opt.material_ranking(h_conv=1000, materials=["silicon", "hex_bn"])
 
 ```python
 from dataclasses import dataclass
-from physics.energy_models import paradigm_registry
-from physics.constants import landauer_limit
+from aethermor.physics.energy_models import paradigm_registry
+from aethermor.physics.constants import landauer_limit
 
 @dataclass
 class SpintronicGateEnergy:
@@ -249,8 +280,8 @@ python examples/custom_material.py       # Register your own material, paradigm,
 ## Tests
 
 ```bash
-python -m pytest tests/ -v              # ~278 tests, ~2 minutes
-python -m validation.validate_all       # 133 physics cross-checks, ~13 seconds
+python -m pytest tests/ -v              # ~277 tests, ~2 minutes
+python -m aethermor.validation.validate_all       # 133 physics cross-checks, ~13 seconds
 python run_all_validations.py           # ALL 12 suites, 680+ checks, ~3 minutes
 ```
 
@@ -300,7 +331,7 @@ which assumptions to challenge before committing silicon.
 
 ## What's Inside
 
-### `physics/` — Chip Thermal and Energy Models (SI Units)
+### `aethermor/physics/` — Chip Thermal and Energy Models (SI Units)
 
 | Module | What It Does |
 |--------|-------------|
@@ -311,7 +342,7 @@ which assumptions to challenge before committing silicon.
 | `cooling.py` | Multi-layer cooling stacks + custom layer registry with JSON serialization |
 | `chip_floorplan.py` | Heterogeneous SoC: CPU/GPU/cache/IO blocks with per-block paradigms |
 
-### `analysis/` — Inverse Design & Thermal Optimization
+### `aethermor/analysis/` — Inverse Design & Thermal Optimization
 
 | Module | What It Does |
 |--------|-------------|
@@ -325,17 +356,19 @@ which assumptions to challenge before committing silicon.
 ### Project Layout
 
 ```
-app.py                # Interactive Explorer UI — run this
-physics/              # SI-unit thermodynamic models (extensible registries)
-analysis/             # Inverse design & research tools
-simulation/           # Monte Carlo / evolutionary simulation engine
-validation/           # 133 physics cross-checks
-benchmarks/           # 11 validation/case-study scripts (246+ checks)
-examples/             # 7 ready-to-run research scripts
-experiments/          # Reproducibility scripts (ablations, scaling, fault sweeps)
-tests/                # 278 unit, integration, regression tests
-scripts/              # Release, benchmarking, and maintenance utilities
-run_all_validations.py  # Master runner: all 12 suites, 680+ checks
+aethermor/                # Installable Python package
+  physics/                # SI-unit thermodynamic models (extensible registries)
+  analysis/               # Inverse design & research tools
+  simulation/             # Monte Carlo / evolutionary simulation engine
+  validation/             # 133 physics cross-checks
+  app/                    # Interactive dashboard (modular tab architecture)
+  cli.py                  # CLI entry point: aethermor dashboard|validate|version
+benchmarks/               # 11 validation/case-study scripts (246+ checks)
+examples/                 # 7 ready-to-run research scripts
+experiments/              # Reproducibility scripts (ablations, scaling, fault sweeps)
+tests/                    # 277 unit, integration, regression tests
+scripts/                  # Release, benchmarking, and maintenance utilities
+run_all_validations.py    # Master runner: all 12 suites, 680+ checks
 ```
 
 ---
@@ -347,7 +380,7 @@ Every model is cross-validated against published reference data:
 
 | Check | Result |
 |-------|--------|
-| Unit + integration tests | 278 pass, 0 fail |
+| Unit + integration tests | 277 pass, 1 skipped |
 | Physics validation | 133 cross-checks vs CODATA 2018, CRC Handbook, ITRS/IRDS | 
 | Chip thermal database | 82 checks across 12 real chips in 4 segments (A100, H100, MI300X, EPYC, Xeon, i9, Ryzen, M1, M2, Snapdragon, etc.) |
 | Material cross-validation | 93 checks, 9 materials vs CRC Handbook, ASM, NIST, Ioffe, manufacturer data |
@@ -362,6 +395,77 @@ Every model is cross-validated against published reference data:
 Run `python run_all_validations.py` to verify everything in one command (12 suites, ~3 minutes).
 
 See [VALIDATION.md](VALIDATION.md) for methodology and reference sources.
+
+### Validation Summary
+
+| Component | Method | Reference Source | Error / Status |
+|-----------|--------|-----------------|----------------|
+| Fundamental constants | Direct comparison | CODATA 2018 | Exact match |
+| Material properties (9 substrates) | Cross-validation | CRC Handbook, ASM, NIST, Ioffe | < 5% (93 checks) |
+| CMOS gate energy | Scaling model vs published | ITRS/IRDS 2022 | Within node scatter |
+| Landauer limit | Analytical | k_B T ln 2 | Exact |
+| 3D Fourier solver | Energy conservation | Analytical integral | 0.00% error |
+| Junction temperature (15 real chips) | 1D model vs datasheet Tj_max | NVIDIA, AMD, Intel, Apple, Qualcomm | All within physical range |
+| Thermal resistance | θ_jc comparison | JEDEC, Intel ARK | See [calibration study](docs/calibration_case_study.md) |
+| HotSpot comparison | 6-test fair benchmark | HotSpot 6.0 | Comparable on uniform; HotSpot better on nonuniform |
+
+### Expected Accuracy
+
+Aethermor uses 1D analytical models for most calculations and 3D Fourier
+simulation for density optimization. Expected accuracy depends on what you're
+computing:
+
+| Calculation Type | Expected Accuracy | Notes |
+|-----------------|-------------------|-------|
+| **Relative comparisons** (material A vs B, cooling X vs Y) | High confidence | Ordering and ratios are physics-correct |
+| **Absolute junction temperatures** | ±5–15% | Depends on h_conv accuracy and package model fidelity |
+| **Cooling requirement estimates** | ±10–20% | Simplified convection (single h_conv coefficient) |
+| **Material thermal properties** | < 5% vs published | Cross-validated against CRC, ASM, NIST |
+| **Technology node scaling trends** | Qualitative | Consistent with ITRS/IRDS; not a predictive roadmap |
+| **Landauer gap calculations** | Exact (analytical) | Direct computation from first principles |
+
+**Full calibration study**: [docs/calibration_case_study.md](docs/calibration_case_study.md) — 15 real
+production chips (NVIDIA A100/H100, AMD MI300X/EPYC/Ryzen, Intel i9/Xeon,
+Apple M1/M2, Qualcomm Snapdragon) with model-vs-datasheet comparison and error
+analysis.
+
+### When This Model Breaks
+
+Aethermor is a 1D/3D analytical tool for architecture-stage exploration. It
+will give **misleading results** if you use it for:
+
+| Scenario | Why It Breaks | What To Use Instead |
+|----------|---------------|---------------------|
+| **Complex 3D package geometry** | 1D conduction ignores spreading resistance, TIM layers, IHS geometry | COMSOL, ANSYS Icepak |
+| **Turbulent or mixed convection** | Single h_conv coefficient; no flow modeling | CFD (Fluent, OpenFOAM) |
+| **Transient thermal dynamics** | Steady-state model; no time-dependent temperature evolution | HotSpot (transient mode), COMSOL transient |
+| **Micro/nano-scale effects** | Fourier's law breaks down below ~10 nm features | Boltzmann transport solvers |
+| **Detailed TIM/solder modeling** | No TIM layer in 1D model; θ_jc gap documented | Package-level FEA tools |
+| **PCB/board-level thermal paths** | Die-only model; no board conduction or radiation | System-level thermal tools (6SigmaET, FloTHERM) |
+| **Phase-change cooling** | CoolingStack models single-phase convection only | Two-phase flow CFD |
+
+**Rule of thumb**: If your question is "which direction should we go?" → Aethermor.
+If your question is "exactly how hot will this specific die corner get at
+time = 3.7 ms?" → use a FEA/CFD tool.
+
+See [LIMITATIONS.md](LIMITATIONS.md) for the full scope discussion.
+
+### Aethermor vs. CFD/FEA Tools
+
+| | Aethermor | COMSOL / Icepak / FloTHERM |
+|---|---|---|
+| **Speed** | Seconds (full design space sweep) | Hours–days per geometry |
+| **Setup time** | `pip install`, 3 lines of Python | License, mesh, BCs, convergence |
+| **Geometry fidelity** | 1D analytical + 3D uniform grid | Full 3D CAD geometry |
+| **Inverse design** | Built-in: max density, min cooling, material ranking | Manual parameter sweeps |
+| **Accuracy (absolute)** | ±5–15% | ±1–3% (with good mesh and BCs) |
+| **Accuracy (relative/ranking)** | High | High |
+| **Early-stage exploration** | Designed for this | Overkill — too slow, too much setup |
+| **Sign-off/tapeout** | Not suitable | Required |
+| **Transient analysis** | Roadmap (not yet supported) | Full support |
+| **Cost** | Free (Apache 2.0) | $10K–$100K/year |
+
+**Use Aethermor to decide which designs are worth simulating in CFD/FEA.**
 
 ## Scope and Limitations
 
@@ -395,6 +499,8 @@ See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 
 | Document | What It Covers |
 |----------|---------------|
+| [docs/calibration_case_study.md](docs/calibration_case_study.md) | 15 real production chips: model vs datasheet Tj validation |
+| [docs/case_study_datacenter_gpu.md](docs/case_study_datacenter_gpu.md) | 8-GPU node: air vs liquid vs substrate — decision matrix |
 | [docs/CASE_STUDY.md](docs/CASE_STUDY.md) | Cooling vs substrate vs compute redistribution |
 | [docs/CASE_STUDY_SOC.md](docs/CASE_STUDY_SOC.md) | SoC bottleneck reallocation (47% throughput for free) |
 | [docs/CASE_STUDY_PARADIGM.md](docs/CASE_STUDY_PARADIGM.md) | Material + paradigm selection (SiC 232%, diamond 1387%) |
@@ -407,6 +513,7 @@ See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 | [LIMITATIONS.md](LIMITATIONS.md) | Scope, simplifications, path to hardware validation |
 | [HONEST_REVIEW.md](HONEST_REVIEW.md) | Self-audit with grades and competitive comparison |
 | [docs/ACCURACY.md](docs/ACCURACY.md) | Error metrics, benchmark corpus, operating envelope |
+| [docs/uncertainty_sensitivity.md](docs/uncertainty_sensitivity.md) | Uncertainty propagation, sensitivity analysis, transient roadmap |
 | [docs/EXTERNAL_VALIDATION.md](docs/EXTERNAL_VALIDATION.md) | External correlation and pilot user results |
 | [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) | Seed policy, tolerance policy, gold outputs |
 | [docs/benchmark_protocol.md](docs/benchmark_protocol.md) | Benchmark suite classification and release-gate thresholds |
@@ -419,6 +526,55 @@ See [LIMITATIONS.md](LIMITATIONS.md) for the full discussion.
 | [RELEASE_NOTES_v1.0.0.md](RELEASE_NOTES_v1.0.0.md) | v1.0.0 release details |
 | [docs/SEMVER.md](docs/SEMVER.md) | Semantic versioning policy |
 | [docs/SUPPORT_POLICY.md](docs/SUPPORT_POLICY.md) | Version support, response expectations, deprecation |
+
+## Reproducibility
+
+Every quantitative claim in this repository can be verified with a single command:
+
+```bash
+python run_all_validations.py    # 12 suites, 680+ checks, ~3 minutes
+```
+
+Or run individual suites:
+
+```bash
+python -m pytest tests/ -v                          # 277 unit/integration tests
+python -m aethermor.validation.validate_all          # 133 physics cross-checks
+python benchmarks/chip_thermal_database.py           # 82 real-chip checks
+python benchmarks/material_cross_validation.py       # 93 material checks
+```
+
+All benchmarks are **seeded and deterministic** — identical results on any
+platform with Python 3.10+ and NumPy ≥ 1.24. See
+[docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) for seed policy and
+tolerance thresholds.
+
+## References
+
+Aethermor's physics models and material data are grounded in:
+
+1. **Incropera, F.P. et al.** *Fundamentals of Heat and Mass Transfer*, 8th ed.
+   Wiley, 2019. — Conduction, convection, and thermal resistance theory.
+
+2. **Lide, D.R. (ed.)** *CRC Handbook of Chemistry and Physics*, 101st ed.
+   CRC Press, 2020. — Thermal conductivity, specific heat, density for
+   Si, SiO₂, GaAs, diamond, Cu, InP, SiC, GaN.
+
+3. **ITRS/IRDS** *International Roadmap for Devices and Systems*, IEEE, 2022.
+   — Technology node scaling parameters connected to CMOS gate energy models.
+
+4. **CODATA 2018** *Recommended Values of the Fundamental Physical Constants*.
+   NIST, 2019. — Boltzmann constant, Planck constant used in Landauer limit.
+
+5. **Carslaw, H.S. & Jaeger, J.C.** *Conduction of Heat in Solids*, 2nd ed.
+   Oxford, 1959. — Fourier heat diffusion formulation.
+
+6. **Skadron, K. et al.** "Temperature-Aware Microarchitecture: Modeling and
+   Implementation", *ACM TACO*, 2004. — HotSpot methodology for comparison
+   benchmarks.
+
+Material property sources are individually attributed in
+[docs/ACCURACY.md](docs/ACCURACY.md).
 
 ## Contributing
 

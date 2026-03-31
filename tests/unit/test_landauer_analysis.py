@@ -7,9 +7,9 @@ boundaries, and technology node scaling — the core research outputs.
 
 import numpy as np
 import pytest
-from physics.constants import k_B, landauer_limit
-from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
-from analysis.landauer_gap import (
+from aethermor.physics.constants import k_B, landauer_limit
+from aethermor.physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
+from aethermor.analysis.landauer_gap import (
     compute_gap,
     spatial_gap_map,
     gap_vs_technology_node,

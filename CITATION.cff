@@ -17,7 +17,7 @@ abstract: >
   power redistribution), technology roadmap projection (130 nm to 1.4 nm),
   and an interactive explorer dashboard. All models are cross-validated against
   CODATA 2018, the CRC Handbook, and ITRS/IRDS roadmaps (133 physics checks,
-  254 tests).
+  277 tests).
 keywords:
   - thermal analysis
   - chip thermal modeling

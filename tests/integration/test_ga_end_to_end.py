@@ -1,4 +1,4 @@
-from simulation.AethermorEvolutionarySim import main as ga_main
+from aethermor.simulation.AethermorEvolutionarySim import main as ga_main
 
 def test_ga_optimizer_runs():
     pareto = ga_main(gen_size=4, generations=2)

@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from simulation import digital_twin_reparameterization as cal
+from aethermor.simulation import digital_twin_reparameterization as cal
 
 def test_calibration_objective_synthetic(monkeypatch):
     hw_net = np.linspace(1,10,10)

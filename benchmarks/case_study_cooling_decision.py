@@ -48,11 +48,10 @@ import os
 import time
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from analysis.thermal_optimizer import ThermalOptimizer
-from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
-from physics.materials import get_material
+from aethermor.analysis.thermal_optimizer import ThermalOptimizer
+from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+from aethermor.physics.materials import get_material
 
 # ── Configuration ─────────────────────────────────────────────────────
 TECH_NODE = 5       # nm

@@ -27,7 +27,7 @@ Extensibility
 -------------
 Register custom thermal layers::
 
-    from physics.cooling import cooling_registry, ThermalLayer
+    from aethermor.physics.cooling import cooling_registry, ThermalLayer
 
     cooling_registry.register("aerogel_insulator", ThermalLayer(
         "Aerogel thermal barrier", 1.0e-3, 0.015,
@@ -373,7 +373,7 @@ class CoolingRegistry:
     -----
     ::
 
-        from physics.cooling import cooling_registry, ThermalLayer
+        from aethermor.physics.cooling import cooling_registry, ThermalLayer
 
         cooling_registry.register("my_tim", ThermalLayer(
             "Custom TIM", 30e-6, 12.0,

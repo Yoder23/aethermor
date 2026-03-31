@@ -10,8 +10,8 @@ Validates that heat transport follows real physics:
 
 import numpy as np
 import pytest
-from physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
-from physics.materials import MATERIAL_DB
+from aethermor.physics.thermal import FourierThermalTransport, ThermalBoundaryCondition
+from aethermor.physics.materials import MATERIAL_DB
 
 
 class TestThermalConservation:
@@ -211,7 +211,7 @@ class TestThermalRunaway:
 
     def test_physical_simulation_stops_on_runaway(self):
         """PhysicalSimulation.run() should stop early on runaway."""
-        from simulation.physical_simulation import PhysicalSimulation
+        from aethermor.simulation.physical_simulation import PhysicalSimulation
         sim = PhysicalSimulation(
             grid_shape=(5, 5, 3),
             material="silicon",

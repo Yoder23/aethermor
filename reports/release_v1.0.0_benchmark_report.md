@@ -85,7 +85,7 @@ All junction temperatures are within the declared operating envelope
 
 | Suite | Result | Time |
 |-------|--------|------|
-| Unit tests (pytest) | 278 pass | ~145s |
+| Unit tests (pytest) | 277 pass | ~145s |
 | Physics validation | 133 pass | ~11s |
 | Literature validation | 20 pass | ~1s |
 | Real-world chip validation | 33 pass | ~38s |

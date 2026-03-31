@@ -21,7 +21,7 @@ What this script demonstrates:
 import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
-from analysis.tech_roadmap import TechnologyRoadmap
+from aethermor.analysis.tech_roadmap import TechnologyRoadmap
 
 roadmap = TechnologyRoadmap(
     tech_nodes=[130, 65, 45, 28, 14, 7, 5, 3, 2, 1.4],

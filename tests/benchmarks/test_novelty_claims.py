@@ -42,33 +42,33 @@ def _load(relpath: str):
 
 @lru_cache(maxsize=1)
 def _thermo():
-    _run("simulation.benchmark_thermodynamic_core")
+    _run("aethermor.simulation.benchmark_thermodynamic_core")
     return _load(os.path.join(ART_ROOT, "thermo_core", "kpis.json"))
 
 
 @lru_cache(maxsize=1)
 def _material_pair():
-    _run("simulation.benchmark_material_twin", {"TWIN_ENABLE": "1"})
+    _run("aethermor.simulation.benchmark_material_twin", {"TWIN_ENABLE": "1"})
     on = _load(os.path.join(ART_ROOT, "material_twin", "kpis.json"))
-    _run("simulation.benchmark_material_twin", {"TWIN_ENABLE": "0"})
+    _run("aethermor.simulation.benchmark_material_twin", {"TWIN_ENABLE": "0"})
     off = _load(os.path.join(ART_ROOT, "material_twin", "kpis.json"))
     return on, off
 
 
 @lru_cache(maxsize=1)
 def _morph_pair():
-    _run("simulation.benchmark_morphogenesis", {"MORPHO_ENABLE": "1"})
+    _run("aethermor.simulation.benchmark_morphogenesis", {"MORPHO_ENABLE": "1"})
     on = _load(os.path.join(ART_ROOT, "morphogenesis", "kpis.json"))
-    _run("simulation.benchmark_morphogenesis", {"MORPHO_ENABLE": "0"})
+    _run("aethermor.simulation.benchmark_morphogenesis", {"MORPHO_ENABLE": "0"})
     off = _load(os.path.join(ART_ROOT, "morphogenesis", "kpis.json"))
     return on, off
 
 
 @lru_cache(maxsize=1)
 def _cluster_pair():
-    _run("simulation.benchmark_metabolic_cluster", {"CLUSTER_ENABLE": "1"})
+    _run("aethermor.simulation.benchmark_metabolic_cluster", {"CLUSTER_ENABLE": "1"})
     on = _load(os.path.join(ART_ROOT, "metabolic_cluster", "kpis.json"))
-    _run("simulation.benchmark_metabolic_cluster", {"CLUSTER_ENABLE": "0"})
+    _run("aethermor.simulation.benchmark_metabolic_cluster", {"CLUSTER_ENABLE": "0"})
     off = _load(os.path.join(ART_ROOT, "metabolic_cluster", "kpis.json"))
     return on, off
 

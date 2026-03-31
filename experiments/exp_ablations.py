@@ -48,21 +48,21 @@ class AblationSpec:
 ABLATORS: List[AblationSpec] = [
     AblationSpec(
         name="morphogenesis",
-        script="simulation.benchmark_morphogenesis",
+        script="aethermor.simulation.benchmark_morphogenesis",
         env_var="MORPHO_ENABLE",
         kpi_path=os.path.join(ART_ROOT, "morphogenesis", "kpis.json"),
         metric_key="uptime_gain_pct",
     ),
     AblationSpec(
         name="material_twin",
-        script="simulation.benchmark_material_twin",
+        script="aethermor.simulation.benchmark_material_twin",
         env_var="TWIN_ENABLE",
         kpi_path=os.path.join(ART_ROOT, "material_twin", "kpis.json"),
         metric_key="roi_recovery_gain_pct",
     ),
     AblationSpec(
         name="metabolic_cluster",
-        script="simulation.benchmark_metabolic_cluster",
+        script="aethermor.simulation.benchmark_metabolic_cluster",
         env_var="CLUSTER_ENABLE",
         kpi_path=os.path.join(ART_ROOT, "metabolic_cluster", "kpis.json"),
         metric_key="peak_temp_reduction_C",

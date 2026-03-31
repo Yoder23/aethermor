@@ -8,8 +8,8 @@ thermal headroom map, power redistribution, and full design exploration.
 
 import math
 import pytest
-from analysis.thermal_optimizer import ThermalOptimizer
-from physics.chip_floorplan import ChipFloorplan, FunctionalBlock
+from aethermor.analysis.thermal_optimizer import ThermalOptimizer
+from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
 
 
 @pytest.fixture
@@ -73,7 +73,7 @@ class TestFindMaxDensity:
     def test_T_max_below_material_limit(self, opt):
         """T_max at found density should be at/below material limit."""
         result = opt.find_max_density("silicon", h_conv=1000.0)
-        from physics.materials import get_material
+        from aethermor.physics.materials import get_material
         mat = get_material("silicon")
         # Allow small overshoot from binary search
         assert result["T_max_K"] <= mat.max_operating_temp + 5.0
@@ -326,7 +326,7 @@ class TestOptimizePowerDistribution:
 
     def test_thermal_limit_respected(self, opt, soc):
         """All block temperatures should be within the thermal limit."""
-        from physics.materials import get_material
+        from aethermor.physics.materials import get_material
         mat = get_material(soc.material)
         result = opt.optimize_power_distribution(
             soc, power_budget_W=50.0, h_conv=1000.0,

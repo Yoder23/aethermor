@@ -33,7 +33,7 @@ pip install -e ".[all]"
 ### Quick Smoke Test
 
 ```bash
-python -c "import analysis, physics; print('ok')"
+python -c "import aethermor; print('ok')"
 ```
 
 Expected output: `ok`
@@ -77,7 +77,7 @@ Replace `v1.0.0` with the target version.
 After upgrading, re-run the smoke test:
 
 ```bash
-python -c "import analysis, physics; print('ok')"
+python -c "import aethermor; print('ok')"
 python run_all_validations.py --smoke
 ```
 

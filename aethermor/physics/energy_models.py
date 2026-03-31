@@ -15,7 +15,7 @@ Extensibility
 -------------
 Register a custom computing paradigm::
 
-    from physics.energy_models import paradigm_registry, EnergyModel
+    from aethermor.physics.energy_models import paradigm_registry, EnergyModel
 
     @dataclass
     class SpintronicGateEnergy:
@@ -31,7 +31,7 @@ Register a custom computing paradigm::
 
         def landauer_gap(self, T: float = 300.0,
                          frequency: float = 1e9) -> float:
-            from physics.constants import landauer_limit
+            from aethermor.physics.constants import landauer_limit
             return self.energy_per_switch(frequency, T) / landauer_limit(T)
 
     paradigm_registry.register("spintronic", SpintronicGateEnergy)
@@ -56,7 +56,7 @@ try:
 except ImportError:
     from typing_extensions import Protocol
 
-from physics.constants import k_B, landauer_limit
+from aethermor.physics.constants import k_B, landauer_limit
 
 
 # ── Energy Model Protocol ────────────────────────────────────────────────
@@ -377,7 +377,7 @@ class ParadigmRegistry:
     -----
     ::
 
-        from physics.energy_models import paradigm_registry
+        from aethermor.physics.energy_models import paradigm_registry
 
         # Register a custom paradigm
         paradigm_registry.register("spintronic", SpintronicGateEnergy)

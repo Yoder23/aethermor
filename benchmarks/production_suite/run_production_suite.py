@@ -15,12 +15,11 @@ import csv
 import json
 import time
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
-from physics.materials import get_material
-from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
-from physics.cooling import CoolingStack
+from aethermor.physics.materials import get_material
+from aethermor.physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
+from aethermor.physics.cooling import CoolingStack
 
 CASES_CSV = os.path.join(os.path.dirname(__file__), "cases.csv")
 GOLD_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "gold_outputs", "production_suite_v1.0.0.json")

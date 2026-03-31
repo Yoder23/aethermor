@@ -4,7 +4,7 @@ import shutil
 
 import pandas as pd
 
-from simulation.publication_gate import evaluate_publication_gate
+from aethermor.simulation.publication_gate import evaluate_publication_gate
 
 
 def _mkdir_clean(path: str):

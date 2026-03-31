@@ -23,11 +23,10 @@ import sys
 import os
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
-from physics.materials import get_material
-from physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
+from aethermor.physics.materials import get_material
+from aethermor.physics.energy_models import CMOSGateEnergy, AdiabaticGateEnergy
 
 _pass = 0
 _fail = 0

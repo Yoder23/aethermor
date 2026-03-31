@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aethermor"
-version = "1.0.0"
+version = "1.0.1"
 description = "Python toolkit for chip thermal analysis, cooling tradeoffs, and compute-density limits in advanced hardware systems."
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -68,6 +68,9 @@ all = [
 
 # pytest config lives in pytest.ini (takes precedence over pyproject.toml)
 
+[project.scripts]
+aethermor = "aethermor.cli:main"
+
 [tool.setuptools.packages.find]
-include = ["aethermor*", "physics*", "analysis*", "validation*", "simulation*"]
+include = ["aethermor*"]
 exclude = ["tests*", "archive*", "experiments*", "scripts*"]

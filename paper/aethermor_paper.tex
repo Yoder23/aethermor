@@ -212,7 +212,7 @@ regime classification, and hotspot detection.
 \subsection{Interface Layer}
 
 Users interact with Aethermor through three channels: (1)~a
-browser-based interactive explorer (\texttt{app.py}) with six
+browser-based interactive explorer (\texttt{aethermor dashboard}) with six
 parameterised tabs updated in real time; (2)~a Python scripting API;
 (3)~seven ready-to-run example scripts demonstrating research workflows.
 
@@ -570,9 +570,9 @@ Aethermor is released under the Apache~2.0 license at:
 git clone https://github.com/Yoder23/aethermor
 cd aethermor
 pip install -e ".[all]"
-python -m validation.validate_all   # 133 checks
-python -m pytest tests/ -v          # 254 tests
-python app.py                       # Interactive UI
+python -m aethermor.validation.validate_all   # 133 checks
+python -m pytest tests/ -v          # 277 tests
+aethermor dashboard                 # Interactive UI
 \end{lstlisting}
 
 \noindent All random number generators are seeded for deterministic
