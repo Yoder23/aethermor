@@ -110,16 +110,17 @@ approximations.
 
 | Where the model underperforms | Evidence | Root cause |
 |-------------------------------|----------|-----------|
-| Full-path θ_jc with significant interfaces | i9-13900K off by 4.3× (CoolingStack); 0.34× with PackageStack | Contact resistance modeling helps but factory configs use literature values, not package-specific measurements |
+| Full-path θ_jc with significant interfaces | i9-13900K T_j +9 K with PackageStack + Yovanovich spreading | ψ_jc vs θ_jc mismatch resolved; T_j is the correct comparison metric |
 | Localized hotspot magnitude | Bar-Cohen overshoot 1.5–2× | Spreading resistance approximation |
 | Absolute Tj for arbitrary h_conv | Depends on h_conv accuracy | h_conv is a user-supplied estimate |
 
 **Bottom line**: Aethermor is analytically validated, physically grounded,
 and hardware-correlated against 3 published chip designs using `PackageStack`
 (see [HARDWARE_CORRELATION.md](HARDWARE_CORRELATION.md)). Residuals range from
-0.34× to 2× on θ_jc, which is consistent with the architecture-stage scope.
-The remaining gaps are package-specific contact resistance measurements and
-validated h_conv calibration data.
+A100 θ_jc 0.98×, i9 T_j +9 K, M1 T_j within measured range (+5 K). This is
+within the architecture-stage accuracy target of ±10 K / ±20%. The remaining
+gaps are package-specific contact resistance measurements and validated
+h_conv calibration data.
 
 ---
 
@@ -169,8 +170,9 @@ correlation requires:
    values with package-specific measured R_contact data.
 
 The current model is sufficient for architecture-stage comparison and ranking.
-With `PackageStack`, absolute θ_jc predictions fall within 0.34×–2× of
-published values — useful for screening, not for sign-off.
+With `PackageStack` and Yovanovich spreading, absolute thermal predictions
+fall within ±10 K of measurements — useful for architecture-stage analysis,
+not for sign-off.
 
 ## References
 

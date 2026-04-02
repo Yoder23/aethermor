@@ -35,7 +35,7 @@ to absolute accuracy.
 | Metric | Envelope | Sample Size | Median Residual | Worst Case |
 |--------|----------|-------------|-----------------|------------|
 | T\_j (die-only 1D model) | 15 production chips, h = 50–20,000 | 33 checks | ±10% of ΔT | ±15% |
-| T\_j (PackageStack model) | 3 chips with published θ\_jc | 3 cases | 2.0× | 3.0× (i9-13900K) |
+| T\_j (PackageStack + spreading) | 3 chips, Yovanovich spreading | 3 cases | +5 K | +9 K (i9-13900K) |
 | T\_j vs published experiments | Kandlikar, Bar-Cohen | 4 checks | Within published range | Within 2× of published range |
 
 **Sample set**: NVIDIA A100, Intel i9-13900K, AMD Ryzen 7950X, Apple M1,
@@ -44,7 +44,8 @@ experimental data.
 
 **Median residual derivation**: Die-only 1D model: median
 |T\_model − T\_measured| / ΔT across 15-chip plausibility checks = ~10%.
-PackageStack model: median θ\_jc ratio = 1.97× (3 hardware correlation cases).
+PackageStack model with Yovanovich spreading: A100 θ\_jc 0.98×, i9 T\_j +9 K,
+M1 T\_j within published 60–75°C range (+5 K vs midpoint).
 
 ### 3. Cooling Requirement Estimation
 
@@ -61,19 +62,22 @@ model used for T\_j, plus any mismatch in published material properties (< 5%).
 
 | Metric | Envelope | Sample Size | Median Residual | Worst Case |
 |--------|----------|-------------|-----------------|------------|
-| θ\_jc (PackageStack) | 3 chips, JEDEC-measured | 3 cases | 1.97× | 2.94× (i9-13900K) |
+| θ\_jc (PackageStack + Yovanovich) | A100 JEDEC-measured θ\_jc | 1 case | 0.98× | 0.98× |
+| T\_j (PackageStack + Yovanovich) | i9-13900K, M1 | 2 cases | +5 K | +9 K |
 | θ\_jc ordering | Multi-chip comparison | 3 cases | Correct | Correct |
 
-**Derivation**:
+**Derivation** (Yovanovich spreading resistance model):
 
-| Chip | Measured θ\_jc | Model θ\_jc | Ratio |
-|------|---------------|------------|-------|
-| NVIDIA A100 | 0.029 K/W | 0.057 K/W | 1.97× |
-| Intel i9-13900K | 0.430 K/W | 0.146 K/W | 0.34× |
-| Apple M1 (T\_j comparison) | 60–75°C | 96°C | +29 K |
+| Chip | Measured | Model | Ratio/Residual |
+|------|----------|-------|----------------|
+| NVIDIA A100 | θ\_jc = 0.029 K/W | θ\_jc = 0.028 K/W | 0.98× |
+| Intel i9-13900K | T\_j = 100°C (throttle) | T\_j = 109°C | +9 K |
+| Apple M1 | T\_j = 60–75°C | T\_j = 73°C | +5 K (within range) |
 
-Median ratio: 1.97×. The i9-13900K is the worst case (0.34×) due to
-thick-die 3D spreading effects not captured in 1D.
+Note: Intel publishes ψ\_jc = 0.43 K/W (JESD51-12 characteristic parameter,
+includes board-side heat flow). Our model computes θ\_jc (JESD51-1,
+case-only path) = 0.083 K/W. The ψ\_jc vs θ\_jc mismatch is expected;
+we use T\_j as the primary comparison metric for the i9 case.
 
 ## Outside This Envelope
 

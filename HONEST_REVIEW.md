@@ -294,7 +294,9 @@ checks verify decision-driven workflows. Limitations are honestly documented.
 The project is **validated for architecture-stage engineering**: cross-checked
 against published hardware measurements across 12 production chips and
 9 materials (700+ independent checks). Hardware-correlated against
-3 published chip designs (A100, i9-13900K, M1) with full gap analysis;
-residuals range from 0.34× to 2× on θ_jc (see docs/HARDWARE_CORRELATION.md).
+3 published chip designs (A100, i9-13900K, M1) with Yovanovich (1983)
+spreading resistance and full gap analysis; A100 θ_jc within 2%, i9 T_j
+within +9 K, M1 T_j within measured range (+5 K). See
+docs/HARDWARE_CORRELATION.md.
 Suitable for substrate selection, cooling tradeoffs, density limits,
 paradigm crossover analysis, and architecture-stage thermal engineering.

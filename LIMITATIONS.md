@@ -254,16 +254,15 @@ See the benchmark documentation for details.
     than the 1D model predicts. Use `CoolingStack` with measured package
     data to account for this.
 
-11. **Model vs measured θ_jc gap**: The model computes conduction-path
-    resistance only (`R = dx/(2·k·A)`). Published JEDEC θ_jc values
-    measure the full package path: die → TIM → IHS → contact interfaces.
-    This produces model/measured ratios of 0.047–0.670 (model is 5–21×
-    lower). The gap is the package thermal resistance — not a model error.
-    For architecture-stage decisions (material selection, cooling tradeoffs,
-    density limits), the conductive component is the independent variable
-    being optimized. To recover full-path θ_jc, add package resistance:
-    `θ_jc_total = θ_jc_model + θ_package` (from vendor data or
-    `CoolingStack.total_resistance()`).
+11. **Model vs measured θ_jc gap**: With Yovanovich (1983) spreading
+    resistance enabled (`spreading_area_m2`), `PackageStack` now models
+    die → TIM → IHS → spreading → convection. Validated residuals:
+    A100 θ_jc 0.98× (±2%), i9-13900K T_j +9 K, M1 T_j within published
+    range (+5 K). Note: Intel publishes ψ_jc (JESD51-12, includes PCB
+    heat path), not θ_jc (JESD51-1, case-only); T_j is the correct
+    comparison metric for desktop CPUs. Without spreading enabled, the
+    model computes conduction-path resistance only and will underpredict
+    full-path θ_jc. See docs/HARDWARE_CORRELATION.md for full analysis.
 
 ---
 

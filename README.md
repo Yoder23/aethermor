@@ -102,7 +102,7 @@ aethermor dashboard                # open http://127.0.0.1:8050
 Or install directly from the release wheel:
 
 ```bash
-pip install https://github.com/Yoder23/aethermor/releases/download/v1.0.0/aethermor-1.0.0-py3-none-any.whl
+pip install https://github.com/Yoder23/aethermor/releases/download/v1.0.1/aethermor-1.0.1-py3-none-any.whl
 ```
 
 > **Core only** (no UI): `pip install -e .`
@@ -241,12 +241,12 @@ Models are cross-validated against published reference data:
 
 | Check | Result |
 |-------|--------|
-| Unit + integration tests | 277 pass, 1 skipped |
+| Unit + integration tests | 308 pass, 1 skipped |
 | Physics validation | 133 cross-checks vs CODATA 2018, CRC Handbook, ITRS/IRDS | 
 | Material cross-validation | 93 checks, 9 materials vs CRC, ASM, NIST, Ioffe |
 | Chip thermal database | 82 checks across 12 real chips in 4 segments |
 | Experimental measurements | 18 checks vs JEDEC θ_jc, IR imaging, HotSpot |
-| Hardware correlation (3 chips) | PackageStack vs measured θ_jc / T_j for A100, i9-13900K, M1 — residuals and gaps documented |
+| Hardware correlation (3 chips) | PackageStack with Yovanovich spreading vs measured θ_jc / T_j — A100 0.98×, i9 +9 K, M1 within range |
 | External benchmark pack | 6 analytical cases (1D slab, convection, multi-layer, Landauer, PackageStack, max-power) |
 | Energy conservation | 0.00% error in 3D Fourier solver |
 | **Total checks** | **700+** (see [docs/VERIFICATION_LAYERS.md](docs/VERIFICATION_LAYERS.md) for exact breakdown) |

@@ -534,10 +534,12 @@ class PackageStack:
 
     Thermal path::
 
-        T_j ──[R_die]──[R_c1]──[R_TIM]──[R_c2]──[R_IHS]──[R_c3]──
-              [R_heatsink/coldplate]──[R_conv]── T_ambient
+        T_j ──[R_die]──[R_c1]──[R_TIM]──[R_c2]──[R_spread]──
+              [R_IHS]──[R_c3]──[R_heatsink/coldplate]──[R_conv]── T_ambient
 
-    where R_c1, R_c2, R_c3 are contact resistances at each interface.
+    where R_c1, R_c2, R_c3 are contact resistances at each interface,
+    and R_spread is the Yovanovich (1983) constriction/spreading
+    resistance when ``spreading_area_m2`` is larger than the die area.
 
     Parameters
     ----------
@@ -559,8 +561,14 @@ class PackageStack:
         Contact resistance at IHS–heatsink interface (m²·K/W).
     h_ambient : float
         Surface-to-coolant convection coefficient (W/(m²·K)).
+        When ``spreading_area_m2`` is set, this is referenced to the
+        spreading area, not the die area.
     T_ambient : float
         Ambient/coolant temperature (K).
+    spreading_area_m2 : float or None
+        IHS or spreader contact area (m²).  When set and larger than
+        the die area, Yovanovich spreading resistance is added and
+        IHS/heatsink/convection layers use this larger area.
 
     Example
     -------
@@ -582,40 +590,81 @@ class PackageStack:
     contact_ihs_heatsink: float = 0.0  # m²·K/W
     h_ambient: float = 50.0            # W/(m²·K)
     T_ambient: float = 300.0           # K
+    spreading_area_m2: Optional[float] = None  # IHS/spreader contact area
+
+    @staticmethod
+    def _spreading_resistance(source_area: float, sink_area: float,
+                              k: float) -> float:
+        """Yovanovich et al. (1983) constriction/spreading resistance.
+
+        Circular source (radius *a*) centered on a circular plate
+        (radius *b*) with conductivity *k*.  Uses the polynomial
+        correlation for isoflux boundary conditions.
+
+        Reference: Yovanovich, Muzychka & Culham, "Spreading Resistance
+        of Isoflux Rectangles and Strips on Compound Flux Channels",
+        J. Thermophysics & Heat Transfer 13(4), 1999.
+        """
+        a = math.sqrt(source_area / math.pi)
+        b = math.sqrt(sink_area / math.pi)
+        eps = a / b
+        phi = (1.0 - 1.4092 * eps + 0.3381 * eps**3
+               + 0.0679 * eps**5 + 0.0194 * eps**7)
+        return phi / (4.0 * k * a)
 
     def _resistance_list(self, area_m2: float) -> List[dict]:
         """Return ordered list of (name, R_K_per_W) from die to ambient."""
         items = []
+        die_area = area_m2
+
+        # Determine whether heat spreads to a larger area after TIM/IHS
+        spread_area = die_area
+        if (self.spreading_area_m2 is not None
+                and self.spreading_area_m2 > die_area):
+            spread_area = self.spreading_area_m2
+
+        # ── Die-side layers (at die area) ──
         # Die conduction
-        R_die = self.die_thickness_m / (self.die_conductivity * area_m2)
+        R_die = self.die_thickness_m / (self.die_conductivity * die_area)
         items.append({"name": "Die conduction", "R_K_per_W": R_die})
         # Contact: die → TIM
         if self.contact_die_tim > 0:
             items.append({"name": "Contact: die–TIM",
-                          "R_K_per_W": self.contact_die_tim / area_m2})
+                          "R_K_per_W": self.contact_die_tim / die_area})
         # TIM
         if self.tim is not None:
             items.append({"name": f"TIM ({self.tim.name})",
-                          "R_K_per_W": self.tim.resistance(area_m2)})
+                          "R_K_per_W": self.tim.resistance(die_area)})
         # Contact: TIM → IHS
         if self.contact_tim_ihs > 0:
             items.append({"name": "Contact: TIM–IHS",
-                          "R_K_per_W": self.contact_tim_ihs / area_m2})
+                          "R_K_per_W": self.contact_tim_ihs / die_area})
+
+        # ── Spreading resistance (die footprint → IHS/spreader footprint) ──
+        if spread_area > die_area:
+            k_sp = (self.ihs.thermal_conductivity if self.ihs is not None
+                    else (self.heatsink.thermal_conductivity
+                          if self.heatsink is not None
+                          else self.die_conductivity))
+            R_sp = self._spreading_resistance(die_area, spread_area, k_sp)
+            items.append({"name": "Spreading resistance", "R_K_per_W": R_sp})
+
+        # ── Post-spreading layers (at IHS/spreader area) ──
         # IHS
         if self.ihs is not None:
             items.append({"name": f"IHS ({self.ihs.name})",
-                          "R_K_per_W": self.ihs.resistance(area_m2)})
+                          "R_K_per_W": self.ihs.resistance(spread_area)})
         # Contact: IHS → heatsink
         if self.contact_ihs_heatsink > 0:
             items.append({"name": "Contact: IHS–heatsink",
-                          "R_K_per_W": self.contact_ihs_heatsink / area_m2})
+                          "R_K_per_W": self.contact_ihs_heatsink / spread_area})
         # Heatsink / cold plate
         if self.heatsink is not None:
             items.append({"name": f"Heatsink ({self.heatsink.name})",
-                          "R_K_per_W": self.heatsink.resistance(area_m2)})
+                          "R_K_per_W": self.heatsink.resistance(spread_area)})
         # Convection
         items.append({"name": "Convection to ambient",
-                      "R_K_per_W": 1.0 / (self.h_ambient * area_m2)})
+                      "R_K_per_W": 1.0 / (self.h_ambient * spread_area)})
         return items
 
     def total_resistance(self, area_m2: float) -> float:
@@ -664,8 +713,14 @@ class PackageStack:
         """Junction-to-case thermal resistance (K/W).
 
         This includes die conduction + all interfaces up to and including
-        the IHS outer surface.  Comparable to JEDEC θ_jc measurements.
+        the IHS outer surface, plus spreading resistance when
+        ``spreading_area_m2`` is set.  Comparable to JEDEC θ_jc.
         """
+        spread_area = die_area_m2
+        if (self.spreading_area_m2 is not None
+                and self.spreading_area_m2 > die_area_m2):
+            spread_area = self.spreading_area_m2
+
         R = 0.0
         R += self.die_thickness_m / (self.die_conductivity * die_area_m2)
         if self.contact_die_tim > 0:
@@ -674,8 +729,16 @@ class PackageStack:
             R += self.tim.resistance(die_area_m2)
         if self.contact_tim_ihs > 0:
             R += self.contact_tim_ihs / die_area_m2
+        # Spreading resistance
+        if spread_area > die_area_m2:
+            k_sp = (self.ihs.thermal_conductivity if self.ihs is not None
+                    else (self.heatsink.thermal_conductivity
+                          if self.heatsink is not None
+                          else self.die_conductivity))
+            R += self._spreading_resistance(die_area_m2, spread_area, k_sp)
+        # IHS at post-spreading area
         if self.ihs is not None:
-            R += self.ihs.resistance(die_area_m2)
+            R += self.ihs.resistance(spread_area)
         return R
 
     def describe(self, die_area_m2: float) -> str:
@@ -700,6 +763,8 @@ class PackageStack:
             "h_ambient": self.h_ambient,
             "T_ambient": self.T_ambient,
         }
+        if self.spreading_area_m2 is not None:
+            d["spreading_area_m2"] = self.spreading_area_m2
         if self.tim is not None:
             d["tim"] = layer_to_dict(self.tim)
         if self.ihs is not None:
@@ -716,6 +781,8 @@ class PackageStack:
             "contact_die_tim", "contact_tim_ihs", "contact_ihs_heatsink",
             "h_ambient", "T_ambient",
         ) if k in d}
+        if "spreading_area_m2" in d:
+            kwargs["spreading_area_m2"] = d["spreading_area_m2"]
         if "tim" in d:
             kwargs["tim"] = layer_from_dict(d["tim"])
         if "ihs" in d:
