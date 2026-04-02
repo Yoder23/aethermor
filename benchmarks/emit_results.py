@@ -52,7 +52,7 @@ def _run_pytest() -> dict:
         capture_output=True, text=True, cwd=Path(__file__).resolve().parent.parent,
         timeout=120,
     )
-    # Parse last line like "277 passed, 1 skipped in 5.23s"
+    # Parse last line like "308 passed, 1 skipped in 5.23s"
     lines = proc.stdout.strip().splitlines()
     summary_line = lines[-1] if lines else ""
     return {

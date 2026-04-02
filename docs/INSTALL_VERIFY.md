@@ -5,7 +5,7 @@
 ### From Release Wheel (Recommended)
 
 ```bash
-pip install https://github.com/Yoder23/aethermor/releases/download/v1.0.0/aethermor-1.0.0-py3-none-any.whl
+pip install https://github.com/Yoder23/aethermor/releases/download/v1.0.1/aethermor-1.0.1-py3-none-any.whl
 ```
 
 ### From Source
@@ -69,10 +69,10 @@ in [docs/CASE_STUDY.md](CASE_STUDY.md).
 ## Upgrade
 
 ```bash
-pip install --upgrade https://github.com/Yoder23/aethermor/releases/download/v1.0.0/aethermor-1.0.0-py3-none-any.whl
+pip install --upgrade https://github.com/Yoder23/aethermor/releases/download/v1.0.1/aethermor-1.0.1-py3-none-any.whl
 ```
 
-Replace `v1.0.0` with the target version.
+Replace `v1.0.1` with the target version.
 
 After upgrading, re-run the smoke test:
 

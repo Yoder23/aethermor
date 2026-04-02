@@ -258,13 +258,17 @@ See [VALIDATION.md](VALIDATION.md) for methodology. Run `python run_all_validati
 | Calculation Type | Expected Accuracy | Notes |
 |-----------------|-------------------|-------|
 | **Relative comparisons** (material A vs B, cooling X vs Y) | High confidence | Ordering and ratios are physics-correct |
-| **Absolute junction temperatures** | ±5–15% | Depends on h_conv accuracy and package model fidelity |
+| **Absolute junction temperatures** | ±5–15% (±10 K demonstrated) | Depends on h_conv accuracy and package model fidelity; see [HARDWARE_CORRELATION](docs/HARDWARE_CORRELATION.md) |
 | **Cooling requirement estimates** | ±10–20% | Simplified convection (single h_conv coefficient) |
 | **Material thermal properties** | < 5% vs published | Cross-validated against CRC, ASM, NIST |
 
 **Calibration details**: [docs/calibration_case_study.md](docs/calibration_case_study.md) — θ_jc
-residual analysis for A100, i9-13900K, 7950X; experimental temperature correlation
-against 4 published studies; 15-chip plausibility check with gap discussion.
+residual analysis for A100 (0.98×), i9-13900K (+9 K), M1 (+5 K); experimental
+temperature correlation against 4 published studies; 15-chip plausibility check.
+
+**Safe-use limits**: This is a 1D/reduced-order model. Detailed package
+geometry, mixed convection, transient dynamics, and board-level paths are
+out of scope. See [LIMITATIONS.md](LIMITATIONS.md).
 
 ### When This Model Breaks
 
@@ -287,7 +291,7 @@ See [LIMITATIONS.md](LIMITATIONS.md).
 |---|---|---|
 | **Speed** | Seconds | Hours–days per geometry |
 | **Setup** | `pip install`, 3 lines of Python | License, mesh, BCs, convergence |
-| **Accuracy (absolute)** | ±5–15% | ±1–3% |
+| **Accuracy (absolute)** | ±5–15% (±10 K on 3 chips) | ±1–3% |
 | **Accuracy (ranking)** | High | High |
 | **Inverse design** | Built-in | Manual parameter sweeps |
 | **Sign-off** | Not suitable | Required |

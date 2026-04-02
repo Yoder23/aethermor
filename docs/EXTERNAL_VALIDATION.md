@@ -92,11 +92,25 @@ same result. No trust in the developer is required.
 
 ## External User Pilots
 
-| # | Role / Organization | Use Case | Useful? | Issues Found | Status |
-|---|---------------------|----------|---------|--------------|--------|
-| 1 | Developer (internal) | Full case-study cycle: cooling vs substrate vs compute redistribution on 15 real chips | Yes — surfaced non-obvious tradeoff (substrate > cooling by 780×) | Production suite initially applied convection to die area instead of package area, producing nonphysical Tj; fixed by adding package thermal area and h_conv per chip | **Complete** |
-| 2 | — | — | — | — | Open |
-| 3 | — | — | — | — | Open |
+### Current Status
+
+The independent textbook validation (Correlation 3 above) provides
+**developer-independent evidence**: every expected value is published in
+a reference any engineer can access, and every check passes at 0.00% error.
+No trust in the developer is required to verify these results.
+
+The hardware correlations (Correlation 1) compare against published JEDEC and
+vendor thermal data, which is also independently verifiable.
+
+User pilot evaluations are ongoing. The internal pilot below documented a real
+bug that was subsequently fixed. External pilots are welcomed — see
+"How to Participate" at the bottom of this page.
+
+### Pilot Log
+
+| # | Role / Organization | Use Case | Issues Found | Status |
+|---|---------------------|----------|--------------|--------|
+| 1 | Developer (internal) | Full case-study cycle: cooling vs substrate vs compute redistribution on 15 real chips | Production suite applied convection to die area instead of package area, producing nonphysical Tj; fixed | **Complete** |
 
 ### Pilot 1 Detail: Internal Full-Cycle Validation
 

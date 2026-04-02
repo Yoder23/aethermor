@@ -253,6 +253,66 @@ cooling_registry.load_json(filepath) → None
 `liquid_metal`, `copper_ihs`, `nickel_plated_copper_ihs`, `aluminum_heatsink`,
 `copper_heatsink`, `diamond_heat_spreader`, `silicon_interposer`, `sic_substrate`
 
+### Class: `PackageStack` (dataclass)
+
+Full die-to-ambient thermal path with explicit interface resistances and
+optional Yovanovich (1983) spreading resistance. Middle ground between
+die-only analytical models and full 3D FEA.
+
+```python
+PackageStack(
+    die_thickness_m=200e-6,
+    die_conductivity=148.0,       # W/(m·K), silicon default
+    tim=None,                     # ThermalLayer
+    ihs=None,                     # ThermalLayer
+    heatsink=None,                # ThermalLayer
+    contact_die_tim=0.0,          # m²·K/W
+    contact_tim_ihs=0.0,          # m²·K/W
+    contact_ihs_heatsink=0.0,     # m²·K/W
+    h_ambient=50.0,               # W/(m²·K)
+    T_ambient=300.0,              # K
+    spreading_area_m2=None,       # m² (IHS/spreader footprint)
+)
+```
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `total_resistance(area_m2)` | K/W | Junction-to-ambient thermal resistance |
+| `effective_h(die_area_m2)` | W/(m²·K) | Collapse full path to single h |
+| `junction_temperature(die_area_m2, power_W)` | K | Compute T_j |
+| `max_power_W(die_area_m2, T_junction_max)` | W | Max dissipable power |
+| `theta_jc(die_area_m2)` | K/W | Junction-to-case resistance (JEDEC θ_jc) |
+| `layer_temperatures(die_area_m2, power_W)` | List[dict] | Per-interface temperatures |
+| `describe(die_area_m2)` | str | Human-readable thermal path breakdown |
+| `to_dict()` / `from_dict(d)` | dict / PackageStack | JSON serialization |
+
+**Factory methods (class methods):**
+
+| Method | Configuration |
+|--------|---------------|
+| `desktop_cpu()` | Solder TIM + copper IHS + tower cooler (i9-class) |
+| `server_gpu()` | Liquid metal + copper IHS + cold plate (A100-class) |
+| `mobile_soc()` | Paste TIM + no IHS + chassis spreading (M1-class) |
+
+**Spreading resistance**: When `spreading_area_m2` is set and larger than
+the die area, Yovanovich (1983) constriction/spreading resistance is
+automatically inserted between the IHS and heatsink. This models thermal
+spreading from a small die to a larger IHS/baseplate and is essential for
+accurate θ_jc prediction.
+
+### Module-level: `CONTACT_RESISTANCES` dict
+
+Pre-defined area-normalized contact resistances (m²·K/W):
+
+| Key | Value | Interface |
+|-----|-------|-----------|
+| `die_tim_paste` | 8.0e-6 | Die → thermal paste |
+| `die_tim_solder` | 2.0e-6 | Die → solder TIM |
+| `die_tim_liquid_metal` | 1.0e-6 | Die → liquid metal |
+| `tim_ihs` | 5.0e-6 | TIM → IHS |
+| `ihs_heatsink` | 10.0e-6 | IHS → heatsink |
+| `ihs_coldplate` | 3.0e-6 | IHS → liquid cold plate |
+
 ---
 
 ## `physics.chip_floorplan` — Heterogeneous SoC Model
