@@ -35,6 +35,8 @@ from aethermor.physics.cooling import (
     THERMAL_LAYERS,
     cooling_registry,
     register_cooling_layer,
+    PackageStack,
+    CONTACT_RESISTANCES,
 )
 from aethermor.physics.chip_floorplan import ChipFloorplan, FunctionalBlock
 from aethermor.analysis.thermal_optimizer import ThermalOptimizer

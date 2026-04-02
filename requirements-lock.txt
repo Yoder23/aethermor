@@ -1,0 +1,8 @@
+# Pinned dependency versions for reproducible installation.
+# Generated from a known-good environment.
+#
+# Install: pip install -r requirements-lock.txt
+numpy==2.2.6
+scipy==1.15.3
+pandas==2.3.3
+matplotlib==3.10.8

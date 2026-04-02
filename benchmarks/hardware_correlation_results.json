@@ -1,0 +1,55 @@
+{
+  "tool": "aethermor",
+  "benchmark": "hardware_correlation",
+  "timestamp": "2026-04-02T02:09:18.114360+00:00",
+  "cases": [
+    {
+      "case": "NVIDIA A100 SXM4",
+      "segment": "server/accelerator",
+      "die_area_mm2": 826.0,
+      "die_thickness_um": 200.0,
+      "tim": "Indium TIM",
+      "ihs": "Copper cold plate (SXM4 baseplate)",
+      "T_ambient_K": 308.0,
+      "power_W": 400.0,
+      "cooling": "Liquid cold plate (SXM4 baseplate, h \u2248 5000 W/m\u00b2K)",
+      "measured_theta_jc_KW": 0.029,
+      "model_theta_jc_KW": 0.0571,
+      "residual_KW": 0.0281,
+      "ratio": 1.97,
+      "model_Tj_K": 412.3,
+      "source": "NVIDIA Thermal Design Guide (2020), JEDEC JESD51"
+    },
+    {
+      "case": "Intel i9-13900K",
+      "segment": "desktop/workstation",
+      "die_area_mm2": 257.0,
+      "die_thickness_um": 775.0,
+      "tim": "Solder TIM (STIM)",
+      "ihs": "Nickel-plated copper IHS",
+      "T_ambient_K": 300.0,
+      "power_W": 253.0,
+      "cooling": "Tower air cooler (Noctua-class, h_eff \u2248 50 W/m\u00b2K at die ref)",
+      "measured_theta_jc_KW": 0.43,
+      "model_theta_jc_KW": 0.146,
+      "residual_KW": -0.284,
+      "ratio": 0.34,
+      "source": "Intel ARK / Datasheet (2022), JEDEC JESD51"
+    },
+    {
+      "case": "Apple M1 (MacBook Air)",
+      "segment": "mobile/low-power",
+      "die_area_mm2": 120.5,
+      "die_thickness_um": 200.0,
+      "tim": "Thermal paste (high-end)",
+      "ihs": "None (fanless)",
+      "T_ambient_K": 298.0,
+      "power_W": 20.0,
+      "cooling": "Fanless (chassis spreading, h_eff \u2248 2490 W/m\u00b2K at die-area ref)",
+      "measured_Tj_range_K": "333\u2013348",
+      "model_Tj_K": 369.1,
+      "residual_K": 28.6,
+      "source": "AnandTech thermal characterization (2021)"
+    }
+  ]
+}

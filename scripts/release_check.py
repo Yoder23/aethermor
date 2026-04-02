@@ -52,8 +52,8 @@ def check_version_consistency():
                 return False, version
 
     # 5. Classifier
-    if "5 - Production/Stable" not in content:
-        print("  FAIL: pyproject.toml classifier is not Production/Stable")
+    if "4 - Beta" not in content:
+        print("  FAIL: pyproject.toml classifier is not Beta")
         return False, version
 
     print(f"  All version checks pass for v{version}")

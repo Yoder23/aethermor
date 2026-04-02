@@ -506,3 +506,279 @@ cooling_registry._load_builtins(THERMAL_LAYERS)
 
 # Convenience aliases
 register_cooling_layer = cooling_registry.register
+
+
+# ── Package-aware thermal path model ─────────────────────────────────────
+
+# Published contact/interface resistances (m²·K/W)
+# These are area-normalized so R_contact = R'' / A
+CONTACT_RESISTANCES: Dict[str, float] = {
+    "die_tim_paste":    8.0e-6,   # die → thermal paste (typical)
+    "die_tim_solder":   2.0e-6,   # die → solder TIM (Intel/AMD server)
+    "die_tim_liquid_metal": 1.0e-6,  # die → liquid metal
+    "tim_ihs":          5.0e-6,   # TIM → IHS interface
+    "ihs_heatsink":     10.0e-6,  # IHS → heatsink (mounting pressure)
+    "ihs_coldplate":    3.0e-6,   # IHS → liquid cold plate (clamped)
+}
+
+
+@dataclass
+class PackageStack:
+    """
+    Reduced-order package-level thermal path with explicit interfaces.
+
+    Models the full junction-to-ambient path including contact resistances
+    at every material interface that the simpler :class:`CoolingStack`
+    omits.  Designed as the middle ground between die-only analytical
+    models and full 3D FEA.
+
+    Thermal path::
+
+        T_j ──[R_die]──[R_c1]──[R_TIM]──[R_c2]──[R_IHS]──[R_c3]──
+              [R_heatsink/coldplate]──[R_conv]── T_ambient
+
+    where R_c1, R_c2, R_c3 are contact resistances at each interface.
+
+    Parameters
+    ----------
+    die_thickness_m : float
+        Die (substrate) thickness.
+    die_conductivity : float
+        Die thermal conductivity (W/(m·K)).
+    tim : ThermalLayer or None
+        Thermal interface material layer.
+    ihs : ThermalLayer or None
+        Integrated heat spreader.
+    heatsink : ThermalLayer or None
+        Heatsink or cold-plate base.
+    contact_die_tim : float
+        Contact resistance at die–TIM interface (m²·K/W).
+    contact_tim_ihs : float
+        Contact resistance at TIM–IHS interface (m²·K/W).
+    contact_ihs_heatsink : float
+        Contact resistance at IHS–heatsink interface (m²·K/W).
+    h_ambient : float
+        Surface-to-coolant convection coefficient (W/(m²·K)).
+    T_ambient : float
+        Ambient/coolant temperature (K).
+
+    Example
+    -------
+    >>> pkg = PackageStack.desktop_cpu()
+    >>> Rja = pkg.total_resistance(die_area_m2=257e-6)
+    >>> print(f"R_ja = {Rja:.3f} K/W")
+    >>> temps = pkg.layer_temperatures(die_area_m2=257e-6, power_W=253)
+    >>> for t in temps:
+    ...     print(f"  {t['name']:30s}  {t['T_K']:.1f} K  R={t['R_K_per_W']:.4f}")
+    """
+
+    die_thickness_m: float = 200e-6
+    die_conductivity: float = 148.0    # silicon default
+    tim: Optional[ThermalLayer] = None
+    ihs: Optional[ThermalLayer] = None
+    heatsink: Optional[ThermalLayer] = None
+    contact_die_tim: float = 0.0       # m²·K/W
+    contact_tim_ihs: float = 0.0       # m²·K/W
+    contact_ihs_heatsink: float = 0.0  # m²·K/W
+    h_ambient: float = 50.0            # W/(m²·K)
+    T_ambient: float = 300.0           # K
+
+    def _resistance_list(self, area_m2: float) -> List[dict]:
+        """Return ordered list of (name, R_K_per_W) from die to ambient."""
+        items = []
+        # Die conduction
+        R_die = self.die_thickness_m / (self.die_conductivity * area_m2)
+        items.append({"name": "Die conduction", "R_K_per_W": R_die})
+        # Contact: die → TIM
+        if self.contact_die_tim > 0:
+            items.append({"name": "Contact: die–TIM",
+                          "R_K_per_W": self.contact_die_tim / area_m2})
+        # TIM
+        if self.tim is not None:
+            items.append({"name": f"TIM ({self.tim.name})",
+                          "R_K_per_W": self.tim.resistance(area_m2)})
+        # Contact: TIM → IHS
+        if self.contact_tim_ihs > 0:
+            items.append({"name": "Contact: TIM–IHS",
+                          "R_K_per_W": self.contact_tim_ihs / area_m2})
+        # IHS
+        if self.ihs is not None:
+            items.append({"name": f"IHS ({self.ihs.name})",
+                          "R_K_per_W": self.ihs.resistance(area_m2)})
+        # Contact: IHS → heatsink
+        if self.contact_ihs_heatsink > 0:
+            items.append({"name": "Contact: IHS–heatsink",
+                          "R_K_per_W": self.contact_ihs_heatsink / area_m2})
+        # Heatsink / cold plate
+        if self.heatsink is not None:
+            items.append({"name": f"Heatsink ({self.heatsink.name})",
+                          "R_K_per_W": self.heatsink.resistance(area_m2)})
+        # Convection
+        items.append({"name": "Convection to ambient",
+                      "R_K_per_W": 1.0 / (self.h_ambient * area_m2)})
+        return items
+
+    def total_resistance(self, area_m2: float) -> float:
+        """Total junction-to-ambient resistance (K/W) including contacts."""
+        return sum(item["R_K_per_W"]
+                   for item in self._resistance_list(area_m2))
+
+    def effective_h(self, die_area_m2: float) -> float:
+        """Effective h_conv that collapses the entire package path."""
+        R = self.total_resistance(die_area_m2)
+        return 1.0 / (R * die_area_m2)
+
+    def junction_temperature(self, die_area_m2: float, power_W: float) -> float:
+        """Compute junction temperature given die area and total power."""
+        R = self.total_resistance(die_area_m2)
+        return self.T_ambient + power_W * R
+
+    def max_power_W(self, die_area_m2: float,
+                    T_junction_max: float = 378.0) -> float:
+        """Maximum dissipatable power before T_j hits limit."""
+        R = self.total_resistance(die_area_m2)
+        return (T_junction_max - self.T_ambient) / R
+
+    def layer_temperatures(self, die_area_m2: float,
+                           power_W: float) -> List[dict]:
+        """
+        Temperature at each interface, from junction (hottest) to ambient.
+
+        Returns list of dicts: [{name, T_K, R_K_per_W}, ...]
+        """
+        items = self._resistance_list(die_area_m2)
+        R_total = sum(i["R_K_per_W"] for i in items)
+        T = self.T_ambient + power_W * R_total  # junction
+
+        result = [{"name": "Die junction", "T_K": T, "R_K_per_W": 0.0}]
+        for item in items:
+            T -= power_W * item["R_K_per_W"]
+            result.append({
+                "name": item["name"],
+                "T_K": T,
+                "R_K_per_W": item["R_K_per_W"],
+            })
+        return result
+
+    def theta_jc(self, die_area_m2: float) -> float:
+        """Junction-to-case thermal resistance (K/W).
+
+        This includes die conduction + all interfaces up to and including
+        the IHS outer surface.  Comparable to JEDEC θ_jc measurements.
+        """
+        R = 0.0
+        R += self.die_thickness_m / (self.die_conductivity * die_area_m2)
+        if self.contact_die_tim > 0:
+            R += self.contact_die_tim / die_area_m2
+        if self.tim is not None:
+            R += self.tim.resistance(die_area_m2)
+        if self.contact_tim_ihs > 0:
+            R += self.contact_tim_ihs / die_area_m2
+        if self.ihs is not None:
+            R += self.ihs.resistance(die_area_m2)
+        return R
+
+    def describe(self, die_area_m2: float) -> str:
+        """Human-readable description of the package thermal path."""
+        items = self._resistance_list(die_area_m2)
+        lines = [f"Package thermal path ({len(items)} elements):"]
+        for item in items:
+            lines.append(f"  {item['name']:40s}  R = {item['R_K_per_W']:.4f} K/W")
+        R_total = sum(i["R_K_per_W"] for i in items)
+        lines.append(f"  {'TOTAL':40s}  R = {R_total:.4f} K/W")
+        lines.append(f"  Effective h_conv = {self.effective_h(die_area_m2):.1f} W/(m²·K)")
+        return "\n".join(lines)
+
+    def to_dict(self) -> dict:
+        """Serialize to a JSON-compatible dictionary."""
+        d = {
+            "die_thickness_m": self.die_thickness_m,
+            "die_conductivity": self.die_conductivity,
+            "contact_die_tim": self.contact_die_tim,
+            "contact_tim_ihs": self.contact_tim_ihs,
+            "contact_ihs_heatsink": self.contact_ihs_heatsink,
+            "h_ambient": self.h_ambient,
+            "T_ambient": self.T_ambient,
+        }
+        if self.tim is not None:
+            d["tim"] = layer_to_dict(self.tim)
+        if self.ihs is not None:
+            d["ihs"] = layer_to_dict(self.ihs)
+        if self.heatsink is not None:
+            d["heatsink"] = layer_to_dict(self.heatsink)
+        return d
+
+    @classmethod
+    def from_dict(cls, d: dict) -> 'PackageStack':
+        """Deserialize from a dictionary."""
+        kwargs = {k: d[k] for k in (
+            "die_thickness_m", "die_conductivity",
+            "contact_die_tim", "contact_tim_ihs", "contact_ihs_heatsink",
+            "h_ambient", "T_ambient",
+        ) if k in d}
+        if "tim" in d:
+            kwargs["tim"] = layer_from_dict(d["tim"])
+        if "ihs" in d:
+            kwargs["ihs"] = layer_from_dict(d["ihs"])
+        if "heatsink" in d:
+            kwargs["heatsink"] = layer_from_dict(d["heatsink"])
+        return cls(**kwargs)
+
+    # ── Factory methods for common chip packages ──
+
+    @classmethod
+    def desktop_cpu(cls) -> 'PackageStack':
+        """Desktop CPU: solder TIM + copper IHS + tower cooler.
+
+        Modeled after Intel i9-13900K / AMD Ryzen 7950X packaging.
+        """
+        return cls(
+            die_thickness_m=775e-6,
+            die_conductivity=148.0,
+            tim=THERMAL_LAYERS["indium_solder"],
+            ihs=THERMAL_LAYERS["nickel_plated_copper_ihs"],
+            heatsink=THERMAL_LAYERS["aluminum_heatsink"],
+            contact_die_tim=2.0e-6,
+            contact_tim_ihs=5.0e-6,
+            contact_ihs_heatsink=10.0e-6,
+            h_ambient=50.0,
+        )
+
+    @classmethod
+    def server_gpu(cls) -> 'PackageStack':
+        """Server GPU/accelerator: liquid metal + copper IHS + cold plate.
+
+        Modeled after NVIDIA A100 SXM4 packaging.
+        """
+        return cls(
+            die_thickness_m=200e-6,
+            die_conductivity=148.0,
+            tim=THERMAL_LAYERS["liquid_metal"],
+            ihs=THERMAL_LAYERS["copper_ihs"],
+            heatsink=THERMAL_LAYERS["copper_heatsink"],
+            contact_die_tim=1.0e-6,
+            contact_tim_ihs=5.0e-6,
+            contact_ihs_heatsink=3.0e-6,
+            h_ambient=5000.0,
+        )
+
+    @classmethod
+    def mobile_soc(cls) -> 'PackageStack':
+        """Mobile SoC: thin die, paste TIM, no IHS, direct spreader.
+
+        Modeled after Apple M-series / Qualcomm Snapdragon packaging.
+        h_ambient is the effective convection coefficient at die-area
+        reference, accounting for chassis spreading (~250 cm²) with
+        natural convection (~12 W/m²K).
+        """
+        return cls(
+            die_thickness_m=100e-6,
+            die_conductivity=148.0,
+            tim=THERMAL_LAYERS["thermal_paste_high"],
+            ihs=None,
+            heatsink=None,
+            contact_die_tim=8.0e-6,
+            contact_tim_ihs=0.0,
+            contact_ihs_heatsink=0.0,
+            h_ambient=2500.0,  # effective at die-area ref (chassis spreading)
+        )
