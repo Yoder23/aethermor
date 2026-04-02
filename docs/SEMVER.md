@@ -36,7 +36,7 @@ Incremented when:
 
 ## Pre-release Versions
 
-Not currently used. All releases are production-stable.
+Not currently used. All releases are stable.
 
 ## Version Locations
 

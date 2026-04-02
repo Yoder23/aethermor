@@ -53,7 +53,7 @@ All notable changes to this project are documented in this file.
 ### Changed
 - Version bumped to 1.0.0 — production-ready for architecture-stage engineering.
   **Why**: 680+ validated checks now pass including experimental hardware
-  measurements; the project meets the standard for production-stable tooling.
+  measurements; the project meets the standard for architecture-stage tooling.
 - Development Status classifier upgraded from "4 - Beta" to "5 - Production/Stable".
   **Why**: All validation tiers (specifications, measurements, literature,
   analytical solutions) are passing; no known blockers remain.

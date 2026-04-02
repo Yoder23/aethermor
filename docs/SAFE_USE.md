@@ -1,6 +1,6 @@
 # Safe Use Policy
 
-Aethermor is production-stable for architecture-stage thermal exploration and
+Aethermor is validated for architecture-stage thermal exploration and
 inverse design. This document defines exactly which use cases are in scope,
 which require caution, and which are out of scope.
 
@@ -63,6 +63,6 @@ These use cases are explicitly out of scope. Do not use Aethermor for:
 
 ## Scope Statement
 
-Production-stable for architecture-stage thermal exploration and inverse design;
+Validated for architecture-stage thermal exploration and inverse design;
 not intended for sign-off, transient package verification, or transistor-level
 thermal closure.

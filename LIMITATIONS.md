@@ -3,7 +3,7 @@
 Aethermor is a **production thermal engineering toolkit** for chip thermal
 analysis, cooling tradeoffs, and compute-density optimization.
 
-> **Scope: Production-stable for architecture-stage thermal exploration and inverse design; not intended for sign-off, transient package verification, or transistor-level thermal closure.**
+> **Scope: Architecture-stage thermal exploration and inverse design. Analytically validated, not yet hardware-correlated. Not intended for sign-off, transient package verification, or transistor-level thermal closure.**
 
 This document describes what the project provides, the physics it models, and its
 validation coverage.

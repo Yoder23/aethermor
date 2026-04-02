@@ -1,6 +1,6 @@
 # Aethermor Validation Report
 
-> **Scope: Production-stable for architecture-stage thermal exploration and inverse design; not intended for sign-off, transient package verification, or transistor-level thermal closure.**
+> **Scope: Architecture-stage thermal exploration and inverse design. Analytically validated, not yet hardware-correlated. Not intended for sign-off, transient package verification, or transistor-level thermal closure.**
 
 **Verify everything:**
 ```bash

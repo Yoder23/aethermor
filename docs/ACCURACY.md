@@ -2,7 +2,7 @@
 
 **Version**: 1.0.0
 **Date**: 2026-03-26
-**Status**: Production-stable for architecture-stage thermal engineering
+**Status**: Analytically validated for architecture-stage thermal engineering
 
 ---
 

@@ -4,7 +4,7 @@
 
 Aethermor v1.0.0 upgrades the project from Beta to **Production/Stable**.
 
-> **Scope: Production-stable for architecture-stage thermal exploration and inverse design; not intended for sign-off, transient package verification, or transistor-level thermal closure.**
+> **Scope: Architecture-stage thermal exploration and inverse design. Analytically validated, not yet hardware-correlated. Not intended for sign-off, transient package verification, or transistor-level thermal closure.**
 
 The key addition is experimental measurement validation — closing the gap between
 "matches published specs" and "matches real hardware measurements."

@@ -17,7 +17,7 @@ Questions this case study answers:
   4. If we add a diamond heat spreader, how much power headroom do we gain?
 
 This case study demonstrates Aethermor's ability to make concrete,
-decision-changing engineering recommendations from thermal physics.
+concrete engineering recommendations from thermal physics.
 """
 import sys
 import os
@@ -374,7 +374,7 @@ def main():
         print("  3. Direct liquid cooling provides adequate headroom for 600W operation")
         print("  4. Diamond heat spreader adds meaningful power headroom for future upgrades")
         print()
-        print("  These conclusions are quantitative and decision-changing: an engineer")
+        print("  These conclusions are quantitative: an engineer")
         print("  using Aethermor can determine cooling requirements, evaluate substrate")
         print("  alternatives, and size thermal solutions before committing to hardware.")
 
