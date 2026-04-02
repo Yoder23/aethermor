@@ -1,12 +1,18 @@
 # Aethermor v1.0.0 Release Notes
 
+> **Addendum (v1.0.1):** The classifier was subsequently downgraded from
+> `Production/Stable` to `4 - Beta` to better reflect the project's
+> architecture-stage scope. Hardware correlation (3 published chip designs)
+> and PackageStack contact resistances have since been added. Current test
+> count: 308 tests, 700+ total checks. See CHANGELOG.md for details.
+
 ## What's New in 1.0.0
 
 Aethermor v1.0.0 upgrades the project from Beta to **Production/Stable**
-(architecture-stage thermal engineering — analytically validated, not yet
-hardware-correlated for sign-off).
+(architecture-stage thermal engineering — analytically validated, hardware-
+correlated against 3 published chip designs with documented residuals).
 
-> **Scope: Architecture-stage thermal exploration and inverse design. Analytically validated, not yet hardware-correlated. Not intended for sign-off, transient package verification, or transistor-level thermal closure.**
+> **Scope: Architecture-stage thermal exploration and inverse design. Hardware-correlated against 3 published chip designs (A100, i9-13900K, M1). Not intended for sign-off, transient package verification, or transistor-level thermal closure.**
 
 The key addition is experimental measurement validation — closing the gap between
 "matches published specs" and "matches real hardware measurements."

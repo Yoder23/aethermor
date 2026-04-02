@@ -3,7 +3,8 @@
 **Date**: 2026-03-26
 **Release**: v1.0.0 (Production/Stable — architecture-stage scope)
 
----
+> **Note:** Classifier was subsequently downgraded to `4 - Beta` in v1.0.1.
+> Current test count: 308 tests, 700+ total checks.
 
 ## Summary
 

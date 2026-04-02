@@ -27,7 +27,7 @@ These are questions hardware researchers currently answer through manual
 COMSOL sweeps, HotSpot configurations, or custom scripts. Aethermor integrates
 them into a single API and interactive dashboard.
 
-**Test suite**: 277 tests passing, 1 skipped (dashboard requires optional `dash`).
+**Test suite**: 308 tests passing, 1 skipped (dashboard requires optional `dash`).
 **Energy conservation**: 0.00 % error in 3D Fourier solver (tolerance: 5 %).
 
 ---
@@ -111,7 +111,7 @@ necessary? At what node does silicon hit its thermal wall?"*
 
 ### 2.1 Test Suite
 
-277 tests across unit, integration, regression, and performance layers:
+308 tests across unit, integration, regression, robustness, and performance layers:
 
 | Module | Tests | Status |
 |---|---|---|
@@ -126,6 +126,7 @@ necessary? At what node does silicon hit its thermal wall?"*
 | Extensible registries (material, paradigm, cooling) | 43 | ✓ |
 | Integration & regression | 38 | ✓ |
 | Benchmarks, statistics & publication gates | 18 | ✓ |
+| Numerical robustness (edge cases, bad inputs) | 31 | ✓ |
 | Performance & dashboard | 3 | 2 pass, 1 skipped (dash) |
 
 ### 2.2 Validation Suite — 133 Physics Checks
@@ -181,7 +182,7 @@ aethermor/analysis/         # Research tools
 aethermor/simulation/       # Monte Carlo / evolutionary simulation engine
 examples/         # 7 runnable research scripts
 experiments/      # Reproducibility scripts (ablations, scaling, fault sweeps)
-tests/            # 277 tests (pytest)
+tests/            # 308 tests (pytest)
 aethermor/validation/       # 133 physics cross-checks (validate_all.py)
 ```
 
@@ -261,7 +262,7 @@ architecture-level thermal budgeting but not for detailed circuit design.
 
 | Dimension | Grade | Notes |
 |---|---|---|
-| Code quality | **A** | Clean, 277 tests passing, well-structured packages |
+| Code quality | **A** | Clean, 308 tests passing, well-structured packages |
 | Physics validation | **A+** | 133 cross-checks against CODATA, CRC Handbook, ITRS/IRDS, analytical solutions. 20 literature cross-checks (Incropera, CODATA, CRC). 33 real-world chip validations (A100, M1, EPYC, i9-13900K). 18 experimental measurement checks (JEDEC θ_jc, IR thermal imaging, HotSpot benchmark). |
 | Statistical infrastructure | **A-** | Rigorous paired ablations, Holm correction, bootstrap CIs |
 | Reproducibility | **A** | Seeded, manifested, CI-verified, deterministic validation suite |
@@ -270,7 +271,7 @@ architecture-level thermal budgeting but not for detailed circuit design.
 | Claims accuracy | **A-** | All current claims backed by physics models. Legacy benchmarks honestly documented as mechanism validation. |
 | Documentation | **A** | README, LIMITATIONS, HONEST_REVIEW, VALIDATION.md, 7 examples, all accurate |
 | Unique capability | **B+** | Integrates Landauer-aware energy + 3D thermal + inverse design + multi-paradigm + extensible registries + tech roadmap in one workflow. Individual capabilities exist elsewhere; the combination and accessibility are new. |
-| **OSS readiness** | **Validated for architecture-stage engineering** | 680+ checks against 12 production chips (82), 9 materials (93), JEDEC θ_jc measurements, published IR thermal data, HotSpot benchmarks, and textbook analytical solutions. Suitable for thermal design-space exploration, material comparison, cooling-strategy tradeoffs, and architecture-stage decision support. Not yet hardware-correlated for sign-off use. |
+| **OSS readiness** | **Validated for architecture-stage engineering** | 700+ checks against 12 production chips (82), 9 materials (93), JEDEC θ_jc measurements, published IR thermal data, HotSpot benchmarks, 3 hardware correlation cases, 6 external analytical benchmarks, and textbook analytical solutions. Suitable for thermal design-space exploration, material comparison, cooling-strategy tradeoffs, and architecture-stage decision support. Hardware-correlated against 3 published chip designs with documented residuals. |
 
 **Bottom line**: Aethermor integrates inverse thermal design, Landauer-aware
 energy models, heterogeneous SoC analysis, and multi-paradigm comparison into
@@ -279,7 +280,7 @@ material selections, cooling architectures, paradigm crossovers, density
 limits, and optimal power distributions — work that normally requires
 configuring multiple separate tools or writing custom scripts.
 
-254 unit tests pass, 133 physics cross-checks verify every model against
+308 unit tests pass, 133 physics cross-checks verify every model against
 published data (CODATA, CRC Handbook, ITRS/IRDS), 20 literature cross-checks
 validate against textbook solutions, 82 chip thermal database checks cover
 12 production chips across 4 market segments, 93 material cross-validation
@@ -292,7 +293,8 @@ checks verify decision-driven workflows. Limitations are honestly documented.
 
 The project is **validated for architecture-stage engineering**: cross-checked
 against published hardware measurements across 12 production chips and
-9 materials (680+ independent checks). Suitable for substrate selection,
-cooling tradeoffs, density limits, paradigm crossover analysis, and
-architecture-stage thermal engineering. Not yet hardware-correlated
-for sign-off or production thermal closure.
+9 materials (700+ independent checks). Hardware-correlated against
+3 published chip designs (A100, i9-13900K, M1) with full gap analysis;
+residuals range from 0.34× to 2× on θ_jc (see docs/HARDWARE_CORRELATION.md).
+Suitable for substrate selection, cooling tradeoffs, density limits,
+paradigm crossover analysis, and architecture-stage thermal engineering.

@@ -1,7 +1,7 @@
 # Safe Use Policy
 
 **Version**: 1.0 — applies to Aethermor v1.0.x and v1.1.x  
-**Last reviewed**: 2025-06-01  
+**Last reviewed**: 2026-04-01  
 **Status**: Active
 
 Aethermor is validated for architecture-stage thermal exploration and
@@ -36,7 +36,7 @@ These use cases are supported but require awareness of model boundaries.
 
 | Use Case | Caution |
 |----------|---------|
-| Absolute junction temperature | Model captures conductive physics but omits package-specific interface resistances; use for relative comparisons, not sign-off Tj. See ACCURACY_ENVELOPE.md for expected residuals. |
+| Absolute junction temperature | `CoolingStack` captures conductive physics but omits package-specific interface resistances; use `PackageStack` for contact resistance modeling, or use for relative comparisons, not sign-off Tj. See ACCURACY_ENVELOPE.md for expected residuals. |
 | Detailed package assumptions | CoolingStack/PackageStack uses constant-property 1D layers; use measured thermal interface data for your specific package |
 | Vendor-specific cooling edge cases | Factory cooling configurations are representative, not exact vendor specs |
 | Public-spec-based chip approximation | Published TDP and die area are used; internal power maps and layout details are not modeled |

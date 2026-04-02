@@ -138,8 +138,10 @@ real 2D spreading into the chassis lowers the effective resistance further.
    with Yovanovich rectangular solution.
 2. **Multi-layer spreading** — solve 2D heat equation in the IHS to capture
    die-to-IHS area ratio effects.
-3. **Measured contact resistance** — replace literature values with package-
-   specific measurements.
+3. **Measured contact resistance** — `PackageStack` now models contact
+   resistances at die/TIM, TIM/IHS, and IHS/heatsink interfaces using
+   literature values. Replacing these with package-specific measured data
+   would further close residuals.
 
 ## Reproducibility
 

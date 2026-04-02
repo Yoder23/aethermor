@@ -1,13 +1,13 @@
 # Verification Layers
 
 This table defines exactly what Aethermor validates and how the headline
-numbers (278 tests, 133 physics checks, 680+ total) are computed.
+numbers (308 tests, 133 physics checks, 700+ total) are computed.
 
 ## Verification Layer Table
 
 | Layer | What It Covers | Count | Runner |
 |-------|---------------|-------|--------|
-| **Unit / integration / regression tests** | Every public class and method: `ThermalOptimizer`, `CoolingStack`, `PackageStack`, `ChipFloorplan`, `Material`, energy models, registries, CLI, dashboard imports. Edge cases, ordering checks, serialization round-trips. | **278** | `python -m pytest tests/ -v` |
+| **Unit / integration / regression tests** | Every public class and method: `ThermalOptimizer`, `CoolingStack`, `PackageStack`, `ChipFloorplan`, `Material`, energy models, registries, CLI, dashboard imports. Edge cases, ordering checks, serialization round-trips, robustness/fuzz tests. | **308** | `python -m pytest tests/ -v` |
 | **Physics cross-checks** | Fundamental constants vs CODATA 2018. Landauer limit at multiple temperatures. Material properties vs CRC Handbook. CMOS voltage/energy scaling vs ITRS/IRDS. 3D Fourier solver energy conservation. Analytical 1D model limit cases. | **133** | `python -m aethermor.validation.validate_all` |
 | **Material cross-validation** | 9 substrate materials × 10+ properties each, cross-validated against CRC Handbook, ASM International, NIST, Ioffe Institute, and manufacturer datasheets. | **93** | `python benchmarks/material_cross_validation.py` |
 | **Chip thermal database** | 12 production chips (A100, H100, MI300X, EPYC, Xeon, i9, Ryzen, M1, M2 Pro, Snapdragon, etc.) — power density, junction temperature, cooling capacity, conduction floor, material ranking. | **82** | `python benchmarks/chip_thermal_database.py` |
@@ -22,11 +22,11 @@ numbers (278 tests, 133 physics checks, 680+ total) are computed.
 
 | Headline Number | Computation |
 |----------------|-------------|
-| **278 tests** | `pytest tests/` — unit + integration + regression + performance tests |
+| **308 tests** | `pytest tests/` — unit + integration + regression + robustness tests |
 | **133 physics checks** | `aethermor validate` — the built-in validation suite |
-| **680+ total checks** | 278 + 133 + 93 + 82 + 33 + 20 + 18 + 46+ = **703+** checks across all layers |
+| **700+ total checks** | 308 + 133 + 93 + 82 + 33 + 20 + 18 + 3 + 46+ = **736+** checks across all layers |
 
-The "680+" number is a conservative floor. The actual count is 703+ and grows
+The "700+" number is a conservative floor. The actual count is 736+ and grows
 as new case studies are added.
 
 ## How to Run Everything

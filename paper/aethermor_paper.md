@@ -293,7 +293,7 @@ satisfies its constraints; the headroom map obeys T + headroom = T_limit.
 ### 5.5 Reproducibility
 
 All functions return identical results across independent runs with the same
-inputs. The full test suite (277 tests) and validation suite (133 checks)
+inputs. The full test suite (308 tests) and validation suite (133 checks)
 execute deterministically.
 
 | Category | Reference | Checks | Status |
@@ -410,7 +410,7 @@ git clone https://github.com/Yoder23/aethermor
 cd aethermor
 pip install -e ".[all]"
 python -m aethermor.validation.validate_all   # 133 checks
-python -m pytest tests/ -v          # 277 tests
+python -m pytest tests/ -v          # 308 tests
 aethermor dashboard                 # Interactive UI
 ```
 

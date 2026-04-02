@@ -47,13 +47,13 @@ python run_all_validations.py --smoke
 This runs a fast subset of all 12 validation suites to confirm everything
 is working. Expected output: all suites report PASS.
 
-### Full Validation (680+ checks)
+### Full Validation (700+ checks)
 
 ```bash
 python run_all_validations.py
 ```
 
-Expected: 12/12 suites pass, 680+ checks, ~3 minutes.
+Expected: 12/12 suites pass, 700+ checks, ~3 minutes.
 
 ## Run a Case Study
 
@@ -104,4 +104,4 @@ pip freeze > requirements.lock
 | `ModuleNotFoundError: physics` | Run from the aethermor directory, or install with `pip install -e .` |
 | Dashboard won't start | Install with `pip install -e ".[dashboard]"` |
 | Tests fail on import | Ensure Python 3.10+ and all core dependencies are installed |
-| Validation suite slow | Normal: ~3 minutes for 680+ checks. Use `--smoke` for fast check. |
+| Validation suite slow | Normal: ~3 minutes for 700+ checks. Use `--smoke` for fast check. |

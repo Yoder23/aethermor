@@ -16,10 +16,10 @@
 | Experimental measurement | 18 | 3 (A100, i9-13900K, Ryzen 7950X) | 1 | 1 | Package-level |
 | Literature / analytical | 20 | — | — | — | — |
 | Physics cross-checks | 133 | — | 9 | 4 | 6 factory configs |
-| Unit + integration tests | 277 | — | 9 | 4 | 6 factory configs |
+| Unit + integration tests | 308 | — | 9 | 4 | 6 factory configs |
 | Engineering case studies | 46 | — | 5 | 2 | 3 configs |
 
-**Total: 680+ independently validated checks.**
+**Total: 700+ independently validated checks.** See [VERIFICATION_LAYERS.md](VERIFICATION_LAYERS.md).
 
 ---
 
@@ -152,8 +152,9 @@ limits, and analytical correlations are physically consistent across
 
 ### Where Results Should Be Used with Caution
 
-- Absolute junction temperature predictions (model captures physics but
-  omits package-specific interface resistances)
+- Absolute junction temperature predictions (model captures physics;
+  `CoolingStack` uses 1D layers without contact resistances; use `PackageStack`
+  for explicit die/TIM/IHS contact resistance modeling)
 - Vendor-specific cooling-stack edge cases (use measured layer data)
 - Chips with highly non-uniform power maps (use floorplan model)
 
@@ -170,7 +171,7 @@ limits, and analytical correlations are physically consistent across
 ## How to Reproduce These Numbers
 
 ```bash
-# Full validation suite (680+ checks, ~3 minutes)
+# Full validation suite (700+ checks, ~3 minutes)
 python run_all_validations.py
 
 # Individual benchmark families
@@ -191,7 +192,7 @@ python scripts/gather_accuracy_metrics.py
 
 A reader can answer from this page:
 
-1. **What was benchmarked**: 680+ checks across 12 production chips, 9 materials,
+1. **What was benchmarked**: 700+ checks across 12 production chips, 9 materials,
    4 paradigms, JEDEC measurements, IR thermal imaging, HotSpot benchmarks,
    textbook analytical solutions, and CODATA fundamental constants.
 

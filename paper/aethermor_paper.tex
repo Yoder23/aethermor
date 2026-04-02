@@ -406,7 +406,7 @@ $T + \text{headroom} = T_{\mathrm{limit}}$ for every block.
 
 All functions that use the 3D binary-search solver are verified to
 return identical results across independent runs with the same inputs.
-The entire test suite (254~tests) and validation suite (133~checks)
+The entire test suite (308~tests) and validation suite (133~checks)
 execute deterministically with seeded random number generators.
 
 \begin{table}[t]
@@ -571,7 +571,7 @@ git clone https://github.com/Yoder23/aethermor
 cd aethermor
 pip install -e ".[all]"
 python -m aethermor.validation.validate_all   # 133 checks
-python -m pytest tests/ -v          # 277 tests
+python -m pytest tests/ -v          # 308 tests
 aethermor dashboard                 # Interactive UI
 \end{lstlisting}
 

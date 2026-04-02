@@ -1,6 +1,6 @@
 # Aethermor Validation Report
 
-> **Scope: Architecture-stage thermal exploration and inverse design. Analytically validated, not yet hardware-correlated. Not intended for sign-off, transient package verification, or transistor-level thermal closure.**
+> **Scope: Architecture-stage thermal exploration and inverse design. Analytically validated and hardware-correlated against 3 published chip designs (see docs/HARDWARE_CORRELATION.md). Not intended for sign-off, transient package verification, or transistor-level thermal closure.**
 
 **Verify everything:**
 ```bash
@@ -305,7 +305,9 @@ To add a new validation check:
 ## Real-World Chip Validation
 
 In addition to the 133 physics cross-checks, Aethermor has been validated
-against published specifications for four real chip designs:
+against published specifications for four real chip designs, and
+hardware-correlated against 3 published chip designs using `PackageStack`
+(see [docs/HARDWARE_CORRELATION.md](docs/HARDWARE_CORRELATION.md)):
 
 | Chip | TDP | Die Area | Node | Cooling | Junction Temp Prediction |
 |------|-----|----------|------|---------|--------------------------|

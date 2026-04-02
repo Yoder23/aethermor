@@ -91,7 +91,7 @@ These provide additional context but are not release gates.
 # Full production gate check
 python benchmarks/production_suite/run_production_suite.py
 
-# Full validation (all suites, 680+ checks)
+# Full validation (all suites, 700+ checks)
 python run_all_validations.py
 ```
 

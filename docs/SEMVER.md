@@ -52,4 +52,7 @@ The `scripts/release_check.py` script verifies version consistency.
 
 ## Current Version
 
-**1.0.0** — Production/Stable
+**1.0.1** — Beta (Development Status :: 4 - Beta)
+
+> The classifier was downgraded from Production/Stable to Beta in v1.0.1
+> to better reflect the architecture-stage scope of the project.

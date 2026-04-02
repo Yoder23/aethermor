@@ -39,7 +39,7 @@ pip install -e ".[all]"    # core + dashboard + dev tools
 Run tests:
 
 ```bash
-python -m pytest tests/ -v              # 277 tests
+python -m pytest tests/ -v              # 308 tests
 python -m aethermor.validation.validate_all       # 133 physics cross-checks
 ```
 

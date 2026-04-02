@@ -57,6 +57,8 @@ All notable changes to this project are documented in this file.
 - Development Status classifier upgraded from "4 - Beta" to "5 - Production/Stable".
   **Why**: All validation tiers (specifications, measurements, literature,
   analytical solutions) are passing; no known blockers remain.
+  **Note (v1.0.1):** Classifier was subsequently downgraded back to
+  "4 - Beta" to better align with architecture-stage scope.
 - Updated VALIDATION.md with experimental measurement validation section.
   **Why**: New Tier 2 checks (JEDEC θ_jc, IR imaging, HotSpot) needed
   documentation alongside the existing literature cross-checks.

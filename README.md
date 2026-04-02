@@ -26,7 +26,7 @@ All models use real physics in SI units, validated against CODATA 2018, the CRC
 Handbook, ITRS/IRDS roadmaps, published specifications for real chips
 (NVIDIA A100, Apple M1, AMD EPYC, Intel i9-13900K), and published hardware
 measurements (JEDEC θ_jc thermal resistance, IR thermal imaging, HotSpot
-benchmarks). **Scope: Architecture-stage thermal exploration and inverse design. Not intended for sign-off, transient package verification, or transistor-level thermal closure.** Calibration status: analytically validated with published material data and plausibility-checked against 15 production chips; not yet hardware-correlated against measured junction temperatures. See [LIMITATIONS.md](LIMITATIONS.md) for scope and [docs/calibration_case_study.md](docs/calibration_case_study.md) for calibration evidence.
+benchmarks). **Scope: Architecture-stage thermal exploration and inverse design. Not intended for sign-off, transient package verification, or transistor-level thermal closure.** Calibration status: analytically validated with published material data, plausibility-checked against 15 production chips, and hardware-correlated against 3 published chip designs (A100, i9-13900K, M1) with full gap analysis. See [LIMITATIONS.md](LIMITATIONS.md) for scope, [docs/HARDWARE_CORRELATION.md](docs/HARDWARE_CORRELATION.md) for correlation evidence, and [docs/calibration_case_study.md](docs/calibration_case_study.md) for calibration methodology.
 
 ---
 
@@ -68,7 +68,7 @@ New to Aethermor? Follow this 5-minute evaluation path:
 git clone https://github.com/Yoder23/aethermor.git && cd aethermor
 pip install -e ".[all]"
 
-# 2. Run the full validation suite — 680+ physics checks, ~3 min
+# 2. Run the full validation suite — 700+ validation checks, ~3 min
 python run_all_validations.py
 
 # 3. Try an inverse-design question
@@ -183,8 +183,8 @@ For more: [docs/API_REFERENCE.md](docs/API_REFERENCE.md) · 7 ready-to-run scrip
 ## Verification
 
 ```bash
-python -m pytest tests/ -v              # 277 unit/integration tests, ~2 min
-python run_all_validations.py           # 12 suites, 680+ checks, ~3 min
+python -m pytest tests/ -v              # 308 unit/integration/robustness tests, ~2 min
+python run_all_validations.py           # 12+ suites, 700+ checks, ~3 min
 ```
 
 Individual benchmark suites are in [`benchmarks/`](benchmarks/). Key ones:
@@ -225,9 +225,9 @@ aethermor/                # Installable Python package
   validation/             # 133 physics cross-checks
   app/                    # Interactive dashboard (modular tab architecture)
   cli.py                  # CLI entry point: aethermor dashboard|validate|version
-benchmarks/               # Validation and case-study scripts
-examples/                 # 7 ready-to-run research scripts
-tests/                    # 277 unit, integration, regression tests
+benchmarks/               # Validation, correlation, and case-study scripts
+examples/                 # 10 ready-to-run research scripts + 3 team workflows
+tests/                    # 308 unit, integration, regression, robustness tests
 ```
 
 Module details: [docs/API_REFERENCE.md](docs/API_REFERENCE.md)
@@ -246,9 +246,10 @@ Models are cross-validated against published reference data:
 | Material cross-validation | 93 checks, 9 materials vs CRC, ASM, NIST, Ioffe |
 | Chip thermal database | 82 checks across 12 real chips in 4 segments |
 | Experimental measurements | 18 checks vs JEDEC θ_jc, IR imaging, HotSpot |
-| θ_jc correlation (3 chips) | Within 1.5× for A100 and 7950X; i9-13900K gap explained (missing TIM contact) |
+| Hardware correlation (3 chips) | PackageStack vs measured θ_jc / T_j for A100, i9-13900K, M1 — residuals and gaps documented |
+| External benchmark pack | 6 analytical cases (1D slab, convection, multi-layer, Landauer, PackageStack, max-power) |
 | Energy conservation | 0.00% error in 3D Fourier solver |
-| **Total checks** | **680+** |
+| **Total checks** | **700+** (see [docs/VERIFICATION_LAYERS.md](docs/VERIFICATION_LAYERS.md) for exact breakdown) |
 
 See [VALIDATION.md](VALIDATION.md) for methodology. Run `python run_all_validations.py` to verify.
 
@@ -272,7 +273,7 @@ against 4 published studies; 15-chip plausibility check with gap discussion.
 | Complex 3D package geometry | 1D conduction ignores spreading, TIM, IHS | COMSOL, ANSYS Icepak |
 | Turbulent / mixed convection | Single h_conv; no flow modeling | CFD (Fluent, OpenFOAM) |
 | Transient thermal dynamics | Steady-state only | HotSpot transient, COMSOL |
-| Detailed TIM / solder modeling | No TIM contact resistance model | Package-level FEA |
+| Detailed TIM / solder modeling | `PackageStack` includes die/TIM/IHS contact resistances; for detailed package FEA use COMSOL | Package-level FEA |
 | PCB / board-level thermal paths | Die-only model | 6SigmaET, FloTHERM |
 
 **Rule of thumb**: "Which direction should we go?" → Aethermor.
@@ -306,7 +307,7 @@ Use Aethermor to decide which designs are worth simulating in CFD/FEA.
 ## Reproducibility
 
 ```bash
-python run_all_validations.py    # 12 suites, 680+ checks, ~3 min
+python run_all_validations.py    # 12+ suites, 700+ checks, ~3 min
 ```
 
 All benchmarks are seeded and deterministic. See

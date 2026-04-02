@@ -3,7 +3,7 @@
 Aethermor is a **production thermal engineering toolkit** for chip thermal
 analysis, cooling tradeoffs, and compute-density optimization.
 
-> **Scope: Architecture-stage thermal exploration and inverse design. Analytically validated, not yet hardware-correlated. Not intended for sign-off, transient package verification, or transistor-level thermal closure.**
+> **Scope: Architecture-stage thermal exploration and inverse design. Analytically validated and hardware-correlated against 3 published chip designs (see docs/HARDWARE_CORRELATION.md). Not intended for sign-off, transient package verification, or transistor-level thermal closure.**
 
 This document describes what the project provides, the physics it models, and its
 validation coverage.
@@ -177,7 +177,7 @@ The thermal model has been validated at three tiers:
    against CRC Handbook, ASM International, NIST, Ioffe Institute, and
    manufacturer datasheets.
 
-**Total: 680+ validated checks across 12 suites.**
+**Total: 700+ validated checks across 12+ suites.** See [docs/VERIFICATION_LAYERS.md](docs/VERIFICATION_LAYERS.md) for exact breakdown.
 
 ### Original Lattice Simulation
 
