@@ -19,7 +19,7 @@
 | Unit + integration tests | 277 | — | 9 | 4 | 6 factory configs |
 | Engineering case studies | 46 | — | 5 | 2 | 3 configs |
 
-**Total: 680+ independently validated checks, all passing.**
+**Total: 680+ independently validated checks.**
 
 ---
 

@@ -115,17 +115,17 @@ necessary? At what node does silicon hit its thermal wall?"*
 
 | Module | Tests | Status |
 |---|---|---|
-| Physics constants & materials | 13 | All pass |
-| Energy models (CMOS, adiabatic, reversible) | 16 | All pass |
-| Thermal transport (3D Fourier) | 16 | All pass |
-| Cooling stack | 26 | All pass |
-| Chip floorplan | 23 | All pass |
-| Tech roadmap | 15 | All pass |
-| Thermal optimizer (incl. headroom, redistribution) | 51 | All pass |
-| Landauer analysis, design space, regime maps | 16 | All pass |
-| Extensible registries (material, paradigm, cooling) | 43 | All pass |
-| Integration & regression | 38 | All pass |
-| Benchmarks, statistics & publication gates | 18 | All pass |
+| Physics constants & materials | 13 | ✓ |
+| Energy models (CMOS, adiabatic, reversible) | 16 | ✓ |
+| Thermal transport (3D Fourier) | 16 | ✓ |
+| Cooling stack | 26 | ✓ |
+| Chip floorplan | 23 | ✓ |
+| Tech roadmap | 15 | ✓ |
+| Thermal optimizer (incl. headroom, redistribution) | 51 | ✓ |
+| Landauer analysis, design space, regime maps | 16 | ✓ |
+| Extensible registries (material, paradigm, cooling) | 43 | ✓ |
+| Integration & regression | 38 | ✓ |
+| Benchmarks, statistics & publication gates | 18 | ✓ |
 | Performance & dashboard | 3 | 2 pass, 1 skipped (dash) |
 
 ### 2.2 Validation Suite — 133 Physics Checks
@@ -270,7 +270,7 @@ architecture-level thermal budgeting but not for detailed circuit design.
 | Claims accuracy | **A-** | All current claims backed by physics models. Legacy benchmarks honestly documented as mechanism validation. |
 | Documentation | **A** | README, LIMITATIONS, HONEST_REVIEW, VALIDATION.md, 7 examples, all accurate |
 | Unique capability | **B+** | Integrates Landauer-aware energy + 3D thermal + inverse design + multi-paradigm + extensible registries + tech roadmap in one workflow. Individual capabilities exist elsewhere; the combination and accessibility are new. |
-| **OSS readiness** | **Production-ready** | Validated against 12 production chips (82 checks), 9 materials cross-validated against 3+ sources each (93 checks), JEDEC θ_jc measurements, published IR thermal data, HotSpot benchmarks, and textbook analytical solutions (680+ checks total, all pass). Suitable for thermal design-space exploration, material comparison, cooling-strategy tradeoffs, and architecture-stage decision support. |
+| **OSS readiness** | **Validated for architecture-stage engineering** | 680+ checks against 12 production chips (82), 9 materials (93), JEDEC θ_jc measurements, published IR thermal data, HotSpot benchmarks, and textbook analytical solutions. Suitable for thermal design-space exploration, material comparison, cooling-strategy tradeoffs, and architecture-stage decision support. Not yet hardware-correlated for sign-off use. |
 
 **Bottom line**: Aethermor integrates inverse thermal design, Landauer-aware
 energy models, heterogeneous SoC analysis, and multi-paradigm comparison into
@@ -290,8 +290,9 @@ experimental measurement checks validate against JEDEC θ_jc data, published
 IR thermal imaging, and HotSpot benchmarks, and 23+ engineering case study
 checks verify decision-driven workflows. Limitations are honestly documented.
 
-The project is **production-ready**: validated against published hardware
-measurements across 12 production chips and 9 materials, with 680+ independent
-checks all passing. Suitable for substrate selection, cooling tradeoffs,
-density limits, paradigm crossover analysis, and architecture-stage thermal
-engineering.
+The project is **validated for architecture-stage engineering**: cross-checked
+against published hardware measurements across 12 production chips and
+9 materials (680+ independent checks). Suitable for substrate selection,
+cooling tradeoffs, density limits, paradigm crossover analysis, and
+architecture-stage thermal engineering. Not yet hardware-correlated
+for sign-off or production thermal closure.

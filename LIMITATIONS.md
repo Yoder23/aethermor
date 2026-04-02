@@ -161,23 +161,23 @@ energy efficiency layer** that underlies all these architectures.
 The thermal model has been validated at three tiers:
 
 1. **Published chip specifications** — 33 checks against NVIDIA A100, Apple M1,
-   AMD EPYC 9654, and Intel i9-13900K (all pass).
+   AMD EPYC 9654, and Intel i9-13900K.
 2. **Published hardware measurements** — 18 checks against JEDEC-standard
    junction-to-case thermal resistance (θ_jc) for the A100, i9-13900K, and
    Ryzen 7950X; published IR thermal imaging data (Kandlikar 2003, Bar-Cohen &
    Wang 2009); Yovanovich 1998 spreading resistance; and the HotSpot ev6
-   benchmark (all pass).
+   benchmark.
 3. **Literature and analytical** — 20 checks against CODATA 2018, CRC Handbook,
-   ITRS/IRDS, and Incropera & DeWitt textbook solutions (all pass).
+   ITRS/IRDS, and Incropera & DeWitt textbook solutions.
 4. **Chip thermal database** — 82 checks across 12 real production chips in 4
    market segments: accelerators (A100, H100, MI300X), servers (EPYC 9654,
    Xeon w9-3495X), desktops (i9-13900K, Ryzen 9 7950X), and mobile
-   (M1, M2 Pro, Snapdragon 8 Gen 2) — all pass.
+   (M1, M2 Pro, Snapdragon 8 Gen 2).
 5. **Material cross-validation** — 93 checks across 9 materials validated
    against CRC Handbook, ASM International, NIST, Ioffe Institute, and
-   manufacturer datasheets — all pass.
+   manufacturer datasheets.
 
-**Total: 680+ validated checks across 12 suites, all passing.**
+**Total: 680+ validated checks across 12 suites.**
 
 ### Original Lattice Simulation
 

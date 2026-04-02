@@ -314,7 +314,7 @@ against published specifications for four real chip designs:
 | AMD EPYC 9654 CCD | 30 W | 72 mm² | 5 nm | Server air | 41.2°C (spec: 96°C max) |
 | Intel i9-13900K | 253 W | 257 mm² | 10 nm | Tower cooler | 114.2°C (spec: 100°C max) |
 
-**33 total checks, all passing.** Each chip is validated for:
+**33 total checks completed.** Each chip is validated for:
 - Power density (realistic range)
 - Junction temperature (correct order of magnitude)
 - Cooling stack capacity (covers TDP)

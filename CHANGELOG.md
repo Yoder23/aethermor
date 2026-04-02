@@ -39,7 +39,7 @@ All notable changes to this project are documented in this file.
 
 ### Added — Experimental Measurement Validation
 - `benchmarks/experimental_validation.py`: 18 checks validating the thermal model
-  against published hardware measurements — all passing:
+  against published hardware measurements:
   - **Tier 1**: JEDEC-standard junction-to-case thermal resistance (θ_jc) for
     NVIDIA A100, Intel i9-13900K, AMD Ryzen 7950X
   - **Tier 2**: Published experimental data — Kandlikar 2003 microchannel ΔT,
@@ -51,7 +51,7 @@ All notable changes to this project are documented in this file.
 - CI pipeline now runs experimental measurement validation on every push
 
 ### Changed
-- Version bumped to 1.0.0 — production-ready for architecture-stage engineering.
+- Version bumped to 1.0.0 — validated for architecture-stage engineering.
   **Why**: 680+ validated checks now pass including experimental hardware
   measurements; the project meets the standard for architecture-stage tooling.
 - Development Status classifier upgraded from "4 - Beta" to "5 - Production/Stable".
@@ -66,7 +66,7 @@ All notable changes to this project are documented in this file.
   while honestly scoping what "validated" means (published data, not our own
   test chips).
 - Updated HONEST_REVIEW.md: added 18 experimental checks to validation grade,
-  OSS readiness upgraded to "Production-ready for architecture-stage engineering".
+  OSS readiness upgraded to "Validated for architecture-stage engineering".
   **Why**: The self-assessment must track the actual validation state.
 - CI matrix tests Python 3.10, 3.11, and 3.12.
   **Why**: Production users run multiple Python versions; 3.12 is the current
@@ -77,7 +77,7 @@ All notable changes to this project are documented in this file.
 ### Added — Real-World Chip Validation
 - `benchmarks/real_world_validation.py`: 33 checks validating thermal predictions
   against published specifications for NVIDIA A100, Apple M1, AMD EPYC 9654, and
-  Intel i9-13900K — all passing
+  Intel i9-13900K
 - Junction temperature predictions within expected ranges using first-principles
   physics (conduction + package heat spreading + convection)
 - CI pipeline now runs literature and real-world chip validation on every push
@@ -86,7 +86,7 @@ All notable changes to this project are documented in this file.
 - `benchmarks/hotspot_comparison.py`: Fair 6-test comparison against HotSpot,
   showing where each tool adds value
 - `benchmarks/literature_validation.py`: 20 cross-checks against CODATA, CRC
-  Handbook, ITRS/IRDS, Incropera & DeWitt — all passing
+  Handbook, ITRS/IRDS, Incropera & DeWitt
 - `benchmarks/case_study_substrate_selection.py`: Substrate selection workflow
   answering 4 questions in ~9 seconds
 - `benchmarks/case_study_soc_bottleneck.py`: SoC bottleneck identification and

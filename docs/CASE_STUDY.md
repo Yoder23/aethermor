@@ -12,7 +12,7 @@ to direct liquid cooling (h = 20,000 W/m²K) for their 10,000-unit fleet.
 The assumption: 20× more aggressive cooling should unlock significantly more
 compute density.
 
-**Aethermor shows this assumption is wrong.**
+**Aethermor's model suggests this assumption is wrong.**
 
 ## The Three Conclusions
 

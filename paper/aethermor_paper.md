@@ -386,7 +386,7 @@ minimal.
 **Validation scope.** The thermal model has been validated against published
 specifications for four real chips (NVIDIA A100, Apple M1, AMD EPYC 9654,
 Intel i9-13900K) and produces correct-order-of-magnitude junction temperature
-predictions (33 checks, all passing). Die-level correlation with proprietary
+predictions (33 checks completed). Die-level correlation with proprietary
 floorplan data or direct thermal imaging is a planned next step.
 
 **Steady-state focus.** The inverse design tools target steady-state. Dynamic

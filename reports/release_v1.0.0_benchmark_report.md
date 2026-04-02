@@ -1,7 +1,7 @@
 # Release Benchmark Report — v1.0.0
 
 **Date**: 2026-03-26
-**Release**: v1.0.0 (Production/Stable)
+**Release**: v1.0.0 (Production/Stable — architecture-stage scope)
 
 ---
 
@@ -13,8 +13,8 @@
 | Operating envelope (250–700 K) | 20/20 within envelope |
 | Material cross-validation | Median 0.00%, max 0.00% error |
 | Gold output regression | No regressions (baseline release) |
-| Full validation suite | 12/12 suites, 680+ checks, all pass |
-| Release gates | ALL PASS |
+| Full validation suite | 12/12 suites, 680+ checks |
+| Release gates | Met |
 
 ## Thermal Model
 

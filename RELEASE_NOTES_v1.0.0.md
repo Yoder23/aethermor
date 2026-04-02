@@ -2,7 +2,9 @@
 
 ## What's New in 1.0.0
 
-Aethermor v1.0.0 upgrades the project from Beta to **Production/Stable**.
+Aethermor v1.0.0 upgrades the project from Beta to **Production/Stable**
+(architecture-stage thermal engineering — analytically validated, not yet
+hardware-correlated for sign-off).
 
 > **Scope: Architecture-stage thermal exploration and inverse design. Analytically validated, not yet hardware-correlated. Not intended for sign-off, transient package verification, or transistor-level thermal closure.**
 
@@ -47,7 +49,7 @@ measured in K/W. Lower is better.
 - **LIMITATIONS.md**: Rewritten to acknowledge published hardware measurement
   validation while maintaining honesty about remaining scope (no custom test
   chip IR imaging)
-- **HONEST_REVIEW.md**: OSS readiness upgraded to "Production-ready for
+- **HONEST_REVIEW.md**: OSS readiness upgraded to "Validated for
   architecture-stage engineering"
 - **VALIDATION.md**: New Section 4 documenting experimental measurement
   validation methodology
@@ -67,7 +69,7 @@ python benchmarks/case_study_mobile_soc.py    # 10 mobile SoC thermal envelope c
 python run_all_validations.py                 # Master runner: 12 suites, all checks
 ```
 
-**Total: 680+ checks, all passing.**
+**Total: 680+ checks.**
 
 ## Install
 
