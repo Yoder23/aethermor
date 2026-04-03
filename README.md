@@ -59,26 +59,28 @@ exploration can surface before committing to expensive hardware decisions.
 
 ---
 
-## Start Here (Thermal Engineers)
+## Evaluate Aethermor (5 Minutes)
 
-New to Aethermor? Follow this 5-minute evaluation path:
+New to Aethermor? Run **one script** to see it in action:
 
 ```bash
-# 1. Install
 git clone https://github.com/Yoder23/aethermor.git && cd aethermor
 pip install -e ".[all]"
-
-# 2. Run the full validation suite — 700+ validation checks, ~3 min
-python run_all_validations.py
-
-# 3. Try an inverse-design question
-python examples/optimal_density.py
-
-# 4. Launch the interactive dashboard
-aethermor dashboard
+python evaluate_aethermor.py
 ```
 
-**What to look at first**:
+This runs four live demos in ~10 seconds:
+1. **Physics validation** — 16 textbook checks (Incropera, CRC, Yovanovich) — all 0.00% error
+2. **Material ranking** — which substrate lets you pack the most compute?
+3. **Cooling tradeoff** — where do diminishing returns hit?
+4. **Real chip prediction** — NVIDIA A100 θ_jc within 2% of measured
+
+Then try the interactive dashboard: `aethermor dashboard`
+
+**Feedback?** [File a GitHub issue](https://github.com/Yoder23/aethermor/issues/new?template=external_evaluation.md) — takes 60 seconds.
+
+<details>
+<summary>Deeper evaluation guide</summary>
 
 | Your Interest | Start With |
 |---------------|-----------|
@@ -87,6 +89,10 @@ aethermor dashboard
 | "What are the limitations?" | [LIMITATIONS.md](LIMITATIONS.md) — scope, simplifications, known gaps |
 | "How accurate is it?" | [docs/ACCURACY.md](docs/ACCURACY.md) — error bands and operating envelope |
 | "Full API reference" | [docs/API_REFERENCE.md](docs/API_REFERENCE.md) |
+| "Full validation suite (700+ checks)" | `python run_all_validations.py` (~3 min) |
+| "Hardware correlation (3 real chips)" | `python benchmarks/hardware_correlation.py` |
+
+</details>
 
 ---
 
