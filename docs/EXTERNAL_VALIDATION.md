@@ -181,6 +181,25 @@ inverse design, or design-space pruning before heavier CFD/FEA work."
 - At least one evaluator finds a real issue or limitation
 - At least one evaluator says it was useful enough to influence analysis
 
+### Pilot 3: External Engineering Evaluation (awaiting)
+
+**Status**: Awaiting first independent engineer evaluation.
+
+The template below will be filled in when an external engineer evaluates
+Aethermor on their own thermal workflow. This is the highest-value remaining
+credibility upgrade.
+
+```
+Reviewer role / company type:  [e.g. "Thermal engineer at a semiconductor company"]
+Problem tried:                 [e.g. "Ranked cooling options for a 300W accelerator"]
+What Aethermor replaced or accelerated:  [e.g. "Manual spreadsheet sweeps"]
+Where it was helpful:          [specific output or capability]
+Where it was not sufficient:   [specific gap or limitation hit]
+Would use again?               [yes / no / conditionally]
+```
+
+To contribute: run `python evaluate_aethermor.py`, then [file a GitHub issue](https://github.com/Yoder23/aethermor/issues/new?template=external_evaluation.md) with your results.
+
 ### Pilot Feedback Template
 
 ```

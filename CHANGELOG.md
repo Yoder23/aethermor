@@ -22,6 +22,15 @@ All notable changes to this project are documented in this file.
   Landauer 1961, Yovanovich 1983). All pass at 0.00% error.
 - **`PackageStack` in API_REFERENCE.md** — full constructor, method table,
   factory methods, contact resistance reference, and spreading resistance docs.
+- **Engineer review checklist** in README — 5-step, 5-minute walkthrough
+  for first-time reviewers.
+- **Escalation rule** in README and SAFE_USE.md — clear guidance on when to
+  escalate from Aethermor to higher-fidelity tools.
+- **Pilot 3 external evaluation template** in EXTERNAL_VALIDATION.md —
+  structured form for external engineering feedback.
+- **`verification_summary.json` output** — `run_all_validations.py` now emits
+  a machine-readable summary to `reports/` with version, git hash, timestamp,
+  per-suite pass/fail, and environment info.
 
 ### Changed
 - `material_ranking()` default list expanded from 5 to 8 substrates
@@ -38,6 +47,16 @@ All notable changes to this project are documented in this file.
 - Install links updated from v1.0.0 to v1.0.1 in INSTALL_VERIFY.md.
 - External validation: peer review documented as Pilot 2 (5 rounds,
   15+ issues found and resolved).
+- **Root directory cleanup**: moved `HONEST_REVIEW.md`, `VALIDATION.md`,
+  `RELEASE_NOTES_v1.0.0.md` to `docs/` — root now contains only files
+  reviewers expect at first glance.
+- Version stamps synced to 1.0.1 across ACCURACY.md, CITATION.cff,
+  `physics/__init__.py`.
+- README: added production-ready scope blockquote, hardware-correlation
+  numbers, verification totals explanation.
+- `run_all_validations.py`: updated stale test count (255→308).
+- `release_check.py`: case-insensitive scope check, paths updated for
+  docs-relocated files.
 
 ## [1.0.1] - 2026-03-31
 

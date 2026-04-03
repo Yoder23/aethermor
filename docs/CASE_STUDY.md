@@ -101,7 +101,7 @@ frequency, cooling, materials) and see how the conclusions shift.
 principles that are non-trivial to obtain from existing tools. The physics
 (Fourier conduction, conduction floor, combined conduction+convection models)
 is well-established and validated against published data (see
-[VALIDATION.md](../VALIDATION.md)).
+[VALIDATION.md](VALIDATION.md)).
 
 **Does not prove**: That the specific dollar amounts or density numbers apply
 to any particular chip design. Real chips have layout-dependent effects,

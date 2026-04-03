@@ -1,7 +1,7 @@
 # Aethermor Accuracy Statement
 
-**Version**: 1.0.0
-**Date**: 2026-03-26
+**Version**: 1.0.1
+**Date**: 2026-04-03
 **Status**: Analytically validated for architecture-stage thermal engineering
 
 ---

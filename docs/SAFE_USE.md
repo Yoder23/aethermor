@@ -13,7 +13,7 @@ which require caution, and which are out of scope.
 ## Safe
 
 These are the intended, validated use cases. Results from these workflows
-are backed by 700+ validated checks against published data.
+are backed by 800+ validated checks against published data.
 
 | Use Case | Description |
 |----------|-------------|
@@ -36,7 +36,7 @@ These use cases are supported but require awareness of model boundaries.
 
 | Use Case | Caution |
 |----------|---------|
-| Absolute junction temperature | `CoolingStack` captures conductive physics but omits package-specific interface resistances; use `PackageStack` for contact resistance modeling, or use for relative comparisons, not sign-off Tj. See ACCURACY_ENVELOPE.md for expected residuals. |
+| Absolute junction temperature | `CoolingStack` captures conductive physics but omits package-specific interface resistances; use `PackageStack` for contact resistance modeling, or use for relative comparisons, not sign-off Tj. See [ACCURACY_ENVELOPE.md](ACCURACY_ENVELOPE.md) for expected residuals. |
 | Detailed package assumptions | CoolingStack/PackageStack uses constant-property 1D layers; use measured thermal interface data for your specific package |
 | Vendor-specific cooling edge cases | Factory cooling configurations are representative, not exact vendor specs |
 | Public-spec-based chip approximation | Published TDP and die area are used; internal power maps and layout details are not modeled |
@@ -58,6 +58,16 @@ These use cases are explicitly out of scope. Do not use Aethermor for:
 
 ---
 
+## Escalation Rule
+
+> Use Aethermor to rank options, eliminate infeasible directions, and estimate
+> order-of-magnitude thermal feasibility. Escalate to higher-fidelity
+> simulation or experiment when decisions depend on exact absolute T_j,
+> transient response, detailed package geometry, proprietary floorplans,
+> or vendor-specific cooling performance.
+
+---
+
 ## Minimum Required Inputs
 
 Before trusting any output, ensure you have provided:
@@ -75,7 +85,7 @@ Before using Aethermor results in any decision:
 
 1. Run `aethermor validate` — confirm physics and material checks pass
 2. Run `python -m benchmarks.external_benchmark_pack` — confirm analytical benchmarks pass
-3. Check your operating point falls within the envelope defined in `ACCURACY_ENVELOPE.md`
+3. Check your operating point falls within the envelope defined in [ACCURACY_ENVELOPE.md](ACCURACY_ENVELOPE.md)
 4. Compare at least one result against a published datasheet value for your target platform
 
 ---
@@ -98,7 +108,7 @@ Before any release, verify:
 - [ ] `benchmarks/hardware_correlation.py` runs without error
 - [ ] `benchmarks/uncertainty_propagation.py` runs without error
 - [ ] This document has been reviewed and version number updated
-- [ ] ACCURACY_ENVELOPE.md reflects any new validation data
+- [ ] [ACCURACY_ENVELOPE.md](ACCURACY_ENVELOPE.md) reflects any new validation data
 - [ ] CHANGELOG.md updated with scope of changes
 
 ---

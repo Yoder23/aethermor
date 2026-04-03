@@ -51,6 +51,6 @@ python benchmarks/uncertainty_propagation.py         # Layer 6: uncertainty
 This table is the single source of truth. The following files reference it:
 
 - [README.md](../README.md) — Verification section
-- [VALIDATION.md](../VALIDATION.md) — Methodology
+- [VALIDATION.md](VALIDATION.md) — Methodology
 - [CONTRIBUTING.md](../CONTRIBUTING.md) — What to run before submitting
 - CLI: `aethermor validate` runs the 133-check physics suite

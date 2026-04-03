@@ -15,6 +15,10 @@ Quick smoke test (fast subset, ~30 seconds):
 Exit code 0 = all suites pass.  Non-zero = at least one failure.
 """
 import argparse
+import datetime
+import json
+import os
+import platform
 import subprocess
 import sys
 import time
@@ -126,12 +130,11 @@ def main():
 
     if failed > 0:
         print(f"  {failed} suite(s) FAILED.")
-        return False
     else:
         print("  ALL SUITES PASSED.")
         print()
         print("  Evidence surface:")
-        print("    - Unit tests: ~255 tests across 31 files")
+        print("    - Unit tests: 308 tests across 30 files")
         print("    - Physics validation: 133 SI-unit checks")
         print("    - Literature: 20 published-value checks")
         print("    - Real-world chips: 33 checks (4 production chips)")
@@ -142,7 +145,60 @@ def main():
         print("    - Integration workflows: 23 end-to-end tests")
         print()
         print("  Total: 800+ independently validated checks.")
-        return True
+
+    # Emit verification_summary.json
+    _emit_summary(results, total_elapsed, mode, failed == 0)
+
+    return failed == 0
+
+
+def _emit_summary(results, total_elapsed, mode, all_passed):
+    """Write a machine-readable verification summary to reports/."""
+    # Get version
+    try:
+        from importlib.metadata import version as pkg_version
+        ver = pkg_version("aethermor")
+    except Exception:
+        ver = "unknown"
+
+    # Get git hash
+    git_hash = "unknown"
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True, text=True, timeout=5,
+        )
+        if proc.returncode == 0:
+            git_hash = proc.stdout.strip()
+    except Exception:
+        pass
+
+    summary = {
+        "version": ver,
+        "git_commit": git_hash,
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "mode": mode,
+        "all_passed": all_passed,
+        "suites": [
+            {"name": label, "passed": ok, "elapsed_s": round(elapsed, 2)}
+            for label, ok, elapsed in results
+        ],
+        "total_suites": len(results),
+        "total_passed": sum(1 for _, ok, _ in results if ok),
+        "total_elapsed_s": round(total_elapsed, 2),
+        "environment": {
+            "python": platform.python_version(),
+            "platform": platform.platform(),
+            "machine": platform.machine(),
+        },
+    }
+
+    out_dir = os.path.join(os.path.dirname(__file__), "reports")
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, "verification_summary.json")
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2)
+    print(f"\n  Artifact: {out_path}")
 
 
 if __name__ == "__main__":

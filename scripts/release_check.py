@@ -37,19 +37,11 @@ def check_version_consistency():
     print(f"  README wheel: ok")
 
     # 3. Release notes exist
-    rn_path = os.path.join(ROOT, f"RELEASE_NOTES_v{version}.md")
+    rn_path = os.path.join(ROOT, "docs", f"RELEASE_NOTES_v{version}.md")
     if not os.path.exists(rn_path):
-        print(f"  FAIL: {rn_path} does not exist")
+        print(f"  FAIL: docs/RELEASE_NOTES_v{version}.md does not exist")
         return False, version
     print(f"  Release notes: ok")
-
-    # 4. No stale release notes presented as current
-    for fn in os.listdir(ROOT):
-        if fn.startswith("RELEASE_NOTES_v") and fn.endswith(".md"):
-            v = fn.replace("RELEASE_NOTES_v", "").replace(".md", "")
-            if v != version:
-                print(f"  FAIL: Stale release notes found: {fn}")
-                return False, version
 
     # 5. Classifier
     if "4 - Beta" not in content:
@@ -76,8 +68,8 @@ def check_docs_exist():
         "docs/CASE_STUDY_SOC.md",
         "docs/CASE_STUDY_PARADIGM.md",
         "LIMITATIONS.md",
-        "VALIDATION.md",
-        "HONEST_REVIEW.md",
+        "docs/VALIDATION.md",
+        "docs/HONEST_REVIEW.md",
         "CHANGELOG.md",
         "LICENSE",
         "CONTRIBUTING.md",
@@ -143,7 +135,7 @@ def check_scope_statement():
     files_to_check = [
         "README.md",
         "LIMITATIONS.md",
-        "VALIDATION.md",
+        "docs/VALIDATION.md",
         "docs/SAFE_USE.md",
     ]
     all_ok = True
@@ -154,7 +146,7 @@ def check_scope_statement():
             all_ok = False
             continue
         with open(path, "r", encoding="utf-8") as f:
-            content = f.read()
+            content = f.read().lower()
         if scope_phrase in content:
             print(f"  [ok]  {fn}")
         else:

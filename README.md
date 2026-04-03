@@ -7,6 +7,8 @@
 
 **Open-source Python toolkit for chip thermal analysis, cooling tradeoffs, and compute-density limits in advanced hardware systems.**
 
+> **Production-ready for architecture-stage thermal exploration, screening, and inverse design workflows; not intended for sign-off thermal closure or transient package verification.**
+
 ---
 
 As transistor scaling slows, **thermal constraints are becoming the primary
@@ -79,6 +81,18 @@ Then try the interactive dashboard: `aethermor dashboard`
 
 **Feedback?** [File a GitHub issue](https://github.com/Yoder23/aethermor/issues/new?template=external_evaluation.md) — takes 60 seconds.
 
+### Engineer Review Checklist (5 minutes)
+
+```bash
+pip install -e ".[dashboard]"
+python evaluate_aethermor.py          # 4 live demos, ~10 seconds
+aethermor dashboard                   # interactive explorer
+python -m pytest tests/ -v            # 308 tests
+python run_all_validations.py         # 800+ checks across 12+ suites
+```
+
+Then read: [docs/HARDWARE_CORRELATION.md](docs/HARDWARE_CORRELATION.md) · [docs/SAFE_USE.md](docs/SAFE_USE.md) · [LIMITATIONS.md](LIMITATIONS.md)
+
 <details>
 <summary>Deeper evaluation guide</summary>
 
@@ -89,7 +103,7 @@ Then try the interactive dashboard: `aethermor dashboard`
 | "What are the limitations?" | [LIMITATIONS.md](LIMITATIONS.md) — scope, simplifications, known gaps |
 | "How accurate is it?" | [docs/ACCURACY.md](docs/ACCURACY.md) — error bands and operating envelope |
 | "Full API reference" | [docs/API_REFERENCE.md](docs/API_REFERENCE.md) |
-| "Full validation suite (700+ checks)" | `python run_all_validations.py` (~3 min) |
+| "Full validation suite (800+ checks)" | `python run_all_validations.py` (~3 min) |
 | "Hardware correlation (3 real chips)" | `python benchmarks/hardware_correlation.py` |
 
 </details>
@@ -190,7 +204,7 @@ For more: [docs/API_REFERENCE.md](docs/API_REFERENCE.md) · 7 ready-to-run scrip
 
 ```bash
 python -m pytest tests/ -v              # 308 unit/integration/robustness tests, ~2 min
-python run_all_validations.py           # 12+ suites, 700+ checks, ~3 min
+python run_all_validations.py           # 12+ suites, 800+ checks, ~3 min
 ```
 
 Individual benchmark suites are in [`benchmarks/`](benchmarks/). Key ones:
@@ -257,7 +271,11 @@ Models are cross-validated against published reference data:
 | Energy conservation | 0.00% error in 3D Fourier solver |
 | **Total checks** | **800+** (see [docs/VERIFICATION_LAYERS.md](docs/VERIFICATION_LAYERS.md) for exact breakdown) |
 
-See [VALIDATION.md](VALIDATION.md) for methodology. Run `python run_all_validations.py` to verify.
+**308** refers to unit/integration/regression/robustness tests (pytest). **133** refers to built-in physics cross-checks (`aethermor validate`). **800+** is the full verification corpus including materials (192), chip database (82), experimental (18), hardware correlation (3), literature (20), case studies (46+), and benchmark cases.
+
+Current package-level hardware correlation spans three published chip designs: A100 θ_jc 0.028 vs 0.029 K/W measured, i9-13900K T_j 382 vs 373 K, and Apple M1 72.7°C within a published 60–75°C range.
+
+See [VALIDATION.md](docs/VALIDATION.md) for methodology. Run `python run_all_validations.py` to verify.
 
 ### Expected Accuracy
 
@@ -289,7 +307,13 @@ out of scope. See [LIMITATIONS.md](LIMITATIONS.md).
 **Rule of thumb**: "Which direction should we go?" → Aethermor.
 "Exactly how hot is this die corner at t = 3.7 ms?" → FEA/CFD.
 
-See [LIMITATIONS.md](LIMITATIONS.md).
+> **Escalation rule**: Use Aethermor to rank options, eliminate infeasible
+> directions, and estimate order-of-magnitude thermal feasibility. Escalate
+> to higher-fidelity simulation or experiment when decisions depend on exact
+> absolute T_j, transient response, detailed package geometry, proprietary
+> floorplans, or vendor-specific cooling performance.
+
+See [LIMITATIONS.md](LIMITATIONS.md) · [docs/SAFE_USE.md](docs/SAFE_USE.md).
 
 ### Aethermor vs. CFD/FEA Tools
 
@@ -311,13 +335,13 @@ Use Aethermor to decide which designs are worth simulating in CFD/FEA.
 |----------|-----------|
 | **Getting started** | [INSTALL_VERIFY](docs/INSTALL_VERIFY.md) · [API_REFERENCE](docs/API_REFERENCE.md) · [SAFE_USE](docs/SAFE_USE.md) |
 | **Case studies** | [Calibration](docs/calibration_case_study.md) · [Datacenter GPU](docs/case_study_datacenter_gpu.md) · [Cooling/Substrate](docs/CASE_STUDY.md) · [SoC](docs/CASE_STUDY_SOC.md) · [Paradigm](docs/CASE_STUDY_PARADIGM.md) |
-| **Validation** | [VALIDATION](VALIDATION.md) · [LIMITATIONS](LIMITATIONS.md) · [HONEST_REVIEW](HONEST_REVIEW.md) · [ACCURACY](docs/ACCURACY.md) · [Uncertainty](docs/uncertainty_sensitivity.md) · [External](docs/EXTERNAL_VALIDATION.md) · [Reproducibility](docs/REPRODUCIBILITY.md) · [Benchmark protocol](docs/benchmark_protocol.md) |
-| **Governance** | [CHANGELOG](CHANGELOG.md) · [Release notes](RELEASE_NOTES_v1.0.0.md) · [SEMVER](docs/SEMVER.md) · [Support](docs/SUPPORT_POLICY.md) |
+| **Validation** | [VALIDATION](docs/VALIDATION.md) · [LIMITATIONS](LIMITATIONS.md) · [HONEST_REVIEW](docs/HONEST_REVIEW.md) · [ACCURACY](docs/ACCURACY.md) · [Uncertainty](docs/uncertainty_sensitivity.md) · [External](docs/EXTERNAL_VALIDATION.md) · [Reproducibility](docs/REPRODUCIBILITY.md) · [Benchmark protocol](docs/benchmark_protocol.md) |
+| **Governance** | [CHANGELOG](CHANGELOG.md) · [Release notes v1.0.1](docs/RELEASE_NOTES_v1.0.1.md) · [SEMVER](docs/SEMVER.md) · [Support](docs/SUPPORT_POLICY.md) |
 
 ## Reproducibility
 
 ```bash
-python run_all_validations.py    # 12+ suites, 700+ checks, ~3 min
+python run_all_validations.py    # 12+ suites, 800+ checks, ~3 min
 ```
 
 All benchmarks are seeded and deterministic. See
