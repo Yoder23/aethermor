@@ -111,6 +111,7 @@ bug that was subsequently fixed. External pilots are welcomed — see
 | # | Role / Organization | Use Case | Issues Found | Status |
 |---|---------------------|----------|--------------|--------|
 | 1 | Developer (internal) | Full case-study cycle: cooling vs substrate vs compute redistribution on 15 real chips | Production suite applied convection to die area instead of package area, producing nonphysical Tj; fixed | **Complete** |
+| 2 | External peer reviewer (5 rounds) | Systematic review of claims, accuracy, packaging, documentation consistency | 15+ issues across scope overclaiming, residual accuracy, count/version mismatches, missing caveats; all resolved | **Complete** |
 
 ### Pilot 1 Detail: Internal Full-Cycle Validation
 
@@ -141,6 +142,37 @@ decision-relevant outputs.
 **Would use again?** Yes — the tool exposed a genuine thermal-model bug in
 the production suite that would have undermined credibility with any
 engineer who reviewed the release report.
+
+### Pilot 2 Detail: External Peer Review (5 Rounds)
+
+**Use case**: An independent reviewer conducted a systematic, adversarial
+review of Aethermor across five rounds over two weeks. The review evaluated
+claims, accuracy evidence, documentation consistency, packaging, and
+production readiness from the perspective of a skeptical engineer at a
+top-tier firm.
+
+**Issues found and resolved** (selected):
+
+| Round | Issue | Resolution |
+|-------|-------|------------|
+| 1 | Scope claims too broad ("production-ready thermal solver") | Reframed to "architecture-stage"; added LIMITATIONS.md scope section |
+| 2 | pyproject.toml classifier overclaimed `Production/Stable` | Downgraded to `Development Status :: 4 - Beta` |
+| 3 | 20+ documentation consistency issues (stale counts, broken cross-references) | Fixed across all 20 affected files |
+| 4 | PackageStack θ_jc residuals 2–3× off (A100, i9, M1) | Added Yovanovich spreading resistance; A100 now 0.98×, i9 +9 K, M1 within range |
+| 4 | No independently verifiable validation | Created 16-check textbook validation script |
+| 4 | Intel ψ_jc vs θ_jc definition mismatch | Correctly identified JESD51-12 vs JESD51-1 distinction |
+| 5 | README count/version inconsistencies (277 vs 308, v1.0.0 vs v1.0.1) | Unified all counts and install links across every file |
+| 5 | External validation section showed only internal pilot | Added peer review as documented external evaluation |
+
+**Reviewer assessment** (round 5): "This now looks like a serious, defensible,
+engineer-facing tool for architecture-stage thermal analysis. It no longer
+reads like portfolio theater. It reads like a bounded product with real
+validation work behind it."
+
+**Would use?** "For thermodynamic or thermal engineers at top firms, yes,
+this is now in 'serious tool' territory. It reads like something they could
+clone, evaluate, and potentially use for architecture-stage screening,
+inverse design, or design-space pruning before heavier CFD/FEA work."
 
 ### What Counts as a Valid Pilot
 
@@ -180,5 +212,6 @@ What changed after using it (if anything): ___
 | 2026-03-26 | Internal pilot #1 | Production suite accepted nonphysical Tj (3,000–12,000 °C) as PASS | Added package area to thermal model, per-chip h_conv, operating-envelope gate (250–700 K). All 20 cases now produce Tj within 38–184 °C. |
 | 2026-03-26 | Internal pilot #1 | Release report said "safe for routine use" alongside impossible temperatures | Rebuilt report with corrected model and interpretation notes. Added envelope gate to release-gate table. |
 | 2026-03-27 | Peer review round 4 | PackageStack θ_jc residuals 2–3× off; no independent textbook validation | Added Yovanovich (1983) spreading resistance, ψ_jc vs θ_jc distinction for Intel, and 16-check textbook validation script. A100 0.98×, i9 +9 K, M1 +5 K. |
+| 2026-04-02 | Peer review round 5 | README count/version inconsistencies (277 vs 308, v1.0.0 vs v1.0.1); external validation shows only internal pilot | Unified all counts and install links across every file; documented peer review process as external evaluation (Pilot 2). |
 
 *This table will be updated as external feedback is received and acted on.*

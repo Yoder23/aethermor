@@ -4,6 +4,29 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+### Added
+- **Yovanovich (1983) spreading resistance** in `PackageStack` — new
+  `spreading_area_m2` parameter models die-to-IHS/chassis thermal spreading.
+  Dramatically improves hardware correlation: A100 θ_jc from 1.97× to 0.98×,
+  i9-13900K T_j +9 K, M1 T_j within published range (+5 K).
+- **Independent textbook validation** (`benchmarks/independent_textbook_validation.py`)
+  — 16 checks against hand-calculable references (Incropera, CRC Handbook,
+  Landauer 1961, Yovanovich 1983). All pass at 0.00% error.
+- **`PackageStack` in API_REFERENCE.md** — full constructor, method table,
+  factory methods, contact resistance reference, and spreading resistance docs.
+
+### Changed
+- `PackageStack.theta_jc()` now includes spreading resistance when
+  `spreading_area_m2` is set.
+- Hardware correlation benchmark (`benchmarks/hardware_correlation.py`)
+  rewritten with spreading resistance and ψ_jc vs θ_jc distinction for Intel.
+- Documentation updates across 15+ files to reflect improved residuals.
+- All "277" test count references updated to 308 (or annotated with
+  "(at v1.0.0; now 308+)" in historical documents).
+- Install links updated from v1.0.0 to v1.0.1 in INSTALL_VERIFY.md.
+- External validation: peer review documented as Pilot 2 (5 rounds,
+  15+ issues found and resolved).
+
 ## [1.0.1] - 2026-03-31
 
 ### Added — Peer Review Response

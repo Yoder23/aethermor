@@ -4,7 +4,9 @@
 > `Production/Stable` to `4 - Beta` to better reflect the project's
 > architecture-stage scope. Hardware correlation (3 published chip designs)
 > and PackageStack contact resistances have since been added. Current test
-> count: 308 tests, 700+ total checks. See CHANGELOG.md for details.
+> count: 308 tests, 700+ total checks. Install the latest release with
+> `pip install https://github.com/Yoder23/aethermor/releases/download/v1.0.1/aethermor-1.0.1-py3-none-any.whl`.
+> See CHANGELOG.md for details.
 
 ## What's New in 1.0.0
 
@@ -79,6 +81,10 @@ python run_all_validations.py                 # Master runner: 12 suites, all ch
 
 ## Install
 
+> **Note:** For the latest release, use v1.0.1:
+> `pip install https://github.com/Yoder23/aethermor/releases/download/v1.0.1/aethermor-1.0.1-py3-none-any.whl`
+
+This release (v1.0.0):
 ```bash
 pip install https://github.com/Yoder23/aethermor/releases/download/v1.0.0/aethermor-1.0.0-py3-none-any.whl
 ```
