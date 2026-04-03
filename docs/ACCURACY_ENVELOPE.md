@@ -14,7 +14,7 @@ The accuracy numbers below apply within this envelope:
 | Die thickness | 50–800 µm | Validated: 100 µm (thinned) to 775 µm (i9-13900K) |
 | h\_conv (effective) | 10–20,000 W/(m²·K) | Validated: natural air to direct liquid |
 | Ambient temperature | 250–370 K | Physics validated at cryogenic (4 K) and 400 K; recommend 270–350 K for production use |
-| Material conductivity | 1.4–5000 W/(m·K) | 9 materials validated: SiO₂ (1.4) to graphene (5000) |
+| Material conductivity | 0.29–5000 W/(m·K) | 21 materials validated: FR-4 (0.29) to graphene (5000) |
 
 ## Accuracy by Output Type
 
@@ -22,7 +22,7 @@ The accuracy numbers below apply within this envelope:
 
 | Metric | Envelope | Sample Size | Median Residual | Worst Case |
 |--------|----------|-------------|-----------------|------------|
-| Material ranking (by max density) | All 9 validated materials | 93 checks | 0% | 0% (ordering is physics-exact) |
+| Material ranking (by max density) | All 21 validated materials | 192 checks | 0% | 0% (ordering is physics-exact) |
 | Cooling regime ranking | h = 10–20,000 W/(m²·K) | 6 factory configurations | 0% | 0% |
 | Paradigm crossover (CMOS vs adiabatic) | 7 nm, f = 1 kHz–10 GHz | 16 checks | 0% | 0% (analytical comparison) |
 
@@ -51,7 +51,7 @@ M1 T\_j within published 60–75°C range (+5 K vs midpoint).
 
 | Metric | Envelope | Sample Size | Median Residual | Worst Case |
 |--------|----------|-------------|-----------------|------------|
-| Minimum h\_conv for T\_max target | All 9 materials, 6 cooling configs | 82 chip DB checks | ±15% | ±20% |
+| Minimum h\_conv for T\_max target | All 21 materials, 6 cooling configs | 82 chip DB checks | ±15% | ±20% |
 | Cooling regime classification | Natural air / forced / liquid / direct | 6 factory presets | Correct | Correct |
 
 **Basis**: Cooling requirement is a 1D analytical inversion: given T\_max and
@@ -101,5 +101,5 @@ The numbers above can be reproduced with:
 python benchmarks/hardware_correlation.py    # θ_jc correlation (3 cases)
 python benchmarks/experimental_validation.py # published measurement checks (18)
 python benchmarks/chip_thermal_database.py   # 15-chip plausibility (82 checks)
-python benchmarks/material_cross_validation.py  # material accuracy (93 checks)
+python benchmarks/material_cross_validation.py  # material accuracy (192 checks)
 ```

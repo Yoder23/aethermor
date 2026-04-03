@@ -1,7 +1,7 @@
 # Verification Layers
 
 This table defines exactly what Aethermor validates and how the headline
-numbers (308 tests, 133 physics checks, 700+ total) are computed.
+numbers (308 tests, 133 physics checks, 800+ total) are computed.
 
 ## Verification Layer Table
 
@@ -9,7 +9,7 @@ numbers (308 tests, 133 physics checks, 700+ total) are computed.
 |-------|---------------|-------|--------|
 | **Unit / integration / regression tests** | Every public class and method: `ThermalOptimizer`, `CoolingStack`, `PackageStack`, `ChipFloorplan`, `Material`, energy models, registries, CLI, dashboard imports. Edge cases, ordering checks, serialization round-trips, robustness/fuzz tests. | **308** | `python -m pytest tests/ -v` |
 | **Physics cross-checks** | Fundamental constants vs CODATA 2018. Landauer limit at multiple temperatures. Material properties vs CRC Handbook. CMOS voltage/energy scaling vs ITRS/IRDS. 3D Fourier solver energy conservation. Analytical 1D model limit cases. | **133** | `python -m aethermor.validation.validate_all` |
-| **Material cross-validation** | 9 substrate materials × 10+ properties each, cross-validated against CRC Handbook, ASM International, NIST, Ioffe Institute, and manufacturer datasheets. | **93** | `python benchmarks/material_cross_validation.py` |
+| **Material cross-validation** | 21 substrate materials × 10+ properties each, cross-validated against CRC Handbook, ASM International, NIST, Ioffe Institute, Incropera, and manufacturer datasheets. | **192** | `python benchmarks/material_cross_validation.py` |
 | **Chip thermal database** | 12 production chips (A100, H100, MI300X, EPYC, Xeon, i9, Ryzen, M1, M2 Pro, Snapdragon, etc.) — power density, junction temperature, cooling capacity, conduction floor, material ranking. | **82** | `python benchmarks/chip_thermal_database.py` |
 | **Real-world chip validation** | 4 published chip designs (A100, M1, EPYC 9654, i9-13900K) — 33 checks against manufacturer specifications. | **33** | `python benchmarks/real_world_validation.py` |
 | **Literature cross-checks** | 20 checks against CODATA, CRC Handbook, ITRS/IRDS, Incropera & DeWitt textbook solutions. | **20** | `python benchmarks/literature_validation.py` |
@@ -24,9 +24,9 @@ numbers (308 tests, 133 physics checks, 700+ total) are computed.
 |----------------|-------------|
 | **308 tests** | `pytest tests/` — unit + integration + regression + robustness tests |
 | **133 physics checks** | `aethermor validate` — the built-in validation suite |
-| **700+ total checks** | 308 + 133 + 93 + 82 + 33 + 20 + 18 + 3 + 46+ = **736+** checks across all layers |
+| **800+ total checks** | 308 + 133 + 192 + 82 + 33 + 20 + 18 + 3 + 46+ = **835+** checks across all layers |
 
-The "700+" number is a conservative floor. The actual count is 736+ and grows
+The “800+” number is a conservative floor. The actual count is 835+ and grows
 as new case studies are added.
 
 ## How to Run Everything

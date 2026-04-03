@@ -89,11 +89,14 @@ class TestMaterialRegistry:
     """Tests for custom material registration, validation, and lookup."""
 
     def test_builtin_materials_available(self):
-        """All 9 built-in materials should be accessible."""
-        assert len(registry.list_builtins()) == 9
+        """All 21 built-in materials should be accessible."""
+        assert len(registry.list_builtins()) == 21
         assert "silicon" in registry
         assert "diamond" in registry
         assert "gallium_arsenide" in registry
+        assert "aluminum" in registry
+        assert "aluminum_nitride" in registry
+        assert "fr4" in registry
 
     def test_register_custom_material(self, sample_material):
         """Register and retrieve a custom material."""

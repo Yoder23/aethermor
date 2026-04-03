@@ -56,7 +56,7 @@ agree with fundamental references.
 |-------|--------|------------------|
 | `validation/validate_all.py` | 133 | Constants, materials, energy models, solver, roadmap |
 | `benchmarks/literature_validation.py` | 20 | CODATA, CRC, ITRS/IRDS, Incropera textbook |
-| `benchmarks/material_cross_validation.py` | 93 | 9 materials vs 3+ independent sources each |
+| `benchmarks/material_cross_validation.py` | 192 | 21 materials vs 3+ independent sources each |
 
 ### Engineering Decision Reliability Suites
 

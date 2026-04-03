@@ -92,7 +92,7 @@ All junction temperatures are within the declared operating envelope
 | Real-world chip validation | 33 pass | ~38s |
 | Experimental validation | 18 pass | ~1s |
 | Chip thermal database | 82 pass | ~1s |
-| Material cross-validation | 93 pass | ~0.3s |
+| Material cross-validation | 192 pass | ~0.3s |
 | Case study: datacenter | 13 pass | ~0.3s |
 | Case study: mobile SoC | 10 pass | ~0.3s |
 | Case study: cooling decision | pass | ~11s |

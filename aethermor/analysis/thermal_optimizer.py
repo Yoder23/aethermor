@@ -328,8 +328,9 @@ class ThermalOptimizer:
         Returns sorted list (best first) with density, power, headroom.
         """
         if materials is None:
-            materials = ["silicon", "diamond", "silicon_carbide",
-                         "gallium_arsenide", "gallium_nitride"]
+            materials = ["silicon", "silicon_carbide", "gallium_nitride",
+                         "gallium_arsenide", "germanium", "aluminum_nitride",
+                         "indium_phosphide", "diamond"]
 
         results = []
         for mat_key in materials:

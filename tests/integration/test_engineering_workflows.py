@@ -28,6 +28,14 @@ ALL_MATERIAL_NAMES = [
     "silicon", "silicon_dioxide", "gallium_arsenide", "diamond",
     "graphene_layer", "copper", "indium_phosphide", "silicon_carbide",
     "gallium_nitride",
+    # Metals
+    "aluminum", "tungsten", "molybdenum",
+    # Ceramics
+    "aluminum_nitride", "alumina", "beryllium_oxide", "sapphire",
+    # Semiconductors
+    "germanium",
+    # Packaging
+    "solder_sac305", "fr4", "thermal_grease", "aluminum_silicon_carbide",
 ]
 
 

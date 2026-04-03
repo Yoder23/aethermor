@@ -11,12 +11,12 @@
 | Category | Cases | Chip Families | Materials | Paradigms | Cooling Stacks |
 |----------|-------|---------------|-----------|-----------|----------------|
 | Chip thermal database | 82 | 12 (A100, H100, MI300X, EPYC, Xeon, i9, Ryzen, M1, M2 Pro, Snapdragon, etc.) | 1 (Si) | 1 (CMOS) | 4 segments |
-| Material cross-validation | 93 | — | 9 (Si, SiO₂, GaAs, Diamond, Graphene, Cu, InP, SiC, GaN) | — | — |
+| Material cross-validation | 192 | — | 21 (Si, SiO₂, GaAs, Diamond, Graphene, Cu, InP, SiC, GaN, Al, W, Mo, AlN, Al₂O₃, BeO, Sapphire, Ge, SAC305, FR-4, Grease, AlSiC) | — | — |
 | Real-world chip validation | 33 | 4 (A100, M1, EPYC 9654, i9-13900K) | 1 | 1 | Air + liquid |
 | Experimental measurement | 18 | 3 (A100, i9-13900K, Ryzen 7950X) | 1 | 1 | Package-level |
 | Literature / analytical | 20 | — | — | — | — |
-| Physics cross-checks | 133 | — | 9 | 4 | 6 factory configs |
-| Unit + integration tests | 308 | — | 9 | 4 | 6 factory configs |
+| Physics cross-checks | 133 | — | 21 | 4 | 6 factory configs |
+| Unit + integration tests | 308 | — | 21 | 4 | 6 factory configs |
 | Engineering case studies | 46 | — | 5 | 2 | 3 configs |
 
 **Total: 700+ independently validated checks.** See [VERIFICATION_LAYERS.md](VERIFICATION_LAYERS.md).
@@ -169,7 +169,7 @@ python run_all_validations.py
 
 # Individual benchmark families
 python benchmarks/chip_thermal_database.py        # 82 checks
-python benchmarks/material_cross_validation.py    # 93 checks
+python benchmarks/material_cross_validation.py    # 192 checks
 python benchmarks/real_world_validation.py        # 33 checks
 python benchmarks/experimental_validation.py      # 18 checks
 python benchmarks/literature_validation.py        # 20 checks
@@ -185,7 +185,7 @@ python scripts/gather_accuracy_metrics.py
 
 A reader can answer from this page:
 
-1. **What was benchmarked**: 700+ checks across 12 production chips, 9 materials,
+1. **What was benchmarked**: 800+ checks across 12 production chips, 21 materials,
    4 paradigms, JEDEC measurements, IR thermal imaging, HotSpot benchmarks,
    textbook analytical solutions, and CODATA fundamental constants.
 

@@ -173,11 +173,11 @@ The thermal model has been validated at three tiers:
    market segments: accelerators (A100, H100, MI300X), servers (EPYC 9654,
    Xeon w9-3495X), desktops (i9-13900K, Ryzen 9 7950X), and mobile
    (M1, M2 Pro, Snapdragon 8 Gen 2).
-5. **Material cross-validation** — 93 checks across 9 materials validated
+5. **Material cross-validation** — 192 checks across 21 materials validated
    against CRC Handbook, ASM International, NIST, Ioffe Institute, and
    manufacturer datasheets.
 
-**Total: 700+ validated checks across 12+ suites.** See [docs/VERIFICATION_LAYERS.md](docs/VERIFICATION_LAYERS.md) for exact breakdown.
+**Total: 800+ validated checks across 12+ suites.** See [docs/VERIFICATION_LAYERS.md](docs/VERIFICATION_LAYERS.md) for exact breakdown.
 
 ### Original Lattice Simulation
 

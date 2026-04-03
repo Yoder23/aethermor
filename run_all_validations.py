@@ -33,7 +33,7 @@ SUITES = [
      [sys.executable, "-m", "benchmarks.experimental_validation"]),
     ("Chip thermal database (82 checks, 12 chips)",
      [sys.executable, "-m", "benchmarks.chip_thermal_database"]),
-    ("Material cross-validation (93 checks, 9 materials)",
+    ("Material cross-validation (192 checks, 21 materials)",
      [sys.executable, "-m", "benchmarks.material_cross_validation"]),
     ("Case study: datacenter cooling (13 checks)",
      [sys.executable, "-m", "benchmarks.case_study_datacenter"]),
@@ -53,7 +53,7 @@ SMOKE_SUITES = [
      [sys.executable, "validation/validate_all.py"]),
     ("Literature validation",
      [sys.executable, "-m", "benchmarks.literature_validation"]),
-    ("Material cross-validation (93 checks, 9 materials)",
+    ("Material cross-validation (192 checks, 21 materials)",
      [sys.executable, "-m", "benchmarks.material_cross_validation"]),
 ]
 
@@ -137,11 +137,11 @@ def main():
         print("    - Real-world chips: 33 checks (4 production chips)")
         print("    - Experimental: 18 checks (published theta_jc)")
         print("    - Chip thermal database: 82 checks (12 chips, 4 segments)")
-        print("    - Material cross-validation: 93 checks (9 materials x 3 sources)")
+        print("    - Material cross-validation: 192 checks (21 materials x 3 sources)")
         print("    - Case studies: 23+ engineering decision checks")
         print("    - Integration workflows: 23 end-to-end tests")
         print()
-        print("  Total: 700+ independently validated checks.")
+        print("  Total: 800+ independently validated checks.")
         return True
 
 

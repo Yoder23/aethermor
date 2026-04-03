@@ -12,7 +12,7 @@ abstract: >
   Aethermor is an open-source Python toolkit for chip thermal analysis,
   cooling tradeoffs, and compute-density limits in advanced hardware systems.
   It provides SI-unit physics models (Fourier 3D thermal transport,
-  CMOS/adiabatic/reversible gate energy, 9 substrate materials with extensible
+  CMOS/adiabatic/reversible gate energy, 21 substrate materials with extensible
   registry), inverse design tools (max density, min cooling, headroom mapping,
   power redistribution), technology roadmap projection (130 nm to 1.4 nm),
   and an interactive explorer dashboard. All models are cross-validated against

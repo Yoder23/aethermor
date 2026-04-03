@@ -65,10 +65,10 @@ def main() -> None:
         results["textbook_validation"] = f"ERROR: {e}"
 
     # ── DEMO 2: Material ranking (which substrate wins?) ─────────────
-    banner("DEMO 2: Material Ranking — Which Substrate Wins?")
-    print("Question: If you're designing a 7 nm chip at 3 GHz with liquid")
-    print("cooling (h=5000 W/m2K), which substrate lets you pack the")
-    print("most compute before hitting the thermal wall?\n")
+    banner("DEMO 2: Material Ranking — Practical Substrate Comparison")
+    print("Question: For a 7 nm chip at 3 GHz with liquid cooling,")
+    print("which substrate lets you pack the most compute before hitting")
+    print("the thermal wall? (8 substrates engineers actually evaluate)\n")
 
     try:
         from aethermor.analysis.thermal_optimizer import ThermalOptimizer
@@ -80,17 +80,32 @@ def main() -> None:
             frequency_Hz=3e9,
             T_ambient=300.0,
         )
+        # Default ranking now includes 8 practical substrates
         ranking = opt.material_ranking(h_conv=5000.0)
 
-        print(f"  {'Rank':<5} {'Material':<25} {'Max Density':>15} {'T_max (K)':>10}")
-        print(f"  {'-'*5} {'-'*25} {'-'*15} {'-'*10}")
+        print(f"  {'Rank':<5} {'Material':<35} {'Max Density':>15} {'T_max (K)':>10}")
+        print(f"  {'-'*5} {'-'*35} {'-'*15} {'-'*10}")
         for i, r in enumerate(ranking, 1):
-            print(f"  {i:<5} {r['material_name']:<25} {r['max_density']:>15,.0f} {r['T_max_K']:>10.0f}")
+            print(f"  {i:<5} {r['material_name']:<35} {r['max_density']:>15,.0f} {r['T_max_K']:>10.0f}")
 
         winner = ranking[0]["material_name"]
         ratio = ranking[0]["max_density"] / ranking[-1]["max_density"]
-        results["material_ranking"] = f"{winner} wins ({ratio:.0f}x over worst)"
-        print(f"\n  Winner: {winner} — {ratio:.0f}x more compute density than the worst substrate.")
+        # Find the practical winner (first non-diamond)
+        practical = [r for r in ranking if "Diamond" not in r["material_name"]]
+        if practical:
+            p_name = practical[0]["material_name"]
+            p_ratio = practical[0]["max_density"] / ranking[-1]["max_density"]
+            results["material_ranking"] = (
+                f"{winner} tops; best practical = {p_name} ({p_ratio:.0f}x over worst)"
+            )
+            print(f"\n  Overall winner: {winner} ({ratio:.0f}x over worst)")
+            print(f"  Best practical: {p_name} ({p_ratio:.0f}x over worst)")
+            print(f"\n  Diamond is physically real but expensive/exotic.")
+            print(f"  SiC and AlN are the practical high-k substrates most")
+            print(f"  engineers can actually specify today.")
+        else:
+            results["material_ranking"] = f"{winner} wins ({ratio:.0f}x over worst)"
+            print(f"\n  Winner: {winner} — {ratio:.0f}x more compute density than worst.")
     except Exception as e:
         print(f"  Error: {e}")
         results["material_ranking"] = f"ERROR: {e}"

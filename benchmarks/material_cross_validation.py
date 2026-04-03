@@ -16,7 +16,7 @@ SOURCES:
   - Manufacturer datasheets (Element Six for diamond, II-VI for SiC)
 
 METHODOLOGY:
-  For each of the 9 built-in materials, we check:
+  For each of the 21 built-in materials, we check:
   1. Thermal conductivity k [W/(m·K)] against 2+ published reference values
   2. Density ρ [kg/m³] against published reference
   3. Specific heat c_p [J/(kg·K)] against published reference
@@ -160,6 +160,130 @@ REFERENCE_DATA = {
         "bandgap": (3.38, 3.42),
         "refs": "CRC, Ioffe Institute, ASM",
     },
+    # ── Metals (heatsinks, interconnects, heat spreaders) ────────────
+    "aluminum": {
+        # CRC: 237, Incropera: 237, ASM: 237
+        "k": (225, 250),
+        # CRC: 2700, ASM: 2700, Incropera: 2702
+        "rho": (2680, 2720),
+        # CRC: 897-903, Incropera: 903, ASM: 897
+        "cp": (880, 920),
+        "bandgap": (0.0, 0.0),
+        "refs": "CRC 104th, Incropera Table A.1, ASM",
+    },
+    "tungsten": {
+        # CRC: 174, ASM: 173-174, Incropera: 174
+        "k": (165, 185),
+        # CRC: 19300, ASM: 19300, NIST: 19300
+        "rho": (19200, 19400),
+        # CRC: 132, ASM: 132, Incropera: 132
+        "cp": (125, 140),
+        "bandgap": (0.0, 0.0),
+        "refs": "CRC 104th, ASM, Incropera",
+    },
+    "molybdenum": {
+        # CRC: 138, ASM: 138, Incropera: 138
+        "k": (130, 145),
+        # CRC: 10220, ASM: 10220
+        "rho": (10150, 10300),
+        # CRC: 251, ASM: 251
+        "cp": (240, 260),
+        "bandgap": (0.0, 0.0),
+        "refs": "CRC 104th, ASM",
+    },
+    # ── Ceramics (substrates, packages) ──────────────────────────────
+    "aluminum_nitride": {
+        # CRC: 170-285, Kyocera: 170 (poly), Tokuyama: 170-230
+        "k": (150, 200),
+        # CRC: 3260, Kyocera: 3260
+        "rho": (3200, 3300),
+        # Kyocera: 740, CRC: 740
+        "cp": (720, 770),
+        "bandgap": (6.1, 6.3),
+        "refs": "CRC, Kyocera datasheets, Tokuyama",
+    },
+    "alumina": {
+        # CRC: 25-35 (96% purity), Kyocera: 25-30, ASM: 30
+        "k": (22, 38),
+        # CRC: 3950, Kyocera: 3800-3950
+        "rho": (3800, 4000),
+        # CRC: 765, ASM: 775
+        "cp": (740, 800),
+        "bandgap": (8.5, 9.0),
+        "refs": "CRC, Kyocera, ASM",
+    },
+    "beryllium_oxide": {
+        # CRC: 285-330, Materion: 300, ASM: 285-300
+        "k": (270, 340),
+        # CRC: 3010, Materion: 3010
+        "rho": (2950, 3050),
+        # CRC: 1020, Materion: 1020-1050
+        "cp": (990, 1060),
+        "bandgap": (10.4, 10.8),
+        "refs": "CRC, Materion datasheets, ASM",
+    },
+    "sapphire": {
+        # CRC: 40-46, Kyocera: 42, ASM: 42
+        "k": (38, 48),
+        # CRC: 3980, Kyocera: 3980
+        "rho": (3950, 4020),
+        # CRC: 765, same composition as alumina
+        "cp": (740, 800),
+        "bandgap": (8.5, 9.0),
+        "refs": "CRC, Kyocera datasheets",
+    },
+    # ── Semiconductors (additional) ──────────────────────────────────
+    "germanium": {
+        # CRC: 60, Ioffe: 60, ASM: 60
+        "k": (55, 65),
+        # CRC: 5323, Ioffe: 5323
+        "rho": (5280, 5360),
+        # CRC: 320, Ioffe: 320
+        "cp": (305, 340),
+        "bandgap": (0.65, 0.69),
+        "refs": "CRC 104th, Ioffe Institute, ASM",
+    },
+    # ── Packaging / interconnect materials ───────────────────────────
+    "solder_sac305": {
+        # Snugovsky: 55-60, IPC-9701: 58, various: 55-63
+        "k": (50, 65),
+        # Various: 7380-7400
+        "rho": (7300, 7500),
+        # Sn-based: 218-227
+        "cp": (200, 240),
+        "bandgap": (0.0, 0.0),
+        "refs": "Snugovsky et al., IPC-9701",
+    },
+    "fr4": {
+        # IPC-4101: 0.25-0.35 (through-thickness), various: 0.29
+        "k": (0.22, 0.40),
+        # Various: 1800-1900
+        "rho": (1750, 1950),
+        # Various: 1000-1200
+        "cp": (1000, 1250),
+        "bandgap": (0.0, 0.0),
+        "refs": "IPC-4101, Isola datasheets",
+    },
+    "thermal_grease": {
+        # Dow Corning TC-5022: 4-5, Shin-Etsu: 3-6, generic: 3-8
+        "k": (3.0, 8.0),
+        # Silicone-filled: 2300-2700
+        "rho": (2200, 2800),
+        # Silicone: 1200-1800
+        "cp": (1200, 1800),
+        "bandgap": (0.0, 0.0),
+        "refs": "Dow Corning (Dow), Shin-Etsu datasheets",
+    },
+    "aluminum_silicon_carbide": {
+        # CPS Technologies: 170-200 (63% SiC), Sumitomo: 180
+        "k": (160, 210),
+        # CPS: 2900-3100
+        "rho": (2850, 3150),
+        # Composite: 700-800
+        "cp": (700, 800),
+        "bandgap": (0.0, 0.0),
+        "refs": "CPS Technologies, Sumitomo datasheets",
+    },
 }
 
 
@@ -241,7 +365,7 @@ def section_ordering():
 
     materials = {name: get_material(name) for name in REFERENCE_DATA}
 
-    # Diamond > SiC > Si > GaN > InP > GaAs > SiO2 (thermal conductivity)
+    # Core semiconductor thermal conductivity ordering (must hold)
     k_order = [
         ("diamond", "silicon_carbide"),
         ("silicon_carbide", "silicon"),
@@ -258,16 +382,37 @@ def section_ordering():
             k_b / k_w, 1.01, 10000, "ratio",
         )
 
-    # Copper should have highest k among metals
+    # Metal thermal conductivity ordering
     check(
-        "Copper k > all semiconductors except diamond/graphene",
+        "Copper k > Aluminum k > Tungsten k > Molybdenum k",
+        1 if (materials["copper"].thermal_conductivity >
+              materials["aluminum"].thermal_conductivity >
+              materials["tungsten"].thermal_conductivity >
+              materials["molybdenum"].thermal_conductivity) else 0,
+        1, 1, "",
+    )
+
+    # Ceramic thermal conductivity ordering
+    check(
+        "BeO k > AlN k > sapphire k > alumina k",
+        1 if (materials["beryllium_oxide"].thermal_conductivity >
+              materials["aluminum_nitride"].thermal_conductivity >
+              materials["sapphire"].thermal_conductivity >
+              materials["alumina"].thermal_conductivity) else 0,
+        1, 1, "",
+    )
+
+    # Copper should have highest k among metals in database
+    check(
+        "Copper k > all other metals",
         materials["copper"].thermal_conductivity,
-        materials["silicon_carbide"].thermal_conductivity * 0.5,
-        materials["diamond"].thermal_conductivity,
+        max(materials[n].thermal_conductivity
+            for n in ["aluminum", "tungsten", "molybdenum"]),
+        10000,
         "W/(m·K)",
     )
 
-    # Graphene should have highest k
+    # Graphene should have highest k overall
     check(
         "Graphene k is highest in database",
         materials["graphene_layer"].thermal_conductivity,
@@ -276,24 +421,31 @@ def section_ordering():
         "W/(m·K)",
     )
 
-    # All densities positive and physically ordered
-    # Copper (metal) densest, then GaN, GaAs, InP, diamond, SiC, Si, graphene, SiO2
+    # Tungsten is densest material in database
     check(
-        "Copper density highest (metal)",
-        materials["copper"].density,
-        max(materials[n].density for n in materials if n != "copper"),
-        15000,
+        "Tungsten density highest in database",
+        materials["tungsten"].density,
+        max(materials[n].density for n in materials if n != "tungsten"),
+        25000,
         "kg/m³",
+    )
+
+    # FR-4 k is very low (thermal bottleneck)
+    check(
+        "FR-4 k < 1 (thermal bottleneck material)",
+        materials["fr4"].thermal_conductivity,
+        0.1, 1.0,
+        "W/(m·K)",
     )
 
     # All bandgaps non-negative
     for name, m in materials.items():
         check(
             f"{name}: bandgap ≥ 0",
-            m.bandgap_eV, 0.0, 10.0, "eV",
+            m.bandgap_eV, 0.0, 12.0, "eV",
         )
 
-    # Wide-bandgap materials (SiC, GaN, Diamond) > narrow-bandgap (Si, GaAs, InP)
+    # Wide-bandgap materials (SiC, GaN, Diamond) > narrow-bandgap (Si, GaAs, InP, Ge)
     for wide in ["silicon_carbide", "gallium_nitride", "diamond"]:
         for narrow in ["silicon", "gallium_arsenide", "indium_phosphide"]:
             check(
@@ -326,6 +478,19 @@ def section_diffusivity():
         "indium_phosphide": (35e-6, 55e-6),
         "gallium_arsenide": (25e-6, 40e-6),
         "silicon_dioxide": (0.5e-6, 1.5e-6),
+        # New materials
+        "aluminum": (85e-6, 105e-6),       # CRC: ~97e-6
+        "tungsten": (60e-6, 75e-6),         # CRC: ~68e-6
+        "molybdenum": (45e-6, 60e-6),       # CRC: ~54e-6
+        "aluminum_nitride": (60e-6, 80e-6), # varies with crystal quality
+        "alumina": (7e-6, 12e-6),           # CRC: ~9.9e-6
+        "beryllium_oxide": (85e-6, 110e-6), # CRC: ~98e-6
+        "sapphire": (10e-6, 16e-6),         # CRC: ~13.8e-6
+        "germanium": (30e-6, 40e-6),        # CRC: ~35e-6
+        "solder_sac305": (30e-6, 40e-6),    # Sn alloy
+        "fr4": (0.1e-6, 0.2e-6),            # very low (thermal bottleneck)
+        "thermal_grease": (1.0e-6, 2.0e-6), # filled silicone
+        "aluminum_silicon_carbide": (70e-6, 90e-6),  # MMC
     }
 
     for name, (lo, hi) in published_alpha.items():
@@ -346,14 +511,19 @@ def section_registry():
 
     all_names = list_materials()
     check(
-        "Registry has 9 built-in materials",
-        len(all_names), 9, 9, "materials",
+        "Registry has 21 built-in materials",
+        len(all_names), 21, 21, "materials",
     )
 
     expected = {
         "silicon", "silicon_dioxide", "gallium_arsenide", "diamond",
         "graphene_layer", "copper", "indium_phosphide", "silicon_carbide",
         "gallium_nitride",
+        # New materials
+        "aluminum", "tungsten", "molybdenum",
+        "aluminum_nitride", "alumina", "beryllium_oxide", "sapphire",
+        "germanium",
+        "solder_sac305", "fr4", "thermal_grease", "aluminum_silicon_carbide",
     }
     present = set(all_names)
     missing = expected - present
@@ -386,7 +556,7 @@ def main():
     print("Aethermor Material Property Cross-Validation")
     print("=" * 72)
     print()
-    print("Cross-validating 9 materials against CRC Handbook, ASM, NIST,")
+    print("Cross-validating 21 materials against CRC Handbook, ASM, NIST,")
     print("Ioffe Institute, and manufacturer datasheets.")
     print()
 
@@ -424,6 +594,12 @@ def main():
     print("  [5] Shackelford & Alexander, CRC Materials Science Handbook")
     print("  [6] Balandin et al., Nano Letters 8(3), 902-907 (2008)")
     print("  [7] Element Six / Wolfspeed manufacturer datasheets")
+    print("  [8] Incropera et al., Fundamentals of Heat and Mass Transfer")
+    print("  [9] Kyocera / Tokuyama ceramic substrate datasheets")
+    print("  [10] Materion beryllium oxide datasheets")
+    print("  [11] Snugovsky et al., SAC solder alloy data; IPC-9701")
+    print("  [12] IPC-4101 (FR-4 laminate specification)")
+    print("  [13] CPS Technologies / Sumitomo (AlSiC composites)")
 
     return _fail == 0
 

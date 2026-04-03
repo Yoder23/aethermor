@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 ## [Unreleased]
 
 ### Added
+- **12 new real-world materials** in `MATERIAL_DB` (21 total, was 9):
+  - Metals: Aluminum, Tungsten, Molybdenum
+  - Ceramics: Aluminum Nitride (AlN), Alumina (Al₂O₃), Beryllium Oxide (BeO), Sapphire
+  - Semiconductors: Germanium (Ge)
+  - Packaging: Solder SAC305, FR-4, Thermal Grease, AlSiC composite
+  All properties sourced from CRC Handbook, Incropera, ASM, Ioffe, Kyocera,
+  Materion, IPC-4101, and CPS Technologies datasheets. 192 cross-validation
+  checks pass (was 93).
 - **Yovanovich (1983) spreading resistance** in `PackageStack` — new
   `spreading_area_m2` parameter models die-to-IHS/chassis thermal spreading.
   Dramatically improves hardware correlation: A100 θ_jc from 1.97× to 0.98×,
@@ -16,6 +24,10 @@ All notable changes to this project are documented in this file.
   factory methods, contact resistance reference, and spreading resistance docs.
 
 ### Changed
+- `material_ranking()` default list expanded from 5 to 8 substrates
+  (added Ge, AlN, InP) — more practical engineering comparisons.
+- `evaluate_aethermor.py` Demo 2 highlights best practical substrate (SiC)
+  alongside diamond, with context about accessibility.
 - `PackageStack.theta_jc()` now includes spreading resistance when
   `spreading_area_m2` is set.
 - Hardware correlation benchmark (`benchmarks/hardware_correlation.py`)
@@ -121,9 +133,10 @@ All notable changes to this project are documented in this file.
 - `physics/` package with real SI-unit thermodynamic models:
   - `constants.py`: Boltzmann constant (CODATA 2018), Landauer limit, thermal
     noise, bits-per-joule
-  - `materials.py`: 9 substrate materials (Si, SiO₂, GaAs, Diamond, Graphene,
-    Cu, InP, SiC, GaN) with published thermal/electrical properties, plus
-    extensible MaterialRegistry with validation, JSON import/export
+  - `materials.py`: 21 substrate materials (Si, SiO₂, GaAs, Diamond, Graphene,
+    Cu, InP, SiC, GaN, Al, W, Mo, AlN, Al₂O₃, BeO, Sapphire, Ge, SAC305,
+    FR-4, thermal grease, AlSiC) with published thermal/electrical properties,
+    plus extensible MaterialRegistry with validation, JSON import/export
   - `energy_models.py`: 4 gate energy paradigms (CMOS, adiabatic, reversible,
     Landauer floor) with crossover calculations, plus extensible ParadigmRegistry
     with EnergyModel protocol enforcement

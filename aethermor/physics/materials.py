@@ -215,6 +215,145 @@ MATERIAL_DB: Dict[str, Material] = {
         bandgap_eV=3.40,
         notes="Wide bandgap. Power electronics and high-frequency applications.",
     ),
+    # ── Metals (heatsinks, interconnects, heat spreaders) ────────────
+    "aluminum": Material(
+        name="Aluminum (Al)",
+        thermal_conductivity=237.0,
+        specific_heat=897.0,
+        density=2700.0,
+        electrical_resistivity=2.65e-8,
+        max_operating_temp=200.0 + 273.15,
+        bandgap_eV=0.0,
+        notes="Most common heatsink/lid material. CTE 23 ppm/K. "
+              "Ref: CRC 104th, Incropera Table A.1.",
+    ),
+    "tungsten": Material(
+        name="Tungsten (W)",
+        thermal_conductivity=174.0,
+        specific_heat=132.0,
+        density=19300.0,
+        electrical_resistivity=5.3e-8,
+        max_operating_temp=2000.0 + 273.15,
+        bandgap_eV=0.0,
+        notes="Used in TSVs, vias, and high-temperature applications. "
+              "Highest melting point of any metal. Ref: CRC 104th.",
+    ),
+    "molybdenum": Material(
+        name="Molybdenum (Mo)",
+        thermal_conductivity=138.0,
+        specific_heat=251.0,
+        density=10220.0,
+        electrical_resistivity=5.3e-8,
+        max_operating_temp=1500.0 + 273.15,
+        bandgap_eV=0.0,
+        notes="CTE-matched to silicon (5.1 vs 2.6 ppm/K). Used as heat "
+              "spreader and substrate carrier. Ref: CRC 104th, ASM.",
+    ),
+    # ── Ceramics (substrates, packages) ──────────────────────────────
+    "aluminum_nitride": Material(
+        name="Aluminum Nitride (AlN)",
+        thermal_conductivity=170.0,
+        specific_heat=740.0,
+        density=3260.0,
+        electrical_resistivity=1e14,
+        max_operating_temp=1000.0 + 273.15,
+        bandgap_eV=6.2,
+        notes="High-performance ceramic substrate. Polycrystalline k=170; "
+              "single crystal up to 285. CTE near Si. "
+              "Ref: CRC, Kyocera/Tokuyama datasheets.",
+    ),
+    "alumina": Material(
+        name="Alumina (Al₂O₃, 96%)",
+        thermal_conductivity=30.0,
+        specific_heat=765.0,
+        density=3950.0,
+        electrical_resistivity=1e14,
+        max_operating_temp=1500.0 + 273.15,
+        bandgap_eV=8.8,
+        notes="Most common ceramic substrate. Used in HTCC/LTCC packages, "
+              "DBC substrates. Inexpensive. Ref: CRC, Kyocera.",
+    ),
+    "beryllium_oxide": Material(
+        name="Beryllium Oxide (BeO)",
+        thermal_conductivity=300.0,
+        specific_heat=1020.0,
+        density=3010.0,
+        electrical_resistivity=1e15,
+        max_operating_temp=400.0 + 273.15,
+        bandgap_eV=10.6,
+        notes="Highest k of any oxide ceramic. Used in RF, military, "
+              "aerospace. Dust is toxic — handling precautions required. "
+              "Ref: CRC, Materion.",
+    ),
+    "sapphire": Material(
+        name="Sapphire (α-Al₂O₃ single crystal)",
+        thermal_conductivity=42.0,
+        specific_heat=765.0,
+        density=3980.0,
+        electrical_resistivity=1e16,
+        max_operating_temp=600.0 + 273.15,
+        bandgap_eV=8.8,
+        notes="GaN-on-sapphire substrate for LEDs and RF. Higher k than "
+              "polycrystalline alumina. Ref: CRC, Kyocera.",
+    ),
+    # ── Semiconductors (additional) ──────────────────────────────────
+    "germanium": Material(
+        name="Germanium (Ge)",
+        thermal_conductivity=60.0,
+        specific_heat=320.0,
+        density=5323.0,
+        electrical_resistivity=0.46,
+        max_operating_temp=300.0 + 273.15,
+        bandgap_eV=0.67,
+        notes="SiGe BiCMOS, IR detectors, high-mobility channel. "
+              "Lower k than Si. Ref: CRC 104th, Ioffe.",
+    ),
+    # ── Packaging / interconnect materials ───────────────────────────
+    "solder_sac305": Material(
+        name="Solder SAC305 (Sn96.5Ag3.0Cu0.5)",
+        thermal_conductivity=58.0,
+        specific_heat=220.0,
+        density=7400.0,
+        electrical_resistivity=1.3e-7,
+        max_operating_temp=150.0 + 273.15,
+        bandgap_eV=0.0,
+        notes="Lead-free solder. Used in die attach, BGA, and flip-chip. "
+              "Liquidus 217°C. Ref: Snugovsky et al., IPC-9701.",
+    ),
+    "fr4": Material(
+        name="FR-4 (glass-epoxy laminate)",
+        thermal_conductivity=0.29,
+        specific_heat=1100.0,
+        density=1850.0,
+        electrical_resistivity=1e12,
+        max_operating_temp=140.0 + 273.15,
+        bandgap_eV=0.0,
+        notes="Standard PCB substrate. Through-thickness k is the thermal "
+              "bottleneck in many designs. Tg 130–170°C. Ref: IPC-4101.",
+    ),
+    "thermal_grease": Material(
+        name="Thermal Grease (silicone, filled)",
+        thermal_conductivity=5.0,
+        specific_heat=1500.0,
+        density=2500.0,
+        electrical_resistivity=1e12,
+        max_operating_temp=200.0 + 273.15,
+        bandgap_eV=0.0,
+        notes="Representative mid-range TIM-1 (1–8 W/mK typical). "
+              "Actual value depends on filler and bond-line thickness. "
+              "Ref: Dow Corning TC-5022, Shin-Etsu.",
+    ),
+    "aluminum_silicon_carbide": Material(
+        name="Aluminum Silicon Carbide (AlSiC, 63% SiC)",
+        thermal_conductivity=180.0,
+        specific_heat=740.0,
+        density=3000.0,
+        electrical_resistivity=1e-6,
+        max_operating_temp=500.0 + 273.15,
+        bandgap_eV=0.0,
+        notes="Metal matrix composite. CTE matched to Si/GaAs. Used as "
+              "package baseplates and heat spreaders. Ref: CPS Technologies.",
+    ),
 }
 
 
@@ -351,7 +490,7 @@ class MaterialRegistry:
     """
     Validating registry for substrate materials.
 
-    Manages both the built-in material database (9 curated substrates)
+    Manages both the built-in material database (21 curated substrates)
     and user-registered custom materials.  Provides validation, JSON
     import/export, and clean separation between built-in and custom
     entries.

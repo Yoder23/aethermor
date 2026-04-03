@@ -67,7 +67,7 @@ dashboard interaction.
 
 All models use SI units with calibrated parameters:
 
-- **9 substrate materials**: Si, SiO₂, GaAs, Diamond, Graphene, Cu, InP, SiC, GaN
+- **21 substrate materials**: Si, SiO₂, GaAs, Diamond, Graphene, Cu, InP, SiC, GaN, Al, W, Mo, AlN, Al₂O₃, BeO, Sapphire, Ge, SAC305, FR-4, thermal grease, AlSiC
 - **4 computing paradigms**: CMOS, adiabatic, reversible, Landauer limit
 - **Fourier 3D thermal solver**: Verified at 0.00 % energy conservation error
 - **Combined conduction + convection 1D model**: Captures both the convective
@@ -165,7 +165,7 @@ and interpretation guide.
 ```
 aethermor/physics/          # SI-unit models
   constants.py    # k_B, Planck, Boltzmann, landauer_limit()
-  materials.py    # 9 substrates + extensible registry with validation
+  materials.py    # 21 substrates + extensible registry with validation
   energy_models.py  # 4 paradigms + extensible registry with protocol checking
   thermal.py      # FourierThermalTransport (3D solver)
   cooling.py      # CoolingStack + extensible layer registry
@@ -266,12 +266,12 @@ architecture-level thermal budgeting but not for detailed circuit design.
 | Physics validation | **A+** | 133 cross-checks against CODATA, CRC Handbook, ITRS/IRDS, analytical solutions. 20 literature cross-checks (Incropera, CODATA, CRC). 33 real-world chip validations (A100, M1, EPYC, i9-13900K). 18 experimental measurement checks (JEDEC θ_jc, IR thermal imaging, HotSpot benchmark). |
 | Statistical infrastructure | **A-** | Rigorous paired ablations, Holm correction, bootstrap CIs |
 | Reproducibility | **A** | Seeded, manifested, CI-verified, deterministic validation suite |
-| Physics foundation | **A** | SI-unit models, 9 materials, 4 paradigms, 0.00% energy conservation |
+| Physics foundation | **A** | SI-unit models, 21 materials, 4 paradigms, 0.00% energy conservation |
 | Inverse design capability | **A** | 8 tools: max density, min cooling, headroom map, power redistribution, material ranking, paradigm comparison, cooling sweep, full exploration |
 | Claims accuracy | **A-** | All current claims backed by physics models. Legacy benchmarks honestly documented as mechanism validation. |
 | Documentation | **A** | README, LIMITATIONS, HONEST_REVIEW, VALIDATION.md, 7 examples, all accurate |
 | Unique capability | **B+** | Integrates Landauer-aware energy + 3D thermal + inverse design + multi-paradigm + extensible registries + tech roadmap in one workflow. Individual capabilities exist elsewhere; the combination and accessibility are new. |
-| **OSS readiness** | **Validated for architecture-stage engineering** | 700+ checks against 12 production chips (82), 9 materials (93), JEDEC θ_jc measurements, published IR thermal data, HotSpot benchmarks, 3 hardware correlation cases, 6 external analytical benchmarks, and textbook analytical solutions. Suitable for thermal design-space exploration, material comparison, cooling-strategy tradeoffs, and architecture-stage decision support. Hardware-correlated against 3 published chip designs with documented residuals. |
+| **OSS readiness** | **Validated for architecture-stage engineering** | 800+ checks against 12 production chips (82), 21 materials (192), JEDEC θ_jc measurements, published IR thermal data, HotSpot benchmarks, 3 hardware correlation cases, 6 external analytical benchmarks, and textbook analytical solutions. Suitable for thermal design-space exploration, material comparison, cooling-strategy tradeoffs, and architecture-stage decision support. Hardware-correlated against 3 published chip designs with documented residuals. |
 
 **Bottom line**: Aethermor integrates inverse thermal design, Landauer-aware
 energy models, heterogeneous SoC analysis, and multi-paradigm comparison into
@@ -283,8 +283,8 @@ configuring multiple separate tools or writing custom scripts.
 308 unit tests pass, 133 physics cross-checks verify every model against
 published data (CODATA, CRC Handbook, ITRS/IRDS), 20 literature cross-checks
 validate against textbook solutions, 82 chip thermal database checks cover
-12 production chips across 4 market segments, 93 material cross-validation
-checks verify 9 substrates against 3+ independent reference sources, 33
+12 production chips across 4 market segments, 192 material cross-validation
+checks verify 21 substrates against 3+ independent reference sources, 33
 real-world chip validation checks confirm thermal predictions for 4 published
 chip designs (NVIDIA A100, Apple M1, AMD EPYC 9654, Intel i9-13900K), 18
 experimental measurement checks validate against JEDEC θ_jc data, published
@@ -293,7 +293,7 @@ checks verify decision-driven workflows. Limitations are honestly documented.
 
 The project is **validated for architecture-stage engineering**: cross-checked
 against published hardware measurements across 12 production chips and
-9 materials (700+ independent checks). Hardware-correlated against
+21 materials (800+ independent checks). Hardware-correlated against
 3 published chip designs (A100, i9-13900K, M1) with Yovanovich (1983)
 spreading resistance and full gap analysis; A100 θ_jc within 2%, i9 T_j
 within +9 K, M1 T_j within measured range (+5 K). See

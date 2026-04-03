@@ -68,7 +68,7 @@ measured in K/W. Lower is better.
 python -m pytest tests/ -v                    # 277 tests (at v1.0.0; now 308+)
 python -m aethermor.validation.validate_all             # 133 physics cross-checks
 python benchmarks/chip_thermal_database.py    # 82 chip thermal database checks (12 chips)
-python benchmarks/material_cross_validation.py # 93 material cross-validation checks (9 materials)
+python benchmarks/material_cross_validation.py # 192 material cross-validation checks (21 materials)
 python benchmarks/literature_validation.py    # 20 literature cross-checks
 python benchmarks/real_world_validation.py    # 33 real-world chip validations
 python benchmarks/experimental_validation.py  # 18 experimental measurement checks

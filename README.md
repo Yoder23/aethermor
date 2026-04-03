@@ -199,7 +199,7 @@ Individual benchmark suites are in [`benchmarks/`](benchmarks/). Key ones:
 |-------|--------|-------------------|
 | `experimental_validation.py` | 18 | JEDEC θ_jc, IR imaging, HotSpot — published measurements |
 | `chip_thermal_database.py` | 82 | 12 real chips across 4 segments |
-| `material_cross_validation.py` | 93 | 9 materials vs CRC, ASM, NIST, Ioffe |
+| `material_cross_validation.py` | 192 | 21 materials vs CRC, ASM, NIST, Ioffe |
 | `real_world_validation.py` | 33 | 4 published chip designs (A100, M1, EPYC, i9) |
 | `literature_validation.py` | 20 | CODATA, CRC, ITRS, Incropera & DeWitt |
 
@@ -249,13 +249,13 @@ Models are cross-validated against published reference data:
 |-------|--------|
 | Unit + integration tests | 308 pass, 1 skipped |
 | Physics validation | 133 cross-checks vs CODATA 2018, CRC Handbook, ITRS/IRDS | 
-| Material cross-validation | 93 checks, 9 materials vs CRC, ASM, NIST, Ioffe |
+| Material cross-validation | 192 checks, 21 materials vs CRC, ASM, NIST, Ioffe |
 | Chip thermal database | 82 checks across 12 real chips in 4 segments |
 | Experimental measurements | 18 checks vs JEDEC θ_jc, IR imaging, HotSpot |
 | Hardware correlation (3 chips) | PackageStack with Yovanovich spreading vs measured θ_jc / T_j — A100 0.98×, i9 +9 K, M1 within range |
 | External benchmark pack | 6 analytical cases (1D slab, convection, multi-layer, Landauer, PackageStack, max-power) |
 | Energy conservation | 0.00% error in 3D Fourier solver |
-| **Total checks** | **700+** (see [docs/VERIFICATION_LAYERS.md](docs/VERIFICATION_LAYERS.md) for exact breakdown) |
+| **Total checks** | **800+** (see [docs/VERIFICATION_LAYERS.md](docs/VERIFICATION_LAYERS.md) for exact breakdown) |
 
 See [VALIDATION.md](VALIDATION.md) for methodology. Run `python run_all_validations.py` to verify.
 
