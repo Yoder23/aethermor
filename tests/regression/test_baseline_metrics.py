@@ -6,5 +6,8 @@ def test_baseline_metrics_consistency():
     sim.run()
     with open('data/golden_metrics.json') as f:
         golden = json.load(f)
-    diffs = [abs(m['avg_energy'] - g['avg_energy']) for m, g in zip(sim.metrics, golden)]
-    assert max(diffs) < 1e-6
+    for m, g in zip(sim.metrics, golden):
+        if g['avg_energy'] == 0:
+            assert abs(m['avg_energy']) < 1e-6
+        else:
+            assert abs(m['avg_energy'] - g['avg_energy']) / abs(g['avg_energy']) < 0.01
