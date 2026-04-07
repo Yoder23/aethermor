@@ -50,7 +50,7 @@ class ScarcityAethermorSim:
         self.SLEEP_COST_FACTOR = sleep_cost_factor
 
         self.energy_field = np.ones((self.GRID, self.GRID)) * 3.0
-        self.intel_field  = np.zeros((self.GRID, self.GRID))
+        self.intelligence_field  = np.zeros((self.GRID, self.GRID))
         self.signal_field = np.zeros((self.GRID, self.GRID))
 
         self.nodes = {(self.GRID//2, self.GRID//2): {'energy': 6.0, 'knowledge': 1.5, 'logic': 1, 'awake': True}}
@@ -140,7 +140,7 @@ class ScarcityAethermorSim:
             self._diffuse_and_decay(ambient_input)
 
             for (x,y), p in self.nodes.items():
-                self.intel_field[x,y] += p['knowledge'] * 0.07
+                self.intelligence_field[x,y] += p['knowledge'] * 0.07
 
             # np is already imported at the top of the file
             awake_count = sum(1 for p in self.nodes.values() if p['awake'])

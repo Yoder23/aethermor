@@ -81,6 +81,7 @@ def main(gen_size=10, generations=5):
         'base_harvest','compute_cost','repro_cost','ambient_input','sleep_thresh','wake_thresh'
     ])
     out_csv = os.getenv("AETHERMOR_PARETO_OUT", "aethermor_pareto_params.csv")
+    out_csv = os.path.basename(out_csv)  # prevent directory traversal
     try:
         df.to_csv(out_csv, index=False)
         print(f"Evolution complete. Pareto front saved: {out_csv}")

@@ -66,7 +66,7 @@ class AethermorSimV2:
                 with open(calibrated_params_file) as f:
                     user_params = json.load(f)
                 params.update(user_params)
-            except Exception:
+            except (json.JSONDecodeError, ValueError):
                 # fall back to defaults if bad JSON
                 pass
 
@@ -100,7 +100,7 @@ class AethermorSimV2:
         # Core fields
         self.energy_field = np.ones(self.grid_shape) * 3.0
         self.signal_field = np.zeros(self.grid_shape)
-        self.intel_field  = np.zeros(self.grid_shape)
+        self.intelligence_field  = np.zeros(self.grid_shape)
         self.temp_field   = np.ones(self.grid_shape) * 300.0
 
         # Extra fields for advanced behaviour:
@@ -112,7 +112,7 @@ class AethermorSimV2:
         # Histories
         self.energy_field_history = []
         self.signal_field_history = []
-        self.intel_field_history  = []
+        self.intelligence_field_history  = []
         self.temp_field_history   = []
 
         # Nodes
@@ -461,7 +461,7 @@ class AethermorSimV2:
         # ------------------------------------------------------------------
         self.energy_field_history.append(self.energy_field.copy())
         self.signal_field_history.append(self.signal_field.copy())
-        self.intel_field_history.append(self.intel_field.copy())
+        self.intelligence_field_history.append(self.intelligence_field.copy())
         self.temp_field_history.append(effective_temp.copy())
 
         alive = sum(1 for p in self.nodes.values() if p['energy'] > 0)
@@ -509,6 +509,7 @@ if __name__ == '__main__':
     sim.run()
     import pickle
     out_path = os.getenv("AETHERMOR_SIM_OUT", "aethermor_sim_v2.pkl")
+    out_path = os.path.basename(out_path)  # prevent directory traversal
     try:
         with open(out_path, 'wb') as f:
             pickle.dump(sim, f)
