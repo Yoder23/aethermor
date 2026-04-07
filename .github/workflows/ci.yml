@@ -27,8 +27,20 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[all]"
 
+      - name: Show installed versions
+        run: pip freeze
+
       - name: Run tests
-        run: python -m pytest tests/ -q
+        id: pytest
+        run: python -m pytest tests/ -v --tb=long --junitxml=test-results.xml
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-py${{ matrix.python-version }}
+          path: test-results.xml
+          retention-days: 7
 
       - name: Run validation suite
         run: python -m aethermor.validation.validate_all
